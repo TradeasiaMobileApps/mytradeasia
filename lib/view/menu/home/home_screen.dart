@@ -24,6 +24,7 @@ import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../../utils/internet_not_connected.dart';
+import '../../../utils/ship_go.dart';
 import 'all_products/industry/all_industry_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -1397,9 +1398,10 @@ class MenuGridWidgetSales extends StatelessWidget {
                       // return const TrackingShipmentScreen();
                       // return const ShipGoScreen();
                       // return SearatesScreen();
-                      return SalesForceLoginScreen(
-                        token: accessToken,
-                      );
+                      // return SalesForceLoginScreen(
+                      //   token: accessToken,
+                      // );
+                      return ShipGoScreen();
                     },
                   ));
 
