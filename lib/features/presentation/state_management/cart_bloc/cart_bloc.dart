@@ -25,6 +25,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   }
 
   void onGetCartItems(GetCartItems event, Emitter<CartState> emit) async {
+    emit(const CartLoadingState());
     try {
       final data = await _getCart();
       log("DATA CART : $data");

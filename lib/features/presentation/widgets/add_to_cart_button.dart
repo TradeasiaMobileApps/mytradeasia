@@ -332,6 +332,7 @@ class _AddToCartButtonState extends State<AddToCartButton> {
     return BlocBuilder<CartBloc, CartState>(builder: (context, cartState) {
       if (cartState is CartDoneState) {
         // Check if product already exist in cart
+
         bool chosen = false;
         for (var item in cartState.cartItems!) {
           if (item.productName ==
@@ -361,6 +362,8 @@ class _AddToCartButtonState extends State<AddToCartButton> {
             ),
           );
         }
+      } else if (cartState.cartItems == null) {
+        return Container();
       } else {
         return Container();
       }
