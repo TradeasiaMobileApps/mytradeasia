@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:sendbird_chat_sdk/sendbird_chat_sdk.dart';
 import 'package:mytradeasia/config/routes/routes.dart';
@@ -28,7 +29,10 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  SendbirdChat.init(appId: 'DCD5F067-8067-49BF-954E-CEB3631B555F');
+
+  await dotenv.load(fileName: ".env");
+
+  SendbirdChat.init(appId: dotenv.env["APP_ID"]!);
 
   await initializeDependencies();
 
