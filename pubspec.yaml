@@ -61,6 +61,7 @@ dependencies:
   country_picker: ^2.0.21
   sendbird_chat_sdk: ^4.0.12
   flutter_dotenv: ^5.1.0
+  dash_chat_2: ^0.0.18
   # connectivity_plus: ^4.0.2
   
 
