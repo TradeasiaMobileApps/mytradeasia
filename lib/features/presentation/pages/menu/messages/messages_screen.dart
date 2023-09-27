@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/config/routes/parameters.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
+import 'package:sendbird_chat_sdk/sendbird_chat_sdk.dart';
 
 class MessageScreen extends StatefulWidget {
   const MessageScreen({super.key});
@@ -31,6 +33,26 @@ class _MessageScreenState extends State<MessageScreen> {
 // Membuat atau mendapatkan referensi koleksi "Messages"
   // CollectionReference pesanCollection =
   //     FirebaseFirestore.instance.collection('pesan');
+  connectToSendbird() {
+    runZonedGuarded(() async {
+      // USER_ID should be a unique string to your Sendbird application.
+      final user = await SendbirdChat.connect(_currentUser);
+      // The user is connected to the Sendbird server.
+    }, (e, s) {
+      // Handle error.
+    });
+  }
+
+  openChannel() async {
+    try {
+      final openChannel =
+          await OpenChannel.createChannel(OpenChannelCreateParams());
+      // An open channel is successfully created.
+      // You can get the open channel's data from the result object.
+    } catch (e) {
+      // Handle error.
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
