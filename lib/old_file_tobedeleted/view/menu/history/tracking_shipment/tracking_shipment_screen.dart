@@ -69,13 +69,13 @@ class _TrackingShipmentScreenState extends State<TrackingShipmentScreen> {
                           padding: const EdgeInsets.only(bottom: 15.0),
                           child: InkWell(
                             onTap: () {
-                              TrackingShipmentParameter parameter =
-                                  TrackingShipmentParameter(
-                                      product: productName,
-                                      indexProducts: index + 1);
-
-                              context.pushNamed("detail_tracking_shipment",
-                                  extra: parameter);
+                              // TrackingShipmentParameter parameter =
+                              //     TrackingShipmentParameter(
+                              //         product: productName,
+                              //         indexProducts: index + 1);
+                              //
+                              // context.pushNamed("detail_tracking_shipment",
+                              //     extra: parameter);
 
                               // Navigator.push(context, MaterialPageRoute(
                               //   builder: (context) {
@@ -116,7 +116,7 @@ class _TrackingShipmentScreenState extends State<TrackingShipmentScreen> {
                                               child: Center(
                                                 child: Padding(
                                                   padding: const EdgeInsets
-                                                          .symmetric(
+                                                      .symmetric(
                                                       horizontal: 8.0),
                                                   child: Text(
                                                     "Shipped",
@@ -140,7 +140,7 @@ class _TrackingShipmentScreenState extends State<TrackingShipmentScreen> {
                                               child: Center(
                                                 child: Padding(
                                                   padding: const EdgeInsets
-                                                          .symmetric(
+                                                      .symmetric(
                                                       horizontal: 8.0),
                                                   child: Text(
                                                     "Pending",

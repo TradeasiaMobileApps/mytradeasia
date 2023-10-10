@@ -6,6 +6,10 @@ import 'package:mytradeasia/features/presentation/state_management/dhl_shipment_
 import 'package:mytradeasia/features/presentation/state_management/dhl_shipment_bloc/dhl_shipment_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/dhl_shipment_bloc/dhl_shipment_state.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
+import 'package:mytradeasia/features/presentation/state_management/searates_bloc/searates_bl/searates_bl_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/searates_bloc/searates_bl/searates_bl_event.dart';
+import 'package:mytradeasia/features/presentation/state_management/searates_bloc/searates_bl/searates_bl_state.dart';
+import 'package:mytradeasia/helper/helper_functions.dart';
 
 class TrackingShipmentScreen extends StatefulWidget {
   const TrackingShipmentScreen({super.key});
@@ -17,9 +21,19 @@ class TrackingShipmentScreen extends StatefulWidget {
 class _TrackingShipmentScreenState extends State<TrackingShipmentScreen> {
   @override
   void initState() {
-    BlocProvider.of<DhlShipmentBloc>(context)
-        .add(const FetchDhlShipment("4014551645"));
+    fetchSearatesAPI();
     super.initState();
+  }
+
+  void fetchSearatesAPI() async {
+    // if (await canCallApi()) {
+    //   BlocProvider.of<SearatesBLBloc>(context)
+    //       .add(TrackByBLNumber("COAU7885072330"));
+    // } else {
+    //   print("You can only call the API once a day.");
+    // }
+    BlocProvider.of<SearatesBLBloc>(context)
+        .add(TrackByBLNumber("COAU7885072330"));
   }
 
   @override
@@ -53,26 +67,24 @@ class _TrackingShipmentScreenState extends State<TrackingShipmentScreen> {
         child: Column(
           children: [
             Expanded(
-              child: BlocBuilder<DhlShipmentBloc, DhlShipmentState>(
+              child: BlocBuilder<SearatesBLBloc, SearatesBLState>(
                 builder: (context, state) {
-                  if (state is DhlShipmentLoading) {
+                  if (state is SearatesBLLoading) {
                     return const Center(
                         child: CircularProgressIndicator.adaptive());
-                  } else if (state is DhlShipmentDone) {
+                  } else if (state is SearatesBLDone) {
                     return ListView.builder(
                       physics: const BouncingScrollPhysics(),
                       shrinkWrap: true,
                       padding: EdgeInsets.zero,
-                      itemCount: state.shipment!.shipments!.length,
+                      itemCount: state.data!.data!.containers!.length,
                       itemBuilder: (context, index) {
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 15.0),
                           child: InkWell(
                             onTap: () {
                               TrackingShipmentParameter parameter =
-                                  TrackingShipmentParameter(
-                                      product: productName,
-                                      indexProducts: index + 1);
+                                  TrackingShipmentParameter(data: state.data!);
 
                               context.pushNamed("detail_tracking_shipment",
                                   extra: parameter);
@@ -275,7 +287,9 @@ class _TrackingShipmentScreenState extends State<TrackingShipmentScreen> {
                       },
                     );
                   }
-                  return Container();
+                  return Center(
+                    child: Text("${state.error}"),
+                  );
                 },
               ),
             ),
