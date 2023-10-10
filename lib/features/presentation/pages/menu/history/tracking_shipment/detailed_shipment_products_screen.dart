@@ -51,7 +51,7 @@ class _DetailedShipmentProductsScreenState
   @override
   void initState() {
     BlocProvider.of<DhlShipmentBloc>(context)
-        .add(const FetchDhlShipment("4995568406"));
+        .add(const FetchDhlShipment("4014551645"));
     BlocProvider.of<SearatesRouteBloc>(context)
         .add(GetRoute("COAU7885072330", "BL", "COSU"));
     super.initState();
@@ -319,11 +319,18 @@ class _DetailedShipmentProductsScreenState
                                               mainAxisAlignment:
                                                   MainAxisAlignment.start,
                                               children: [
-                                                Text(
+                                                SizedBox(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.55,
+                                                  child: Text(
                                                     events.location!.address!
                                                             .addressLocality ??
                                                         "",
-                                                    style: text15),
+                                                    style: text15,
+                                                  ),
+                                                ),
                                                 Expanded(child: Container()),
                                                 Text(
                                                   "${events.timestamp!.day} - ${events.timestamp!.month} - ${events.timestamp!.year}"
