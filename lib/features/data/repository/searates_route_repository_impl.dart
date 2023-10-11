@@ -4,13 +4,14 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:mytradeasia/core/resources/data_state.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/searates_service.dart';
+import 'package:mytradeasia/features/domain/entities/searates_entities/searates_bl_entity.dart';
 import 'package:mytradeasia/features/domain/entities/searates_entities/searates_route_entity.dart';
 import 'package:mytradeasia/features/domain/repository/searates_repository.dart';
 
-class SearatesRouteRepositoryImpl implements SearatesRepository {
+class SearatesRepositoryImpl implements SearatesRepository {
   final SearatesService _searatesRouteService;
 
-  SearatesRouteRepositoryImpl(this._searatesRouteService);
+  SearatesRepositoryImpl(this._searatesRouteService);
 
   @override
   Future<DataState<SearatesRouteEntity>> getRoute(
@@ -22,6 +23,34 @@ class SearatesRouteRepositoryImpl implements SearatesRepository {
           number: number, type: type, sealine: sealine);
       if (response.statusCode == HttpStatus.ok) {
         log("RESPONSE DATA : ${response.data}");
+        if (response.statusMessage != "error") {
+          return DataSuccess(response.data!);
+        } else {
+          return DataFailed(DioException(
+            error: response.statusMessage,
+            response: response,
+            type: DioExceptionType.badResponse,
+            requestOptions: response.requestOptions,
+          ));
+        }
+      } else {
+        return DataFailed(DioException(
+          error: response.statusMessage,
+          response: response,
+          type: DioExceptionType.badResponse,
+          requestOptions: response.requestOptions,
+        ));
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState<SearatesBLEntity>> trackByBL(String number) async {
+    try {
+      final response = await _searatesRouteService.trackByBL(number);
+      if (response.statusCode == HttpStatus.ok) {
         if (response.statusMessage != "error") {
           return DataSuccess(response.data!);
         } else {

@@ -50,6 +50,7 @@ import 'package:mytradeasia/features/domain/usecases/dhl_shipment_usecases/get_d
 import 'package:mytradeasia/features/domain/usecases/faq_usecases/get_faq_data.dart';
 import 'package:mytradeasia/features/domain/usecases/industry_usecases/get_industry.dart';
 import 'package:mytradeasia/features/domain/usecases/searates_usecases/get_searates_route.dart';
+import 'package:mytradeasia/features/domain/usecases/searates_usecases/track_by_bl.dart';
 import 'package:mytradeasia/features/domain/usecases/list_product_usecases/get_list_product.dart';
 import 'package:mytradeasia/features/domain/usecases/rfq_usecases/submit_rfq.dart';
 import 'package:mytradeasia/features/domain/usecases/sales_force_data_usecases/get_sales_force_data.dart';
@@ -80,6 +81,7 @@ import 'package:mytradeasia/features/presentation/state_management/product_bloc/
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_data/salesforce_data_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_detail/salesforce_detail_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_login/salesforce_login_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/searates_bloc/searates_bl/searates_bl_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/searates_bloc/searates_route/searates_route_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/top_products_bloc/top_products_bloc.dart';
 
@@ -130,7 +132,7 @@ Future<void> initializeDependencies() async {
   injections
       .registerSingleton<CartRepository>(CartRepositoryImpl(injections()));
   injections.registerSingleton<SearatesRepository>(
-      SearatesRouteRepositoryImpl(injections()));
+      SearatesRepositoryImpl(injections()));
 
   //UseCases Dependencies
   injections
@@ -172,6 +174,7 @@ Future<void> initializeDependencies() async {
   injections.registerSingleton<VerifyOtp>(VerifyOtp(injections()));
   injections
       .registerSingleton<GetSearatesRoute>(GetSearatesRoute(injections()));
+  injections.registerSingleton<TrackByBL>(TrackByBL(injections()));
 
   //Bloc
   injections
@@ -201,4 +204,6 @@ Future<void> initializeDependencies() async {
   //     .registerFactory<ChannelListBloc>(() => ChannelListBloc(injections()));
   injections.registerFactory<SearatesRouteBloc>(
       () => SearatesRouteBloc(injections()));
+  injections
+      .registerFactory<SearatesBLBloc>(() => SearatesBLBloc(injections()));
 }
