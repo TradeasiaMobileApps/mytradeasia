@@ -13,13 +13,11 @@ import 'package:mytradeasia/features/data/data_sources/remote/sales_force_login_
 import 'package:mytradeasia/features/data/data_sources/remote/searates_service.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/search_product_service.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/top_products_service.dart';
-import 'package:mytradeasia/features/data/data_sources/sendbird/sendbird_services.dart';
 import 'package:mytradeasia/features/data/repository/cart_repository_impl.dart';
 import 'package:mytradeasia/features/data/repository/detail_product_repository.dart';
 import 'package:mytradeasia/features/data/repository/dhl_shipment_repository.dart';
 import 'package:mytradeasia/features/data/repository/faq_repository.dart';
 import 'package:mytradeasia/features/data/repository/industry_repository.dart';
-import 'package:mytradeasia/features/data/repository/list_channel_repository_impl.dart';
 import 'package:mytradeasia/features/data/repository/list_product_repository.dart';
 import 'package:mytradeasia/features/data/repository/rfq_repository_impl.dart';
 import 'package:mytradeasia/features/data/repository/sales_force_data_repository.dart';
@@ -35,7 +33,6 @@ import 'package:mytradeasia/features/domain/repository/dhl_shipment_repository.d
 import 'package:mytradeasia/features/domain/repository/faq_repository.dart';
 import 'package:mytradeasia/features/domain/repository/industry_repository.dart';
 import 'package:mytradeasia/features/domain/repository/searates_repository.dart';
-import 'package:mytradeasia/features/domain/repository/sendbird_repository.dart';
 import 'package:mytradeasia/features/domain/repository/list_product_repository.dart';
 import 'package:mytradeasia/features/domain/repository/rfq_repository.dart';
 import 'package:mytradeasia/features/domain/repository/sales_force_data_repository.dart';
@@ -54,7 +51,6 @@ import 'package:mytradeasia/features/domain/usecases/faq_usecases/get_faq_data.d
 import 'package:mytradeasia/features/domain/usecases/industry_usecases/get_industry.dart';
 import 'package:mytradeasia/features/domain/usecases/searates_usecases/get_searates_route.dart';
 import 'package:mytradeasia/features/domain/usecases/searates_usecases/track_by_bl.dart';
-import 'package:mytradeasia/features/domain/usecases/sendbird_usecases/get_channels.dart';
 import 'package:mytradeasia/features/domain/usecases/list_product_usecases/get_list_product.dart';
 import 'package:mytradeasia/features/domain/usecases/rfq_usecases/submit_rfq.dart';
 import 'package:mytradeasia/features/domain/usecases/sales_force_data_usecases/get_sales_force_data.dart';
@@ -79,7 +75,6 @@ import 'package:mytradeasia/features/presentation/state_management/cart_bloc/car
 import 'package:mytradeasia/features/presentation/state_management/dhl_shipment_bloc/dhl_shipment_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/industry_bloc/industry_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/faq_bloc/faq_bloc.dart';
-import 'package:mytradeasia/features/presentation/state_management/message_bloc/channel_list/channel_list_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/detail_product_bloc/detail_product_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/list_product/list_product_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/search_product/search_product_bloc.dart';
@@ -109,7 +104,6 @@ Future<void> initializeDependencies() async {
   injections.registerSingleton<AuthUserFirebase>(AuthUserFirebase());
   injections.registerSingleton<RfqService>(RfqService());
   injections.registerSingleton<CartFirebase>(CartFirebase());
-  injections.registerSingleton<SendbirdServices>(SendbirdServices());
   injections.registerSingleton<SearatesService>(SearatesService());
 
   //Repositories Dependencies
@@ -137,8 +131,6 @@ Future<void> initializeDependencies() async {
   injections.registerSingleton<RfqRepository>(RfqRepositoryImpl(injections()));
   injections
       .registerSingleton<CartRepository>(CartRepositoryImpl(injections()));
-  injections.registerSingleton<SendbirdRepository>(
-      SendbirdRepositoryImpl(injections()));
   injections.registerSingleton<SearatesRepository>(
       SearatesRepositoryImpl(injections()));
 
@@ -177,7 +169,6 @@ Future<void> initializeDependencies() async {
   injections
       .registerSingleton<GetUserCredentials>(GetUserCredentials(injections()));
   injections.registerSingleton<UpdateProfile>(UpdateProfile(injections()));
-  injections.registerSingleton<GetChannels>(GetChannels(injections()));
   injections.registerSingleton<PhoneAuthentication>(
       PhoneAuthentication(injections()));
   injections.registerSingleton<VerifyOtp>(VerifyOtp(injections()));
@@ -209,8 +200,8 @@ Future<void> initializeDependencies() async {
       () => AuthBloc(injections(), injections(), injections()));
   injections.registerFactory<CartBloc>(
       () => CartBloc(injections(), injections(), injections(), injections()));
-  injections
-      .registerFactory<ChannelListBloc>(() => ChannelListBloc(injections()));
+  // injections
+  //     .registerFactory<ChannelListBloc>(() => ChannelListBloc(injections()));
   injections.registerFactory<SearatesRouteBloc>(
       () => SearatesRouteBloc(injections()));
   injections
