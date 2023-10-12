@@ -1,7 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/config/routes/parameters.dart';
+import 'package:mytradeasia/features/data/model/searates_model/searates_bl_model.dart';
+import 'package:mytradeasia/features/domain/entities/searates_entities/searates_bl_entity.dart';
 import 'package:mytradeasia/features/presentation/state_management/dhl_shipment_bloc/dhl_shipment_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/dhl_shipment_bloc/dhl_shipment_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/dhl_shipment_bloc/dhl_shipment_state.dart';
@@ -69,10 +73,14 @@ class _TrackingShipmentScreenState extends State<TrackingShipmentScreen> {
             Expanded(
               child: BlocBuilder<SearatesBLBloc, SearatesBLState>(
                 builder: (context, state) {
+                  // const data = state.data;
+
                   if (state is SearatesBLLoading) {
                     return const Center(
                         child: CircularProgressIndicator.adaptive());
                   } else if (state is SearatesBLDone) {
+                    log("BL DATA ${state.data!.toJson()}");
+
                     return ListView.builder(
                       physics: const BouncingScrollPhysics(),
                       shrinkWrap: true,

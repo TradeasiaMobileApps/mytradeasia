@@ -15,6 +15,7 @@ class SearatesService {
     final response = await dio.get(
         "https://tracking.searates.com/route?number=$number&type=$type&sealine=$sealine&api_key=$apiKey");
     log("ROUTE DATA : ${response.data}");
+    log("No : $number | Type : $type | Sealine : $sealine");
     final data = response.data;
     return Response<SearatesRouteModel>(
         requestOptions: response.requestOptions,

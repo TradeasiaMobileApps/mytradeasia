@@ -8,6 +8,16 @@ class SearatesBLEntity extends Equatable {
 
   SearatesBLEntity({this.status, this.message, this.data});
 
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['status'] = this.status;
+    data['message'] = this.message;
+    if (this.data != null) {
+      data['data'] = this.data!.toJson();
+    }
+    return data;
+  }
+
   @override
   // TODO: implement props
   List<Object?> get props => [];
