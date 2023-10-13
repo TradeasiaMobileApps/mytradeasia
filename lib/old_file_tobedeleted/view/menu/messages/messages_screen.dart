@@ -147,14 +147,14 @@ class _MessageScreenState extends State<MessageScreen> {
                           return InkWell(
                             onTap: () {
                               /* With go_router */
-                              MessageDetailParameter param =
-                                  MessageDetailParameter(
-                                      otherUserId: otherUser,
-                                      currentUserId: _currentUser,
-                                      chatId: chatId.toString(),
-                                      channelUrl: '');
+                              // MessageDetailParameter param =
+                              //     MessageDetailParameter(
+                              //         otherUserId: otherUser,
+                              //         currentUserId: _currentUser,
+                              //         chatId: chatId.toString(),
+                              //         channelUrl: '');
 
-                              context.goNamed("message", extra: param);
+                              // context.goNamed("message", extra: param);
                               // Navigator.push(
                               //   context,
                               //   MaterialPageRoute(

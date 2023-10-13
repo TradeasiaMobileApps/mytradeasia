@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:mytradeasia/config/routes/parameters.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_bloc.dart';
@@ -43,15 +44,54 @@ class MessageScreenState extends State<MessageScreen> {
     )..loadMore();
   }
 
-  // @override
-  // void dispose() {
-  //   collection.dispose();
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    collection.dispose();
+    super.dispose();
+  }
+
+  String messageDateTime(GroupChannel groupChannel) {
+    final DateFormat dateFormat = DateFormat('dd/MM/yyyy');
+    final DateFormat formatter = DateFormat('HH:mm');
+    var messageDateTime = DateTime.fromMillisecondsSinceEpoch(
+      groupChannel.lastMessage?.createdAt ?? 0,
+    );
+    var todayDatetime = DateTime.now();
+
+    //return date if last message was further than yesterday
+    if (todayDatetime.year - messageDateTime.year > 0) {
+      return dateFormat.format(messageDateTime);
+    }
+
+    if (todayDatetime.month - messageDateTime.month > 0) {
+      return dateFormat.format(messageDateTime);
+    }
+    if (todayDatetime.day - messageDateTime.day > 1 &&
+        todayDatetime.month - messageDateTime.month == 0) {
+      return dateFormat.format(messageDateTime);
+    }
+
+    //return yesterday if last message was the day before today
+    if (todayDatetime.day - messageDateTime.day == 1) {
+      return "yesterday";
+    }
+
+    //return todays time if there are no last message
+    if (formatter.format(messageDateTime).toString() == "07:00") {
+      return formatter.format(todayDatetime);
+    }
+    //return time with format HH:mm of present day
+    return formatter.format(messageDateTime);
+  }
 
   @override
   Widget build(BuildContext context) {
-    const int index = 2;
+    // const int index = 2;
+    var totalUnreadCount = channelList.isNotEmpty
+        ? channelList
+            .map((e) => e.unreadMessageCount)
+            .reduce((n1, n2) => n1 + n2)
+        : 0;
     return Scaffold(
       backgroundColor: whiteColor,
       body: SingleChildScrollView(
@@ -103,10 +143,15 @@ class MessageScreenState extends State<MessageScreen> {
                     alignment: Alignment.centerRight,
                     child: InkWell(
                       onTap: () {
-                        // print(userCount);
+                        channelList.forEach((e) {
+                          e.clearUnreadCount();
+                        });
+                        setState(() {});
                       },
                       child: Text(
-                        index != 0 ? "Read All($index)" : "Read All(0)",
+                        totalUnreadCount != 0
+                            ? "Read All($totalUnreadCount)"
+                            : "Read All(0)",
                         style: body1Regular.copyWith(color: secondaryColor1),
                       ),
                     ),
@@ -128,6 +173,11 @@ class MessageScreenState extends State<MessageScreen> {
                       itemBuilder: (context, index) {
                         final groupChannel = channelList[index];
                         // log("COUNT : ${state.channels == null ? 0 : state.channels!.length}");
+                        final sender = groupChannel.members.firstWhere(
+                            (element) =>
+                                element.userId !=
+                                userState.sendbirdUser!.userId);
+                        final dateTime = messageDateTime(groupChannel);
                         return InkWell(
                           onTap: () async {
                             context.goNamed("message",
@@ -136,7 +186,9 @@ class MessageScreenState extends State<MessageScreen> {
                                   currentUserId: userState.sendbirdUser!.userId,
                                   chatId: groupChannel.chat.chatId.toString(),
                                   channelUrl: groupChannel.channelUrl,
+                                  prodUrl: groupChannel.data,
                                 ));
+
                             // print(await state.channels![index]
                             //     .getMessagesByTimestamp(
                             //         DateTime.now().millisecondsSinceEpoch *
@@ -173,14 +225,33 @@ class MessageScreenState extends State<MessageScreen> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  ClipRRect(
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(size20px * 5)),
-                                    child: Image.asset(
-                                      "assets/images/profile_picture.png",
-                                      height: size20px + 34.0,
-                                      width: size20px + 34.0,
-                                    ),
+                                  Stack(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(size20px * 5)),
+                                        child: Image.asset(
+                                          "assets/images/profile_picture.png",
+                                          height: size20px + 34.0,
+                                          width: size20px + 34.0,
+                                        ),
+                                      ),
+                                      sender.connectionStatus.name != "offline"
+                                          ? Positioned(
+                                              bottom: 0,
+                                              right: 0,
+                                              child: Container(
+                                                width: 14,
+                                                height: 14,
+                                                decoration: BoxDecoration(
+                                                    color: Colors.green,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20)),
+                                              ),
+                                            )
+                                          : Container(),
+                                    ],
                                   ),
                                   const SizedBox(width: size20px),
                                   Expanded(
@@ -193,6 +264,7 @@ class MessageScreenState extends State<MessageScreen> {
                                             Expanded(
                                               child: Text(
                                                 // ASSUMPTIONS : ONLY 2 Member inside the Group Channel
+                                                //TODO:change this
                                                 lookForOtherUser(
                                                     currentUserId:
                                                         userState.user!.uid!,
@@ -222,17 +294,17 @@ class MessageScreenState extends State<MessageScreen> {
                                   Column(
                                     children: [
                                       Text(
-                                        "Sales",
+                                        dateTime,
                                         style:
                                             text10.copyWith(color: greyColor2),
                                       ),
                                       const SizedBox(height: size20px / 4),
-                                      groupChannel.unreadMentionCount != 0
+                                      groupChannel.unreadMessageCount != 0
                                           ? CircleAvatar(
                                               maxRadius: 12,
                                               backgroundColor: secondaryColor1,
                                               child: Text(
-                                                groupChannel.unreadMentionCount
+                                                groupChannel.unreadMessageCount
                                                     .toString(),
                                                 style: body1Regular.copyWith(
                                                     color: whiteColor),
@@ -255,12 +327,27 @@ class MessageScreenState extends State<MessageScreen> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: secondaryColor1,
-        onPressed: () {
-          setState(() {});
+      floatingActionButton: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          return FloatingActionButton(
+            backgroundColor: secondaryColor1,
+            onPressed: () async {
+              await GroupChannel.createChannel(GroupChannelCreateParams()
+                    ..name = state.sendbirdUser!.nickname
+                    ..userIds = [state.sendbirdUser!.userId, 'sales'])
+                  .then((groupChannel) {
+                context.goNamed("message",
+                    extra: MessageDetailParameter(
+                      otherUserId: "sales",
+                      currentUserId: state.sendbirdUser!.userId,
+                      chatId: groupChannel.chat.chatId.toString(),
+                      channelUrl: groupChannel.channelUrl,
+                    ));
+              });
+            },
+            child: const Icon(Icons.add),
+          );
         },
-        child: const Icon(Icons.add),
       ),
     );
   }
@@ -268,7 +355,6 @@ class MessageScreenState extends State<MessageScreen> {
   void refresh() {
     setState(() {
       channelList = collection.channelList;
-      if (collection.channelList.isNotEmpty) {}
     });
   }
 }

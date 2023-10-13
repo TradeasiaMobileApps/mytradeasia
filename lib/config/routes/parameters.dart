@@ -25,11 +25,13 @@ class MessageDetailParameter {
   String currentUserId;
   String chatId;
   String channelUrl;
+  String? prodUrl;
   MessageDetailParameter(
       {required this.otherUserId,
       required this.currentUserId,
       required this.chatId,
-      required this.channelUrl});
+      required this.channelUrl,
+      this.prodUrl});
 }
 
 class BiodataParameter {

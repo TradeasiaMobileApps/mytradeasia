@@ -788,52 +788,53 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
               SizedBox(
                 height: size20px * 2.75,
                 width: size20px * 2.75,
-                child: BlocBuilder<AuthBloc, AuthState>(
-                  builder: (context, state) {
-                    return ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(whiteColor),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              side: const BorderSide(color: greyColor3)),
-                        ),
-                        elevation: MaterialStateProperty.all<double>(0.0),
-                      ),
-                      onPressed: () async {
-                        if (state is AuthLoggedInState) {
-                          try {
-                            final groupChannel =
-                                await GroupChannel.createChannel(
-                                        GroupChannelCreateParams()
-                                          ..name = state.sendbirdUser!.nickname
-                                          ..userIds = [
-                                            state.sendbirdUser!.userId,
-                                            'sales'
-                                          ])
-                                    .whenComplete(
-                              () => context.go("/message"),
-                            );
-                            print(groupChannel.channelUrl);
-                          } catch (e) {
-                            // Handle error.
-                            print(e);
-                          }
-                        }
-                        if (state is AuthLoadingState) {
-                          print("Authtest");
-                        }
-                        if (state is AuthInitState) {
-                          print("bruh");
-                        }
+                child: BlocBuilder<DetailProductBloc, DetailProductState>(
+                  builder: (context, prodState) {
+                    return BlocBuilder<AuthBloc, AuthState>(
+                      builder: (context, state) {
+                        return ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all<Color>(whiteColor),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  side: const BorderSide(color: greyColor3)),
+                            ),
+                            elevation: MaterialStateProperty.all<double>(0.0),
+                          ),
+                          onPressed: () async {
+                            if (state is AuthLoggedInState) {
+                              try {
+                                final groupChannel =
+                                    await GroupChannel.createChannel(
+                                            GroupChannelCreateParams()
+                                              ..name = prodState
+                                                  .detailProductData!
+                                                  .detailProduct!
+                                                  .productname
+                                              ..userIds = [
+                                                state.sendbirdUser!.userId,
+                                                'sales'
+                                              ]
+                                              ..data = widget.urlProduct)
+                                        .whenComplete(
+                                  () => context.go("/message"),
+                                );
+                              } catch (e) {
+                                // Handle error.
+                                print(e);
+                              }
+                            }
+                          },
+                          child: Image.asset(
+                            "assets/images/icon_message_not_active.png",
+                            width: size20px + 4.0,
+                            color: primaryColor1,
+                          ),
+                        );
                       },
-                      child: Image.asset(
-                        "assets/images/icon_message_not_active.png",
-                        width: size20px + 4.0,
-                        color: primaryColor1,
-                      ),
                     );
                   },
                 ),

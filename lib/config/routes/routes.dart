@@ -119,10 +119,12 @@ class Routes {
                       MessageDetailParameter param =
                           state.extra as MessageDetailParameter;
                       return MessagesDetailScreen(
-                          otherUserId: param.otherUserId,
-                          currentUserId: param.currentUserId,
-                          chatId: param.chatId,
-                          channelUrl: param.channelUrl);
+                        otherUserId: param.otherUserId,
+                        currentUserId: param.currentUserId,
+                        chatId: param.chatId,
+                        channelUrl: param.channelUrl,
+                        prodUrl: param.prodUrl ?? "",
+                      );
                     })
               ]),
           GoRoute(
