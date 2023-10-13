@@ -1,4 +1,5 @@
 import 'package:mytradeasia/features/domain/entities/product_entities/product_to_rfq_entity.dart';
+import 'package:mytradeasia/features/domain/entities/searates_entities/searates_bl_entity.dart';
 
 class TrackingDocumentParameter {
   String product;
@@ -8,10 +9,9 @@ class TrackingDocumentParameter {
 }
 
 class TrackingShipmentParameter {
-  String product;
-  int indexProducts;
-  TrackingShipmentParameter(
-      {required this.product, required this.indexProducts});
+  SearatesBLEntity data;
+
+  TrackingShipmentParameter({required this.data});
 }
 
 class QuotationDetailParameter {

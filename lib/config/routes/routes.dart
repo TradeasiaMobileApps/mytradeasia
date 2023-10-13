@@ -164,15 +164,18 @@ class Routes {
                             TrackingShipmentParameter param =
                                 state.extra as TrackingShipmentParameter;
                             return TrackingShipmentDetailScreen(
-                                product: param.product,
-                                indexProducts: param.indexProducts);
+                              searatesBLEntity: param.data,
+                            );
                           },
                           routes: [
                             GoRoute(
                                 path: "shipment_product",
                                 name: "shipment_product",
                                 builder: (context, state) {
-                                  return const DetailedShipmentProductsScreen();
+                                  TrackingShipmentParameter param =
+                                      state.extra as TrackingShipmentParameter;
+                                  return DetailedShipmentProductsScreen(
+                                      data: param.data);
                                 })
                           ])
                     ]),

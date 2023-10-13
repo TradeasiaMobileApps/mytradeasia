@@ -1,6 +1,7 @@
 import 'package:latlong2/latlong.dart';
 import 'package:mytradeasia/features/data/model/cart_models/cart_models.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_entity.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 dynamic parseDoubleToIntegerIfNecessary(double input) {
   String inputString = input.toString();
@@ -37,4 +38,17 @@ List<LatLng> toListLatLng(List<List<double>> list) {
     newList.add(LatLng(element.first, element.last));
   }
   return newList;
+}
+
+Future<bool> canCallApi() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  int lastCall = prefs.getInt('lastApiCall') ?? 0;
+  int now = DateTime.now().millisecondsSinceEpoch;
+  int oneDay = 24 * 60 * 60 * 1000; // Milliseconds in a day
+
+  if (now - lastCall >= oneDay) {
+    prefs.setInt('lastApiCall', now); // Update the last call time
+    return true; // More than a day has passed since the last call
+  }
+  return false; // Less than a day has passed since the last call
 }

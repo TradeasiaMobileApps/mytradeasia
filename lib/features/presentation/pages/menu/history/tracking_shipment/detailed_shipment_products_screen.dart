@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:getwidget/components/accordion/gf_accordion.dart';
+import 'package:mytradeasia/features/domain/entities/searates_entities/searates_bl_entity.dart';
 import 'package:mytradeasia/features/presentation/state_management/dhl_shipment_bloc/dhl_shipment_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/dhl_shipment_bloc/dhl_shipment_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/dhl_shipment_bloc/dhl_shipment_state.dart';
@@ -16,7 +17,8 @@ import 'package:mytradeasia/helper/helper_functions.dart';
 import '../../../../../../config/themes/theme.dart';
 
 class DetailedShipmentProductsScreen extends StatefulWidget {
-  const DetailedShipmentProductsScreen({super.key});
+  const DetailedShipmentProductsScreen({super.key, required this.data});
+  final SearatesBLEntity data;
 
   @override
   State<DetailedShipmentProductsScreen> createState() =>
@@ -52,8 +54,10 @@ class _DetailedShipmentProductsScreenState
   void initState() {
     BlocProvider.of<DhlShipmentBloc>(context)
         .add(const FetchDhlShipment("4014551645"));
-    BlocProvider.of<SearatesRouteBloc>(context)
-        .add(GetRoute("COAU7885072330", "BL", "COSU"));
+    BlocProvider.of<SearatesRouteBloc>(context).add(GetRoute(
+        widget.data.data!.metadata!.number!,
+        widget.data.data!.metadata!.type!,
+        widget.data.data!.metadata!.sealine!));
     super.initState();
   }
 

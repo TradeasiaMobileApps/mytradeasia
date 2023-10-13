@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:mytradeasia/features/domain/entities/searates_entities/searates_bl_entity.dart';
 import 'package:mytradeasia/features/presentation/pages/menu/history/tracking_shipment/detailed_shipment_products_screen.dart';
 
 import '../../../../../../config/themes/theme.dart';
 
 class TrackingShipmentDetailScreen extends StatelessWidget {
   const TrackingShipmentDetailScreen(
-      {super.key, required this.product, required this.indexProducts});
+      {super.key, required this.searatesBLEntity});
 
-  final String product;
-  final int indexProducts;
+  final SearatesBLEntity searatesBLEntity;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: whiteColor,
       appBar: AppBar(
-        title: Text(
-          "$product $indexProducts",
+        title: const Text(
+          "Dipentene",
           style: heading2,
         ),
         centerTitle: true,
@@ -133,7 +133,8 @@ class TrackingShipmentDetailScreen extends StatelessWidget {
                     onTap: () {
                       Navigator.push(context, MaterialPageRoute(
                         builder: (context) {
-                          return const DetailedShipmentProductsScreen();
+                          return DetailedShipmentProductsScreen(
+                              data: searatesBLEntity);
                         },
                       ));
                     },
