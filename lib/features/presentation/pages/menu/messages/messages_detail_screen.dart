@@ -43,6 +43,7 @@ class MessagesDetailScreenState extends State<MessagesDetailScreen> {
   List<BaseMessage> messageList = [];
   List<String> memberIdList = [];
   DetailsProductEntity? product;
+  GroupChannel? groupChannel;
   String url = "https://chemtradea.chemtradeasia.com/";
 
   @override
@@ -279,6 +280,17 @@ class MessagesDetailScreenState extends State<MessagesDetailScreen> {
     );
   }
 
+  void statusMsg(String msg) async {
+    _message.text = msg;
+    try {
+      await groupChannel!.updateMetaData({
+        'status': msg,
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
   Future<void> showDialogToResendUserMessage(UserMessage message) async {
     await showDialog(
         context: context,
@@ -369,14 +381,12 @@ class MessagesDetailScreenState extends State<MessagesDetailScreen> {
         if (index > 0) {
           messageTime = messageList[index - 1].createdAt;
           messageDateTime = toDateTime(messageTime);
-          // print(messageList.length);
         }
 
         if (index == 0 && messageList.isNotEmpty) {
           messageTime = messageList[index].createdAt;
           messageDateTime = toDateTime(messageTime);
           if (isDateSameAsDateNow(toDateTime(messageList[index].createdAt))) {
-            print(firstMessageDate);
             firstMessageDate =
                 "${messageDateTime.day}-${messageDateTime.month}-${messageDateTime.year}";
           }
@@ -417,8 +427,10 @@ class MessagesDetailScreenState extends State<MessagesDetailScreen> {
                   ),
                 ),
               ),
-              const SalesBubleChat(
-                  isFirstMessage: true, message: "Hello how can i help you?"),
+              SalesBubleChat(
+                  isFirstMessage: true,
+                  message: "Hello how can i help you?",
+                  state: this),
             ],
           );
         }
@@ -446,8 +458,10 @@ class MessagesDetailScreenState extends State<MessagesDetailScreen> {
                   ),
                 ),
               ),
-              const SalesBubleChat(
-                  isFirstMessage: true, message: "Hello how can i help you?"),
+              SalesBubleChat(
+                  isFirstMessage: true,
+                  message: "Hello how can i help you?",
+                  state: this),
             ],
           );
         }
@@ -523,7 +537,8 @@ class MessagesDetailScreenState extends State<MessagesDetailScreen> {
     );
   }
 
-  void initializeMessageCollection() {
+  void initializeMessageCollection() async {
+    groupChannel = await GroupChannel.getChannel(widget.channelUrl);
     GroupChannel.getChannel(widget.channelUrl).then((channel) async {
       collection = MessageCollection(
         channel: channel,

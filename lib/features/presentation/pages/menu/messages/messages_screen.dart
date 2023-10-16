@@ -37,6 +37,7 @@ class MessageScreenState extends State<MessageScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsFlutterBinding.ensureInitialized();
     collection = GroupChannelCollection(
       query: GroupChannelListQuery()
         ..order = GroupChannelListQueryOrder.latestLastMessage,
@@ -58,6 +59,11 @@ class MessageScreenState extends State<MessageScreen> {
     );
     var todayDatetime = DateTime.now();
 
+    //return todays time if there are no last message
+    if (formatter.format(messageDateTime).toString() == "07:00") {
+      return formatter.format(todayDatetime);
+    }
+
     //return date if last message was further than yesterday
     if (todayDatetime.year - messageDateTime.year > 0) {
       return dateFormat.format(messageDateTime);
@@ -76,10 +82,6 @@ class MessageScreenState extends State<MessageScreen> {
       return "yesterday";
     }
 
-    //return todays time if there are no last message
-    if (formatter.format(messageDateTime).toString() == "07:00") {
-      return formatter.format(todayDatetime);
-    }
     //return time with format HH:mm of present day
     return formatter.format(messageDateTime);
   }
@@ -173,11 +175,13 @@ class MessageScreenState extends State<MessageScreen> {
                       itemBuilder: (context, index) {
                         final groupChannel = channelList[index];
                         // log("COUNT : ${state.channels == null ? 0 : state.channels!.length}");
+
                         final sender = groupChannel.members.firstWhere(
                             (element) =>
                                 element.userId !=
                                 userState.sendbirdUser!.userId);
                         final dateTime = messageDateTime(groupChannel);
+
                         return InkWell(
                           onTap: () async {
                             context.goNamed("message",
@@ -203,18 +207,6 @@ class MessageScreenState extends State<MessageScreen> {
                             //     chatId: chatId.toString());
                             //
                             // context.goNamed("message", extra: param);
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) {
-                            //       return MessagesDetailScreen(
-                            //         otherUserId: otherUser,
-                            //         currentUserId: _currentUser,
-                            //         chatId: chatId.toString(),
-                            //       );
-                            //     },
-                            //   ),
-                            // );
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(bottom: 8.0),
@@ -261,22 +253,65 @@ class MessageScreenState extends State<MessageScreen> {
                                       children: [
                                         Row(
                                           children: [
-                                            Expanded(
-                                              child: Text(
-                                                // ASSUMPTIONS : ONLY 2 Member inside the Group Channel
-                                                //TODO:change this
-                                                lookForOtherUser(
-                                                    currentUserId:
-                                                        userState.user!.uid!,
-                                                    listMember:
-                                                        groupChannel.members),
-                                                style: heading3.copyWith(
-                                                  color: blackColor,
-                                                ),
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
+                                            Text(
+                                              // ASSUMPTIONS : ONLY 2 Member inside the Group Channel
+                                              //TODO:change this
+                                              "Dipentene",
+                                              style: heading3.copyWith(
+                                                color: blackColor,
                                               ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
                                             ),
+                                            FutureBuilder<Map<String, String>>(
+                                                future: groupChannel
+                                                    .getAllMetaData(),
+                                                builder: (context, snapshot) {
+                                                  if (snapshot
+                                                          .connectionState ==
+                                                      ConnectionState.waiting) {
+                                                    return SizedBox();
+                                                  } else {
+                                                    if (snapshot
+                                                            .data!["status"] !=
+                                                        null) {
+                                                      print(snapshot.data);
+                                                      return Container(
+                                                        height: 18,
+                                                        width: 50,
+                                                        margin: const EdgeInsets
+                                                            .only(left: 10),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                                // background: #31C8B31A;
+
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        99,
+                                                                        49,
+                                                                        200,
+                                                                        180),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            20)),
+                                                        child: Center(
+                                                          child: Text(
+                                                            snapshot.data?[
+                                                                    "status"] ??
+                                                                "",
+                                                            style:
+                                                                text10.copyWith(
+                                                                    color: Colors
+                                                                        .green),
+                                                          ),
+                                                        ),
+                                                      );
+                                                    } else {
+                                                      return Container();
+                                                    }
+                                                  }
+                                                })
                                           ],
                                         ),
                                         const SizedBox(height: size20px / 4),

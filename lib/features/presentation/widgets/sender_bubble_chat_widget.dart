@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:mytradeasia/features/presentation/pages/menu/messages/messages_detail_screen.dart';
 
 import '../../../config/themes/theme.dart';
 
 class SalesBubleChat extends StatelessWidget {
   const SalesBubleChat(
-      {Key? key, required this.isFirstMessage, required this.message})
+      {Key? key,
+      required this.isFirstMessage,
+      required this.message,
+      this.state})
       : super(key: key);
 
   final bool isFirstMessage;
   final String message;
+  final MessagesDetailScreenState? state;
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +59,7 @@ class SalesBubleChat extends StatelessWidget {
                               style: heading3, textAlign: TextAlign.start),
                         ),
                         isFirstMessage == true
-                            ? const Column(
+                            ? Column(
                                 children: [
                                   // first row
                                   Padding(
@@ -68,15 +73,19 @@ class SalesBubleChat extends StatelessWidget {
                                           urlIcon:
                                               "assets/images/icon_products_message.png",
                                           namaMessage: "Product",
+                                          state: state,
                                         ),
                                         FirstMessageWidget(
-                                            urlIcon:
-                                                "assets/images/icon_sample.png",
-                                            namaMessage: "Sample"),
+                                          urlIcon:
+                                              "assets/images/icon_sample.png",
+                                          namaMessage: "Sample",
+                                          state: state,
+                                        ),
                                         FirstMessageWidget(
-                                            urlIcon:
-                                                "assets/images/icon_moq.png",
-                                            namaMessage: "MOQ"),
+                                          urlIcon: "assets/images/icon_moq.png",
+                                          namaMessage: "MOQ",
+                                          state: state,
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -89,17 +98,23 @@ class SalesBubleChat extends StatelessWidget {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         FirstMessageWidget(
-                                            urlIcon:
-                                                "assets/images/icon_price.png",
-                                            namaMessage: "Price"),
+                                          urlIcon:
+                                              "assets/images/icon_price.png",
+                                          namaMessage: "Price",
+                                          state: state,
+                                        ),
                                         FirstMessageWidget(
-                                            urlIcon:
-                                                "assets/images/icon_payment.png",
-                                            namaMessage: "Payment"),
+                                          urlIcon:
+                                              "assets/images/icon_payment.png",
+                                          namaMessage: "Payment",
+                                          state: state,
+                                        ),
                                         FirstMessageWidget(
-                                            urlIcon:
-                                                "assets/images/icon_complaint.png",
-                                            namaMessage: "Complaint"),
+                                          urlIcon:
+                                              "assets/images/icon_complaint.png",
+                                          namaMessage: "Complaint",
+                                          state: state,
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -121,11 +136,12 @@ class SalesBubleChat extends StatelessWidget {
 
 class FirstMessageWidget extends StatelessWidget {
   const FirstMessageWidget(
-      {Key? key, required this.urlIcon, required this.namaMessage})
+      {Key? key, required this.urlIcon, required this.namaMessage, this.state})
       : super(key: key);
 
   final String urlIcon;
   final String namaMessage;
+  final MessagesDetailScreenState? state;
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +157,9 @@ class FirstMessageWidget extends StatelessWidget {
               ),
             ),
             child: IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  state!.statusMsg(namaMessage);
+                },
                 icon: Image.asset(
                   urlIcon,
                   width: size20px + 4.0,

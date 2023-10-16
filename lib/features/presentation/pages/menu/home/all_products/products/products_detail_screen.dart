@@ -817,11 +817,14 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                                               ..userIds = [
                                                 state.sendbirdUser!.userId,
                                                 'sales'
-                                              ]
-                                              ..data = widget.urlProduct)
+                                              ])
+                                        .then((value) => value.createMetaData({
+                                              'urlProduct': widget.urlProduct,
+                                              'status': 'product',
+                                            }))
                                         .whenComplete(
-                                  () => context.go("/message"),
-                                );
+                                          () => context.go("/messages"),
+                                        );
                               } catch (e) {
                                 // Handle error.
                                 print(e);
