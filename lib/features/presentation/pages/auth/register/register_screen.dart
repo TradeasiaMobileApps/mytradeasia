@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/phone_authentication.dart';
@@ -6,6 +9,7 @@ import 'package:mytradeasia/features/presentation/widgets/loading_overlay_widget
 import 'package:mytradeasia/helper/injections_container.dart';
 import '../../../../../config/routes/parameters.dart';
 import '../../../../../config/themes/theme.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -24,6 +28,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
       injections<PhoneAuthentication>();
 
   final _formKey = GlobalKey<FormState>();
+
+  Future<UserCredential> signInWithGoogle() async {
+    // Trigger the authentication flow
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+
+    // Create a new credential
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    // Once signed in, return the UserCredential
+    return await FirebaseAuth.instance.signInWithCredential(credential);
+  }
 
   @override
   void dispose() {
@@ -368,8 +390,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               "assets/images/logo_google.png",
                               width: size20px + 4,
                             ),
-                            onPressed: () {
-                              print(countryNum + _phoneNumberController.text);
+                            onPressed: () async {
+                              UserCredential userCred =
+                                  await signInWithGoogle();
+                              log("User Cred : ${userCred.user!.uid}");
+                              log("User Cred : ${userCred.user!.email}");
+                              log("User Cred : ${userCred.user!.displayName}");
+                              log("User Cred : ${userCred.user!.toString()}");
+
+                              BiodataParameter param =
+                                  BiodataParameter(email: "", phone: "");
+                              context.pushReplacement("/auth/register/biodata",
+                                  extra: param);
                             },
                           ),
                         ),

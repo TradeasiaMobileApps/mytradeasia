@@ -92,4 +92,13 @@ class UserRepositoryImpl implements UserRepository {
   Future<bool> verifyOtp(String s) {
     return _authUserFirebase.verifyOTP(s);
   }
+
+  @override
+  Future<dynamic> googleAuth() async {
+    final response = await _authUserFirebase.googleAuth();
+    if (response is Map) {
+      return response["code"];
+    }
+    return response;
+  }
 }
