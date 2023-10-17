@@ -1,21 +1,11 @@
-import 'dart:developer';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/config/routes/parameters.dart';
-import 'package:mytradeasia/features/data/model/searates_model/searates_bl_model.dart';
-import 'package:mytradeasia/features/domain/entities/searates_entities/searates_bl_entity.dart';
-import 'package:mytradeasia/features/presentation/state_management/dhl_shipment_bloc/dhl_shipment_bloc.dart';
-import 'package:mytradeasia/features/presentation/state_management/dhl_shipment_bloc/dhl_shipment_event.dart';
-import 'package:mytradeasia/features/presentation/state_management/dhl_shipment_bloc/dhl_shipment_state.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
 import 'package:mytradeasia/features/presentation/state_management/searates_bloc/searates_bl/searates_bl_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/searates_bloc/searates_bl/searates_bl_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/searates_bloc/searates_bl/searates_bl_state.dart';
-import 'package:mytradeasia/helper/helper_functions.dart';
 
 class TrackingShipmentScreen extends StatefulWidget {
   const TrackingShipmentScreen({super.key});
@@ -27,19 +17,9 @@ class TrackingShipmentScreen extends StatefulWidget {
 class _TrackingShipmentScreenState extends State<TrackingShipmentScreen> {
   @override
   void initState() {
-    fetchSearatesAPI();
-    super.initState();
-  }
-
-  void fetchSearatesAPI() async {
-    // if (await canCallApi()) {
-    //   BlocProvider.of<SearatesBLBloc>(context)
-    //       .add(TrackByBLNumber("COAU7885072330"));
-    // } else {
-    //   print("You can only call the API once a day.");
-    // }
     BlocProvider.of<SearatesBLBloc>(context)
         .add(TrackByBLNumber("COAU7885072330"));
+    super.initState();
   }
 
   @override
@@ -75,14 +55,10 @@ class _TrackingShipmentScreenState extends State<TrackingShipmentScreen> {
             Expanded(
               child: BlocBuilder<SearatesBLBloc, SearatesBLState>(
                 builder: (context, state) {
-                  // const data = state.data;
-
                   if (state is SearatesBLLoading) {
                     return const Center(
                         child: CircularProgressIndicator.adaptive());
                   } else if (state is SearatesBLDone) {
-                    log("BL DATA ${state.data!.toJson()}");
-
                     return ListView.builder(
                       physics: const BouncingScrollPhysics(),
                       shrinkWrap: true,
@@ -98,15 +74,6 @@ class _TrackingShipmentScreenState extends State<TrackingShipmentScreen> {
 
                               context.pushNamed("detail_tracking_shipment",
                                   extra: parameter);
-
-                              // Navigator.push(context, MaterialPageRoute(
-                              //   builder: (context) {
-                              //     return TrackingShipmentDetailScreen(
-                              //       product: productName,
-                              //       indexProducts: index + 1,
-                              //     );
-                              //   },
-                              // ));
                             },
                             child: Card(
                               margin: EdgeInsets.zero,
