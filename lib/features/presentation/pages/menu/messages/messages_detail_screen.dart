@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -6,9 +8,9 @@ import 'package:mytradeasia/features/domain/entities/detail_product_entities/det
 import 'package:mytradeasia/features/domain/usecases/detail_product_usecases/get_detail_product.dart';
 import 'package:mytradeasia/features/presentation/state_management/chat_handler/message_collecting_handler.dart';
 import 'package:mytradeasia/features/presentation/widgets/sender_bubble_chat_widget.dart';
+import 'package:mytradeasia/features/presentation/widgets/text_editing_widget.dart';
 import 'package:mytradeasia/features/presentation/widgets/user_bubble_chat_widget.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
-import 'package:mytradeasia/old_file_tobedeleted/widget/text_editing_widget.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:sendbird_chat_sdk/sendbird_chat_sdk.dart';
 
@@ -19,13 +21,15 @@ class MessagesDetailScreen extends StatefulWidget {
       required this.otherUserId,
       required this.currentUserId,
       required this.chatId,
-      required this.prodUrl});
+      required this.prodUrl,
+      required this.customerName});
 
   final String channelUrl;
   final String chatId; // ID percakapan
   final String currentUserId; // UID pengguna saat ini
   final String otherUserId; // UID pengguna lain
   final String prodUrl;
+  final String customerName;
 
   @override
   State<MessagesDetailScreen> createState() => MessagesDetailScreenState();
@@ -217,6 +221,7 @@ class MessagesDetailScreenState extends State<MessagesDetailScreen> {
                           controller: _message,
                           hintText: "Type something...",
                           readOnly: false,
+                          autofocus: true,
                         ),
                         //     TextFormField(
                         //   decoration: InputDecoration(
@@ -280,14 +285,14 @@ class MessagesDetailScreenState extends State<MessagesDetailScreen> {
     );
   }
 
-  void statusMsg(String msg) async {
+  void statusMsg(String status, String msg) async {
     _message.text = msg;
     try {
       await groupChannel!.updateMetaData({
-        'status': msg,
+        'status': status,
       });
     } catch (e) {
-      print(e);
+      log(e.toString());
     }
   }
 
@@ -404,43 +409,18 @@ class MessagesDetailScreenState extends State<MessagesDetailScreen> {
         }
 
         if (index == 0 && widget.currentUserId == "sales") {
-          return Column(
-            children: [
-              Container(
-                constraints: BoxConstraints(minWidth: 52, maxWidth: 100),
-                height: 25,
-                margin: EdgeInsets.only(bottom: 10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: secondaryColor1,
-                ),
-                child: FittedBox(
-                  fit: BoxFit.fitWidth,
-                  child: Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Center(
-                      child: Text(
-                        firstMessageDate,
-                        style: body1Regular.copyWith(color: whiteColor),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SalesBubleChat(
-                  isFirstMessage: true,
-                  message: "Hello how can i help you?",
-                  state: this),
-            ],
+          return UserBubleChat(
+            message: "Hello ${widget.customerName}, what do you want to ask?",
+            isSeen: true,
           );
         }
         if (index == 0 && widget.currentUserId != "sales") {
           return Column(
             children: [
               Container(
-                constraints: BoxConstraints(minWidth: 52, maxWidth: 100),
+                constraints: const BoxConstraints(minWidth: 52, maxWidth: 100),
                 height: 25,
-                margin: EdgeInsets.only(bottom: 10),
+                margin: const EdgeInsets.only(bottom: 10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   color: secondaryColor1,
@@ -460,7 +440,8 @@ class MessagesDetailScreenState extends State<MessagesDetailScreen> {
               ),
               SalesBubleChat(
                   isFirstMessage: true,
-                  message: "Hello how can i help you?",
+                  message:
+                      "Hello ${widget.customerName}, what do you want to ask?",
                   state: this),
             ],
           );
@@ -476,9 +457,10 @@ class MessagesDetailScreenState extends State<MessagesDetailScreen> {
             children: [
               isShowSeparator
                   ? Container(
-                      constraints: BoxConstraints(minWidth: 52, maxWidth: 100),
+                      constraints:
+                          const BoxConstraints(minWidth: 52, maxWidth: 100),
                       height: 25,
-                      margin: EdgeInsets.only(bottom: 10),
+                      margin: const EdgeInsets.only(bottom: 10),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
                         color: secondaryColor1,
@@ -496,7 +478,7 @@ class MessagesDetailScreenState extends State<MessagesDetailScreen> {
                         ),
                       ),
                     )
-                  : SizedBox(),
+                  : const SizedBox(),
               SalesBubleChat(isFirstMessage: false, message: message.message),
             ],
           );
@@ -505,9 +487,10 @@ class MessagesDetailScreenState extends State<MessagesDetailScreen> {
           children: [
             isShowSeparator
                 ? Container(
-                    constraints: BoxConstraints(minWidth: 52, maxWidth: 150),
+                    constraints:
+                        const BoxConstraints(minWidth: 52, maxWidth: 150),
                     height: 25,
-                    margin: EdgeInsets.only(bottom: 10),
+                    margin: const EdgeInsets.only(bottom: 10),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       color: secondaryColor1,
@@ -525,11 +508,10 @@ class MessagesDetailScreenState extends State<MessagesDetailScreen> {
                       ),
                     ),
                   )
-                : SizedBox(),
+                : const SizedBox(),
             UserBubleChat(
               message: message.message,
               isSeen: unreadMembers.isNotEmpty,
-              isFirstMessage: false,
             ),
           ],
         );
@@ -551,7 +533,7 @@ class MessagesDetailScreenState extends State<MessagesDetailScreen> {
         memberIdList = channel.members.map((member) => member.userId).toList();
         memberIdList.sort((a, b) => a.compareTo(b));
       });
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
       _scrollController.scrollTo(
         index: collection!.messageList.length,
         duration: const Duration(milliseconds: 200),

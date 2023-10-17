@@ -9,12 +9,14 @@ class TextEditingWidget extends StatelessWidget {
       required this.controller,
       required this.hintText,
       this.readOnly = true,
-      this.inputType = TextInputType.text});
+      this.inputType = TextInputType.text,
+      this.autofocus = false});
 
   final TextEditingController controller;
   final String hintText;
   final bool readOnly;
   final TextInputType inputType;
+  final bool autofocus;
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +25,7 @@ class TextEditingWidget extends StatelessWidget {
       readOnly: readOnly,
       keyboardType: inputType,
       controller: controller,
+      autofocus: autofocus,
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: body1Regular.copyWith(color: greyColor),
@@ -56,18 +59,21 @@ class TextEditingWidget extends StatelessWidget {
 
 // Textfield with suffix
 class TextEditingWithIconSuffix extends StatelessWidget {
-  const TextEditingWithIconSuffix(
-      {super.key,
-      this.controller,
-      required this.hintText,
-      required this.imageUrl,
-      required this.navigationPage,
-      this.readOnly = false});
+  const TextEditingWithIconSuffix({
+    super.key,
+    this.controller,
+    required this.hintText,
+    required this.imageUrl,
+    required this.navigationPage,
+    this.readOnly = false,
+    this.autofocus = false,
+  });
 
   final TextEditingController? controller;
   final String hintText;
   final String imageUrl;
   final bool readOnly;
+  final bool autofocus;
   final void Function() navigationPage;
 
   @override
@@ -75,6 +81,7 @@ class TextEditingWithIconSuffix extends StatelessWidget {
     return TextFormField(
       readOnly: readOnly,
       controller: controller,
+      autofocus: autofocus,
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: body1Regular.copyWith(color: greyColor),

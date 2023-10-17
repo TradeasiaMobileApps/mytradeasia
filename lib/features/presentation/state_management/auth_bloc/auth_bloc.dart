@@ -40,7 +40,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           final User user;
           if (userData["role"] != "Sales") {
             user = await SendbirdChat.connect(response.uid!,
-                nickname: event.email);
+                nickname: userData["firstName"]);
           } else {
             user = await SendbirdChat.connect("sales");
           }

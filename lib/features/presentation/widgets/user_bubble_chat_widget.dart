@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:mytradeasia/features/presentation/widgets/sender_bubble_chat_widget.dart';
 
 import '../../../config/themes/theme.dart';
 
 class UserBubleChat extends StatelessWidget {
-  const UserBubleChat(
-      {Key? key,
-      required this.message,
-      this.isSeen = false,
-      required this.isFirstMessage})
-      : super(key: key);
+  const UserBubleChat({
+    Key? key,
+    required this.message,
+    this.isSeen = false,
+  }) : super(key: key);
 
-  final bool isFirstMessage;
   final String message;
   final bool isSeen;
 
@@ -43,57 +40,6 @@ class UserBubleChat extends StatelessWidget {
                       textAlign: TextAlign.end,
                       style: body1Regular.copyWith(color: whiteColor),
                     ),
-                    isFirstMessage == true
-                        ? const Column(
-                            children: [
-                              // first row
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    top: size20px, bottom: size20px / 2.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    FirstMessageWidget(
-                                      urlIcon:
-                                          "assets/images/icon_products_message.png",
-                                      namaMessage: "Product",
-                                    ),
-                                    FirstMessageWidget(
-                                        urlIcon:
-                                            "assets/images/icon_sample.png",
-                                        namaMessage: "Sample"),
-                                    FirstMessageWidget(
-                                        urlIcon: "assets/images/icon_moq.png",
-                                        namaMessage: "MOQ"),
-                                  ],
-                                ),
-                              ),
-                              // second row
-                              Padding(
-                                padding:
-                                    EdgeInsets.only(bottom: size20px + 5.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    FirstMessageWidget(
-                                        urlIcon: "assets/images/icon_price.png",
-                                        namaMessage: "Price"),
-                                    FirstMessageWidget(
-                                        urlIcon:
-                                            "assets/images/icon_payment.png",
-                                        namaMessage: "Payment"),
-                                    FirstMessageWidget(
-                                        urlIcon:
-                                            "assets/images/icon_complaint.png",
-                                        namaMessage: "Complaint"),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          )
-                        : Container(),
                   ],
                 ),
               ),

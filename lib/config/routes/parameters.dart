@@ -23,12 +23,14 @@ class QuotationDetailParameter {
 class MessageDetailParameter {
   String otherUserId;
   String currentUserId;
+  String customerName;
   String chatId;
   String channelUrl;
   String? prodUrl;
   MessageDetailParameter(
       {required this.otherUserId,
       required this.currentUserId,
+      required this.customerName,
       required this.chatId,
       required this.channelUrl,
       this.prodUrl});

@@ -72,19 +72,25 @@ class SalesBubleChat extends StatelessWidget {
                                         FirstMessageWidget(
                                           urlIcon:
                                               "assets/images/icon_products_message.png",
-                                          namaMessage: "Product",
+                                          statusMsg: "Product",
                                           state: state,
+                                          msg:
+                                              'I would like to ask more product-related questions',
                                         ),
                                         FirstMessageWidget(
                                           urlIcon:
                                               "assets/images/icon_sample.png",
-                                          namaMessage: "Sample",
+                                          statusMsg: "Sample",
                                           state: state,
+                                          msg:
+                                              'Can I get a sample of your product for testing?',
                                         ),
                                         FirstMessageWidget(
                                           urlIcon: "assets/images/icon_moq.png",
-                                          namaMessage: "MOQ",
+                                          statusMsg: "MOQ",
                                           state: state,
+                                          msg:
+                                              'What is the minimum order quantity of your product?',
                                         ),
                                       ],
                                     ),
@@ -100,20 +106,26 @@ class SalesBubleChat extends StatelessWidget {
                                         FirstMessageWidget(
                                           urlIcon:
                                               "assets/images/icon_price.png",
-                                          namaMessage: "Price",
+                                          statusMsg: "Price",
                                           state: state,
+                                          msg:
+                                              'I would like to know the price of your product',
                                         ),
                                         FirstMessageWidget(
                                           urlIcon:
                                               "assets/images/icon_payment.png",
-                                          namaMessage: "Payment",
+                                          statusMsg: "Payment",
                                           state: state,
+                                          msg:
+                                              'What is the payment term you provide?',
                                         ),
                                         FirstMessageWidget(
                                           urlIcon:
                                               "assets/images/icon_complaint.png",
-                                          namaMessage: "Complaint",
+                                          statusMsg: "Complaint",
                                           state: state,
+                                          msg:
+                                              'I want to complaint about this product',
                                         ),
                                       ],
                                     ),
@@ -136,11 +148,16 @@ class SalesBubleChat extends StatelessWidget {
 
 class FirstMessageWidget extends StatelessWidget {
   const FirstMessageWidget(
-      {Key? key, required this.urlIcon, required this.namaMessage, this.state})
+      {Key? key,
+      required this.urlIcon,
+      required this.statusMsg,
+      this.state,
+      required this.msg})
       : super(key: key);
 
   final String urlIcon;
-  final String namaMessage;
+  final String statusMsg;
+  final String msg;
   final MessagesDetailScreenState? state;
 
   @override
@@ -158,7 +175,7 @@ class FirstMessageWidget extends StatelessWidget {
             ),
             child: IconButton(
                 onPressed: () {
-                  state!.statusMsg(namaMessage);
+                  state!.statusMsg(statusMsg, msg);
                 },
                 icon: Image.asset(
                   urlIcon,
@@ -166,7 +183,7 @@ class FirstMessageWidget extends StatelessWidget {
                   height: size20px + 4.0,
                 ))),
         Text(
-          namaMessage,
+          statusMsg,
           style: body2Medium,
         )
       ],
