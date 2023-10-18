@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mytradeasia/features/data/model/user_credential_models/user_credential_model.dart';
 import 'package:mytradeasia/features/data/model/user_models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,6 +29,22 @@ class AuthUserFirebase {
     }
   }
 
+  Future<String> ssoRegisterUser(UserModel userData) async {
+    try {
+      String docsId = FirebaseAuth.instance.currentUser!.uid.toString();
+      Map<String, dynamic> data = userData.toMap();
+      data["uid"] = docsId;
+      FirebaseFirestore.instance.collection('biodata').doc(docsId).set(data);
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString("email", FirebaseAuth.instance.currentUser!.email!);
+      await prefs.setString("userId", FirebaseAuth.instance.currentUser!.uid);
+      await prefs.setBool("isLoggedIn", true);
+      return 'success';
+    } on FirebaseAuthException catch (e) {
+      return e.code;
+    }
+  }
+
   String getCurrentUId() => _auth.currentUser!.uid;
 
   Future<dynamic> postLoginUser(Map<String, String> auth) async {
@@ -39,6 +56,29 @@ class AuthUserFirebase {
       await prefs.setString("email", auth["email"]!);
       await prefs.setBool("isLoggedIn", true);
 
+      return UserCredentialModel.fromUserCredential(userCredential);
+    } on FirebaseAuthException catch (e) {
+      return {'code': e.code, 'message': e.message};
+    }
+  }
+
+  Future<dynamic> googleAuth() async {
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString("email", userCredential.user!.email!);
+      await prefs.setBool("isLoggedIn", true);
       return UserCredentialModel.fromUserCredential(userCredential);
     } on FirebaseAuthException catch (e) {
       return {'code': e.code, 'message': e.message};

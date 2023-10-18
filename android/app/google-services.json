@@ -14,7 +14,23 @@
       },
       "oauth_client": [
         {
-          "client_id": "476020516162-1ikqd5vd0af7tdclb0q9k4vnhiqj7t9s.apps.googleusercontent.com",
+          "client_id": "476020516162-p8cvr0nuvu8rko4cd54uopb5ofiqjepv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mytradeasia",
+            "certificate_hash": "f1358a2aee4d8ef9ab654d8fdbf0818b342a807f"
+          }
+        },
+        {
+          "client_id": "476020516162-skqg67tvnbpaljs9dkrtnvgv12hp8mf4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mytradeasia",
+            "certificate_hash": "9db4509de996805edb09785ff32581c95f8d36f0"
+          }
+        },
+        {
+          "client_id": "476020516162-0afapn5lnfttrpf3de05m5frjfhgt72j.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -27,8 +43,15 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "476020516162-1ikqd5vd0af7tdclb0q9k4vnhiqj7t9s.apps.googleusercontent.com",
+              "client_id": "476020516162-0afapn5lnfttrpf3de05m5frjfhgt72j.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "476020516162-qs8v2h8vr3fhuubj5hnj1s0ijd991elp.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.mytradeasia"
+              }
             }
           ]
         }

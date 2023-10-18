@@ -1,4 +1,5 @@
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +9,7 @@ import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_snap
 import 'package:mytradeasia/features/domain/usecases/user_usecases/update_profile.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_state.dart';
+import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
 
 import '../../../../../widgets/dialog_sheet_widget.dart';
@@ -245,7 +247,7 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
                         user = {
                           "firstName": streamSnapshot.data["firstName"],
                           "lastName": streamSnapshot.data["lastName"],
-                          "phone": streamSnapshot.data["phone"],
+                          "phone": streamSnapshot.data["phone"] ?? "",
                           "company": streamSnapshot.data["companyName"],
                         };
                         return Form(
@@ -303,94 +305,123 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
                                 ],
                               ),
                               // PHONE NUMBER + Flag
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Padding(
-                                    padding: EdgeInsets.only(
-                                        top: size20px - 5.0,
-                                        bottom: size20px - 12.0),
-                                    child: Text(
-                                      "Phone Number",
-                                      style: text14,
-                                    ),
-                                  ),
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        flex: 1,
-                                        child: Container(
-                                          height: 50,
-                                          width: 60,
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  const BorderRadius.all(
-                                                Radius.circular(7),
-                                              ),
-                                              border: Border.all(
-                                                  color: greyColor3)),
-                                          child: CountryCodePicker(
-                                            onChanged: (element) => countryNum =
-                                                element.dialCode.toString(),
-                                            // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
-                                            initialSelection: streamSnapshot
-                                                    .data["countryCode"] ??
-                                                "ID",
-                                            favorite: const ['ID', 'UK'],
-                                            // optional. Shows only country name and flag
-                                            showCountryOnly: false,
-                                            showFlag: true,
-                                            hideMainText: true,
-                                            // optional. Shows only country name and flag when popup is closed.
-                                            showOnlyCountryWhenClosed: false,
-                                            // optional. aligns the flag and the Text left
-                                            // alignLeft: false,
-                                            padding: EdgeInsets.only(left: 5),
+                              FutureBuilder(
+                                  future: isSSOAuth(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return Container();
+                                    }
+
+                                    if (snapshot.hasError) {
+                                      return Text('Error: ${snapshot.error}');
+                                    }
+
+                                    if (snapshot.data == true) {
+                                      return Container();
+                                    }
+                                    return Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Padding(
+                                          padding: EdgeInsets.only(
+                                              top: size20px - 5.0,
+                                              bottom: size20px - 12.0),
+                                          child: Text(
+                                            "Phone Number",
+                                            style: text14,
                                           ),
                                         ),
-                                      ),
-                                      const SizedBox(width: 15.0),
-                                      Expanded(
-                                        flex: 5,
-                                        child: SizedBox(
-                                            width: size20px * 8.0,
-                                            height: size20px + 30,
-                                            child: TextFormField(
-                                                readOnly: false,
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                controller:
-                                                    _phoneNumberController,
-                                                decoration: InputDecoration(
-                                                    hintText: streamSnapshot
-                                                        .data["phone"]
-                                                        .toString()
-                                                        .substring(2),
-                                                    hintStyle:
-                                                        body1Regular.copyWith(
-                                                            color: greyColor),
-                                                    contentPadding:
-                                                        const EdgeInsets.symmetric(
-                                                            horizontal: 20.0),
-                                                    enabledBorder:
-                                                        const OutlineInputBorder(
-                                                            borderSide: BorderSide(
-                                                                color:
-                                                                    greyColor3),
-                                                            borderRadius:
-                                                                BorderRadius.all(
-                                                                    Radius.circular(
-                                                                        7.0))),
-                                                    focusedBorder: const OutlineInputBorder(
-                                                        borderSide: BorderSide(color: greyColor3),
-                                                        borderRadius: BorderRadius.all(
-                                                          Radius.circular(7.0),
-                                                        ))))),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              flex: 1,
+                                              child: Container(
+                                                height: 50,
+                                                width: 60,
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                      Radius.circular(7),
+                                                    ),
+                                                    border: Border.all(
+                                                        color: greyColor3)),
+                                                child: CountryCodePicker(
+                                                  onChanged: (element) =>
+                                                      countryNum = element
+                                                          .dialCode
+                                                          .toString(),
+                                                  // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
+                                                  initialSelection:
+                                                      streamSnapshot.data[
+                                                              "countryCode"] ??
+                                                          "ID",
+                                                  favorite: const ['ID', 'UK'],
+                                                  // optional. Shows only country name and flag
+                                                  showCountryOnly: false,
+                                                  showFlag: true,
+                                                  hideMainText: true,
+                                                  // optional. Shows only country name and flag when popup is closed.
+                                                  showOnlyCountryWhenClosed:
+                                                      false,
+                                                  // optional. aligns the flag and the Text left
+                                                  // alignLeft: false,
+                                                  padding:
+                                                      EdgeInsets.only(left: 5),
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 15.0),
+                                            Expanded(
+                                              flex: 5,
+                                              child: SizedBox(
+                                                  width: size20px * 8.0,
+                                                  height: size20px + 30,
+                                                  child: TextFormField(
+                                                      readOnly: false,
+                                                      keyboardType:
+                                                          TextInputType.number,
+                                                      controller:
+                                                          _phoneNumberController,
+                                                      decoration:
+                                                          InputDecoration(
+                                                              hintText: streamSnapshot
+                                                                  .data["phone"]
+                                                                  .toString()
+                                                                  .substring(2),
+                                                              hintStyle: body1Regular
+                                                                  .copyWith(
+                                                                      color:
+                                                                          greyColor),
+                                                              contentPadding:
+                                                                  const EdgeInsets.symmetric(
+                                                                      horizontal:
+                                                                          20.0),
+                                                              enabledBorder: const OutlineInputBorder(
+                                                                  borderSide:
+                                                                      BorderSide(
+                                                                          color:
+                                                                              greyColor3),
+                                                                  borderRadius:
+                                                                      BorderRadius.all(
+                                                                          Radius.circular(
+                                                                              7.0))),
+                                                              focusedBorder:
+                                                                  const OutlineInputBorder(
+                                                                      borderSide:
+                                                                          BorderSide(color: greyColor3),
+                                                                      borderRadius: BorderRadius.all(
+                                                                        Radius.circular(
+                                                                            7.0),
+                                                                      ))))),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    );
+                                  }),
+
                               // COMPANY NAME
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -432,8 +463,10 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
                                     child: TextEditingWithIconSuffix(
                                       readOnly: true,
                                       controller: _emailController,
-                                      hintText: state.user!.email ??
-                                          "cannot read email...",
+                                      hintText: state.user != null
+                                          ? state.user!.email!
+                                          : FirebaseAuth
+                                              .instance.currentUser!.email!,
                                       imageUrl:
                                           "assets/images/icon_forward.png",
                                       navigationPage: () {

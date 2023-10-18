@@ -45,6 +45,16 @@ class RegisterWithEmail extends AuthEvent {
   );
 }
 
+class SSORegisterWithEmail extends AuthEvent {
+  final UserEntity userData;
+  final BuildContext context;
+
+  const SSORegisterWithEmail(
+    this.userData,
+    this.context,
+  );
+}
+
 class IsLoggedIn extends AuthEvent {
   const IsLoggedIn();
 }
