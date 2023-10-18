@@ -1,10 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_state.dart';
+import 'package:mytradeasia/helper/helper_functions.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../../config/themes/theme.dart';
 import '../../../widgets/loading_overlay_widget.dart';
@@ -23,6 +28,36 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _passwordVisible = false;
   bool _connection = true;
+
+  Future<UserCredential> signInWithGoogle() async {
+    // Trigger the authentication flow
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+
+    // Create a new credential
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    // Once signed in, return the UserCredential
+    return await FirebaseAuth.instance.signInWithCredential(credential);
+  }
+
+  Future<UserCredential> signInWithFacebook() async {
+    // Trigger the sign-in flow
+    final LoginResult loginResult = await FacebookAuth.instance.login();
+
+    // Create a credential from the access token
+    final OAuthCredential facebookAuthCredential =
+        FacebookAuthProvider.credential(loginResult.accessToken!.token);
+
+    // Once signed in, return the UserCredential
+    return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+  }
 
   @override
   void initState() {
@@ -285,14 +320,26 @@ class _LoginScreenState extends State<LoginScreen> {
                               "assets/images/logo_google.png",
                               width: size20px + 4,
                             ),
-                            onPressed: () {
-                              const snackbar = SnackBar(
-                                content:
-                                    Text("Google is not available right now"),
-                                backgroundColor: redColor1,
-                              );
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(snackbar);
+                            onPressed: () async {
+                              UserCredential userCred =
+                                  await signInWithGoogle();
+
+                              bool userExists =
+                                  await checkIfUserExists(userCred.user!.uid);
+                              if (userExists) {
+                                final SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                await prefs.setString(
+                                    "email", userCred.user!.email!);
+                                await prefs.setString(
+                                    "userId", userCred.user!.uid);
+                                await prefs.setBool("isLoggedIn", true);
+                                showGoogleSSOSnackbar(context);
+                                context.go("/home");
+                              } else {
+                                context.pushReplacement(
+                                    "/auth/register/sso-biodata");
+                              }
                             },
                           ),
                         ),
@@ -318,14 +365,26 @@ class _LoginScreenState extends State<LoginScreen> {
                               "assets/images/logo_facebook.png",
                               width: size20px + 4,
                             ),
-                            onPressed: () {
-                              const snackbar = SnackBar(
-                                content:
-                                    Text("Facebook is not available right now"),
-                                backgroundColor: redColor1,
-                              );
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(snackbar);
+                            onPressed: () async {
+                              UserCredential userCred =
+                                  await signInWithFacebook();
+
+                              bool userExists =
+                                  await checkIfUserExists(userCred.user!.uid);
+                              if (userExists) {
+                                final SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                await prefs.setString(
+                                    "email", userCred.user!.email!);
+                                await prefs.setString(
+                                    "userId", userCred.user!.uid);
+                                await prefs.setBool("isLoggedIn", true);
+                                showFacebookSSOSnackbar(context);
+                                context.go("/home");
+                              } else {
+                                context.pushReplacement(
+                                    "/auth/register/sso-biodata");
+                              }
                             },
                           ),
                         ),

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/config/routes/parameters.dart';
+import 'package:mytradeasia/features/presentation/pages/auth/biodata/sso_biodata_screen.dart';
 import 'package:mytradeasia/features/presentation/pages/auth/register/register_otp_screen.dart';
 import '../../features/presentation/pages/auth/biodata/biodata_screen.dart';
 import '../../features/presentation/pages/auth/choose_role/role_user_screen.dart';
@@ -49,7 +50,7 @@ final GlobalKey<NavigatorState> _shellNavigatorKey =
 
 class Routes {
   GoRouter router =
-      GoRouter(initialLocation: "/", debugLogDiagnostics: false, routes: [
+      GoRouter(initialLocation: "/", debugLogDiagnostics: true, routes: [
     GoRoute(
         path: "/",
         builder: (context, state) => const SplashScreen(),
@@ -297,6 +298,11 @@ class Routes {
                         email: param.email,
                         phone: param.phone,
                       );
+                    }),
+                GoRoute(
+                    path: "sso-biodata",
+                    builder: (context, state) {
+                      return const SSOBiodataScreen();
                     })
               ]),
         ]),

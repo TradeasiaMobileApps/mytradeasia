@@ -27,6 +27,21 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
+  Future<String> ssoRegisterUser(UserEntity s) async {
+    UserModel userData = UserModel(
+      companyName: s.companyName,
+      country: s.country,
+      countryCode: s.countryCode,
+      email: s.email,
+      firstName: s.firstName,
+      lastName: s.lastName,
+      role: s.role,
+    );
+    final response = await _authUserFirebase.ssoRegisterUser(userData);
+    return response;
+  }
+
+  @override
   Future<dynamic> loginUser(Map<String, String> s) async {
     final response = await _authUserFirebase.postLoginUser(s);
     if (response is Map) {

@@ -8,6 +8,7 @@ import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_cred
 import 'package:mytradeasia/features/domain/usecases/user_usecases/login.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/logout.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/register.dart';
+import 'package:mytradeasia/features/domain/usecases/user_usecases/sso_register_user.dart';
 import 'package:sendbird_chat_sdk/sendbird_chat_sdk.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,13 +20,15 @@ import 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final RegisterUser _postRegisterUser;
+  final SSORegisterUser _ssoRegisterUser;
   final LoginUser _postLoginUser;
   final LogOutUser _postLogoutUser;
   final GetUserData _geUserData = injections<GetUserData>();
   final GetUserCredentials _getUserCredentials =
       injections<GetUserCredentials>();
 
-  AuthBloc(this._postRegisterUser, this._postLoginUser, this._postLogoutUser)
+  AuthBloc(this._postRegisterUser, this._postLoginUser, this._postLogoutUser,
+      this._ssoRegisterUser)
       : super(const AuthInitState()) {
     on<LoginWithEmail>((event, emit) async {
       BuildContext context = event.context;
@@ -84,6 +87,28 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       BuildContext context = event.context;
 
       final response = await _postRegisterUser.call(param: event.userData);
+      if (response == "success") {
+        log("register success");
+      } else {
+        log(response);
+        showDialog(
+          context: context,
+          builder: (context) => DialogWidget(
+              urlIcon: "assets/images/logo_delete_account.png",
+              title: "Email already in use",
+              subtitle: "Try another email for registration",
+              textForButton: "Go back",
+              navigatorFunction: () {
+                Navigator.pop(context);
+              }),
+        );
+      }
+    });
+
+    on<SSORegisterWithEmail>((event, emit) async {
+      BuildContext context = event.context;
+
+      final response = await _ssoRegisterUser.call(param: event.userData);
       if (response == "success") {
         log("register success");
       } else {

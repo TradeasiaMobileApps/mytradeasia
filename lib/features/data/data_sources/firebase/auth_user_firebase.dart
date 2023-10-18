@@ -29,6 +29,22 @@ class AuthUserFirebase {
     }
   }
 
+  Future<String> ssoRegisterUser(UserModel userData) async {
+    try {
+      String docsId = FirebaseAuth.instance.currentUser!.uid.toString();
+      Map<String, dynamic> data = userData.toMap();
+      data["uid"] = docsId;
+      FirebaseFirestore.instance.collection('biodata').doc(docsId).set(data);
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString("email", FirebaseAuth.instance.currentUser!.email!);
+      await prefs.setString("userId", FirebaseAuth.instance.currentUser!.uid);
+      await prefs.setBool("isLoggedIn", true);
+      return 'success';
+    } on FirebaseAuthException catch (e) {
+      return e.code;
+    }
+  }
+
   String getCurrentUId() => _auth.currentUser!.uid;
 
   Future<dynamic> postLoginUser(Map<String, String> auth) async {
