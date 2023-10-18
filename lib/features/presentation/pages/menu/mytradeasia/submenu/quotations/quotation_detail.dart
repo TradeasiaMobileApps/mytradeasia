@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mytradeasia/old_file_tobedeleted/model/industry_model.dart';
-import 'package:mytradeasia/old_file_tobedeleted/widget/dialog_sheet_widget.dart';
+import 'package:mytradeasia/features/presentation/widgets/dialog_sheet_widget.dart';
 
 import '../../../../../../../config/themes/theme.dart';
 

@@ -9,9 +9,10 @@ import 'package:mytradeasia/features/domain/entities/product_entities/product_to
 import 'package:mytradeasia/features/domain/entities/rfq_entities/rfq_entity.dart';
 import 'package:mytradeasia/features/domain/usecases/rfq_usecases/submit_rfq.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_data.dart';
+import 'package:mytradeasia/features/presentation/pages/menu/other/languages_screen.dart';
 import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
-import 'package:mytradeasia/old_file_tobedeleted/view/menu/other/languages_screen.dart';
+// import 'package:mytradeasia/old_file_tobedeleted/view/menu/other/languages_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../../widgets/text_editing_widget.dart';

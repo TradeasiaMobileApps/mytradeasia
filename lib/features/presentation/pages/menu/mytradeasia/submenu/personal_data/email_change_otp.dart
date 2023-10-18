@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
-import 'package:mytradeasia/old_file_tobedeleted/widget/dialog_sheet_widget.dart';
+import 'package:mytradeasia/features/presentation/widgets/dialog_sheet_widget.dart';
 
 class EmailChangeOtpScreen extends StatefulWidget {
   const EmailChangeOtpScreen({super.key});

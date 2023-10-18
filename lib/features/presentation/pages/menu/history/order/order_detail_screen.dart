@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
 
-import '../../../../../../old_file_tobedeleted/model/industry_model.dart';
-
 class OrderDetailScreen extends StatelessWidget {
   const OrderDetailScreen({super.key});
 

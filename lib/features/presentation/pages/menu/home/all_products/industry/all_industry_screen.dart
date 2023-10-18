@@ -5,8 +5,7 @@ import 'package:mytradeasia/features/presentation/state_management/industry_bloc
 import 'package:mytradeasia/features/presentation/state_management/industry_bloc/industry_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/industry_bloc/industry_state.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
-
-import '../../../../../../../old_file_tobedeleted/model/industry_model.dart';
+import 'package:mytradeasia/utils/static_data.dart';
 
 class AllIndustryScreen extends StatefulWidget {
   const AllIndustryScreen({super.key});

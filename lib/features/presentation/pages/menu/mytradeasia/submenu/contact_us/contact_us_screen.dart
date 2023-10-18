@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mytradeasia/old_file_tobedeleted/model/industry_model.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
 
 class ContactUsScreen extends StatelessWidget {
