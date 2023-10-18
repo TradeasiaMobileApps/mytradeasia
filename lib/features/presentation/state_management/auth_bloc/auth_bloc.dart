@@ -8,11 +8,12 @@ import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_cred
 import 'package:mytradeasia/features/domain/usecases/user_usecases/login.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/logout.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/register.dart';
+import 'package:mytradeasia/features/presentation/widgets/dialog_sheet_widget.dart';
 import 'package:sendbird_chat_sdk/sendbird_chat_sdk.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../helper/injections_container.dart';
-import '../../../../old_file_tobedeleted/widget/dialog_sheet_widget.dart';
+
 import '../../../domain/usecases/user_usecases/get_user_data.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';

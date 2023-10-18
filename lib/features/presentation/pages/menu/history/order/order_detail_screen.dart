@@ -1,10 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
 
-import '../../../../../../old_file_tobedeleted/model/industry_model.dart';
-
 class OrderDetailScreen extends StatelessWidget {
   const OrderDetailScreen({super.key});
+
+  static const orderData = {
+    "P.I Number": "PI/TI/221110703/2022",
+    "Customer Name": "Amelia Azzahra",
+    "POL": "Any Port in Vietnam",
+    "POD": "Chattogram, Bangladesh",
+    "Qty": "84,00 MT",
+    "AWB": "...",
+    "ETD": "2023/01/17 13:00 PM",
+    "ETA": "2023/01/31 13:00 PM",
+    "B/L Number": "...",
+  };
+
+  Widget dataRow(int index) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(child: Text(orderData.keys.toList()[index])),
+        const Text(":     "),
+        Expanded(child: Text(orderData.values.toList()[index])),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +131,7 @@ class OrderDetailScreen extends StatelessWidget {
                 child: ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: detailProductsItem[0].length,
+                  itemCount: orderData.length,
                   itemBuilder: (context, index) {
                     return Container(
                       padding: const EdgeInsets.only(left: 20.0, right: 20.0),
@@ -119,14 +140,7 @@ class OrderDetailScreen extends StatelessWidget {
                           borderRadius:
                               const BorderRadius.all(Radius.circular(7.0))),
                       height: 50.0,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(child: Text(detailProductsItem[0][index])),
-                          const Text(":     "),
-                          Expanded(child: Text(detailProductsItem[1][index])),
-                        ],
-                      ),
+                      child: dataRow(index),
                     );
                   },
                 ),
