@@ -9,6 +9,42 @@ class QuotationDetailScreen extends StatelessWidget {
   final String status;
   final bool? isSales;
 
+  static const quotationData = {
+    "First Name": "Dimas",
+    "Last Name": "Pradipta",
+    "Phone Number": "(+62) 885691410815",
+    "Country": "Bangladesh",
+    "Company Name": "Tradeasia International",
+    "Product Name": "DIpentene",
+    "Quantity": "800",
+    "Unit": "Tone",
+    "Incoterm": "FOB",
+    "Port of Destination": "Any port in Vietnam",
+    "Message": "...",
+  };
+
+  Widget dataRow(int index) {
+    return Row(
+      children: [
+        SizedBox(
+          width: size20px * 4.0,
+          child: Text(quotationData.keys.toList()[index],
+              style: body2Medium.copyWith(color: greyColor2)),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: size20px),
+          child: Text(" : ", style: body2Medium.copyWith(color: greyColor2)),
+        ),
+        Expanded(
+          child: Text(
+            quotationData.values.toList()[index],
+            style: body1Medium,
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -128,33 +164,13 @@ class QuotationDetailScreen extends StatelessWidget {
 
             // main content quotations
             ListView.builder(
-              itemCount: detailQuotations[0].length,
+              itemCount: quotationData.length,
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemBuilder: (context, index) {
                 return Padding(
                   padding: const EdgeInsets.only(top: size20px / 2),
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: size20px * 4.0,
-                        child: Text(detailQuotations[0][index],
-                            style: body2Medium.copyWith(color: greyColor2)),
-                      ),
-                      Padding(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: size20px),
-                        child: Text(" : ",
-                            style: body2Medium.copyWith(color: greyColor2)),
-                      ),
-                      Expanded(
-                        child: Text(
-                          detailQuotations[1][index],
-                          style: body1Medium,
-                        ),
-                      ),
-                    ],
-                  ),
+                  child: dataRow(index),
                 );
               },
             ),
