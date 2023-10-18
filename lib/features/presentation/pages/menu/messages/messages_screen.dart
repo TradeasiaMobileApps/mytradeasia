@@ -184,10 +184,13 @@ class MessageScreenState extends State<MessageScreen> {
 
                         return InkWell(
                           onTap: () async {
+                            // print(userState.sendbirdUser!.nickname);
                             context.goNamed("message",
                                 extra: MessageDetailParameter(
                                   otherUserId: "sales",
                                   currentUserId: userState.sendbirdUser!.userId,
+                                  customerName:
+                                      userState.sendbirdUser!.nickname,
                                   chatId: groupChannel.chat.chatId.toString(),
                                   channelUrl: groupChannel.channelUrl,
                                   prodUrl: groupChannel.data,
@@ -256,7 +259,9 @@ class MessageScreenState extends State<MessageScreen> {
                                             Text(
                                               // ASSUMPTIONS : ONLY 2 Member inside the Group Channel
                                               //TODO:change this
-                                              "Dipentene",
+                                              groupChannel.name.length > 15
+                                                  ? "${groupChannel.name.substring(0, 15)} ..."
+                                                  : groupChannel.name,
                                               style: heading3.copyWith(
                                                 color: blackColor,
                                               ),
@@ -275,26 +280,22 @@ class MessageScreenState extends State<MessageScreen> {
                                                     if (snapshot
                                                             .data!["status"] !=
                                                         null) {
-                                                      print(snapshot.data);
                                                       return Container(
                                                         height: 18,
                                                         width: 50,
                                                         margin: const EdgeInsets
                                                             .only(left: 10),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                                // background: #31C8B31A;
-
-                                                                color: Color
+                                                        decoration: BoxDecoration(
+                                                            color: const Color
                                                                     .fromARGB(
-                                                                        99,
-                                                                        49,
-                                                                        200,
-                                                                        180),
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            20)),
+                                                                99,
+                                                                49,
+                                                                200,
+                                                                180),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        20)),
                                                         child: Center(
                                                           child: Text(
                                                             snapshot.data?[
@@ -362,28 +363,28 @@ class MessageScreenState extends State<MessageScreen> {
           ),
         ),
       ),
-      floatingActionButton: BlocBuilder<AuthBloc, AuthState>(
-        builder: (context, state) {
-          return FloatingActionButton(
-            backgroundColor: secondaryColor1,
-            onPressed: () async {
-              await GroupChannel.createChannel(GroupChannelCreateParams()
-                    ..name = state.sendbirdUser!.nickname
-                    ..userIds = [state.sendbirdUser!.userId, 'sales'])
-                  .then((groupChannel) {
-                context.goNamed("message",
-                    extra: MessageDetailParameter(
-                      otherUserId: "sales",
-                      currentUserId: state.sendbirdUser!.userId,
-                      chatId: groupChannel.chat.chatId.toString(),
-                      channelUrl: groupChannel.channelUrl,
-                    ));
-              });
-            },
-            child: const Icon(Icons.add),
-          );
-        },
-      ),
+      // floatingActionButton: BlocBuilder<AuthBloc, AuthState>(
+      //   builder: (context, state) {
+      //     return FloatingActionButton(
+      //       backgroundColor: secondaryColor1,
+      //       onPressed: () async {
+      //         await GroupChannel.createChannel(GroupChannelCreateParams()
+      //               ..name = state.sendbirdUser!.nickname
+      //               ..userIds = [state.sendbirdUser!.userId, 'sales'])
+      //             .then((groupChannel) {
+      //           context.goNamed("message",
+      //               extra: MessageDetailParameter(
+      //                 otherUserId: "sales",
+      //                 currentUserId: state.sendbirdUser!.userId,
+      //                 chatId: groupChannel.chat.chatId.toString(),
+      //                 channelUrl: groupChannel.channelUrl,
+      //               ));
+      //         });
+      //       },
+      //       child: const Icon(Icons.add),
+      //     );
+      //   },
+      // ),
     );
   }
 

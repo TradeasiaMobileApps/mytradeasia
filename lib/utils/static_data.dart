@@ -24,60 +24,60 @@ List<List<dynamic>> allIndustries = [
 ];
 
 // detail products item
-List<List<String>> detailProductsItem = [
-  [
-    "P.I Number",
-    "Customer Name",
-    "POL",
-    "POD",
-    "Qty",
-    "AWB",
-    "ETD",
-    "ETA",
-    "B/L Number"
-  ],
-  [
-    "PI/TI/221110703/2022",
-    "Amelia Azzahra",
-    "Any Port in Vietnam",
-    "Chattogram, Bangladesh",
-    "84,00 MT",
-    "...",
-    "2023/01/17 13:00 PM",
-    "2023/01/31 13:00 PM",
-    "...",
-  ],
-];
+// List<List<String>> detailProductsItem = [
+//   [
+//     "P.I Number",
+//     "Customer Name",
+//     "POL",
+//     "POD",
+//     "Qty",
+//     "AWB",
+//     "ETD",
+//     "ETA",
+//     "B/L Number"
+//   ],
+//   [
+//     "PI/TI/221110703/2022",
+//     "Amelia Azzahra",
+//     "Any Port in Vietnam",
+//     "Chattogram, Bangladesh",
+//     "84,00 MT",
+//     "...",
+//     "2023/01/17 13:00 PM",
+//     "2023/01/31 13:00 PM",
+//     "...",
+//   ],
+// ];
 
 // detail quotations
-List<List<String>> detailQuotations = [
-  [
-    "First Name",
-    "Last Name",
-    "Phone Number",
-    "Country",
-    "Company Name",
-    "Product Name",
-    "Quantity",
-    "Unit",
-    "Incoterm",
-    "Port of Destination",
-    "Message",
-  ],
-  [
-    "Dimas",
-    "Pradipta",
-    "(+62) 885691410815",
-    "Bangladesh",
-    "Tradeasia International",
-    "DIpentene",
-    "800",
-    "Tone",
-    "FOB",
-    "Any port in Vietnam",
-    "...",
-  ],
-];
+// List<List<String>> detailQuotations = [
+//   [
+//     "First Name",
+//     "Last Name",
+//     "Phone Number",
+//     "Country",
+//     "Company Name",
+//     "Product Name",
+//     "Quantity",
+//     "Unit",
+//     "Incoterm",
+//     "Port of Destination",
+//     "Message",
+//   ],
+//   [
+//     "Dimas",
+//     "Pradipta",
+//     "(+62) 885691410815",
+//     "Bangladesh",
+//     "Tradeasia International",
+//     "DIpentene",
+//     "800",
+//     "Tone",
+//     "FOB",
+//     "Any port in Vietnam",
+//     "...",
+//   ],
+// ];
 
 /* Contact Us Data */
 List<List<String>> contactUsData = [

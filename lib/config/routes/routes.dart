@@ -125,6 +125,7 @@ class Routes {
                         chatId: param.chatId,
                         channelUrl: param.channelUrl,
                         prodUrl: param.prodUrl ?? "",
+                        customerName: param.customerName,
                       );
                     })
               ]),
