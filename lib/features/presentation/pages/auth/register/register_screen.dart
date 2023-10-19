@@ -1,12 +1,12 @@
 import 'dart:developer';
 
-import 'dart:developer';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/phone_authentication.dart';
+import 'package:mytradeasia/features/presentation/widgets/loading_overlay_widget.dart';
 import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -357,6 +357,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         phone: _phoneNumberController.text,
                                         email: _emailController.text);
                                 //TODO: captcha OTP
+                                // ignore: use_build_context_synchronously
                                 showDialog(
                                   context: context,
                                   builder: (context) {
