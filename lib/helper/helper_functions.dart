@@ -75,7 +75,7 @@ Future<bool> isSSOAuth() async {
 
 void showGoogleSSOSnackbar(BuildContext context) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    behavior: SnackBarBehavior.floating,
+    duration: const Duration(seconds: 1, milliseconds: 500),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(24),
     ),

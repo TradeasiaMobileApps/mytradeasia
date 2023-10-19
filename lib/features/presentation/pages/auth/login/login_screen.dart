@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -45,18 +44,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
     // Once signed in, return the UserCredential
     return await FirebaseAuth.instance.signInWithCredential(credential);
-  }
-
-  Future<UserCredential> signInWithFacebook() async {
-    // Trigger the sign-in flow
-    final LoginResult loginResult = await FacebookAuth.instance.login();
-
-    // Create a credential from the access token
-    final OAuthCredential facebookAuthCredential =
-        FacebookAuthProvider.credential(loginResult.accessToken!.token);
-
-    // Once signed in, return the UserCredential
-    return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
   }
 
   @override
@@ -362,30 +349,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                             child: Image.asset(
-                              "assets/images/logo_facebook.png",
-                              width: size20px + 4,
+                              "assets/images/logo_linkedin.png",
+                              width: size20px + 10,
                             ),
-                            onPressed: () async {
-                              UserCredential userCred =
-                                  await signInWithFacebook();
-
-                              bool userExists =
-                                  await checkIfUserExists(userCred.user!.uid);
-                              if (userExists) {
-                                final SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                await prefs.setString(
-                                    "email", userCred.user!.email!);
-                                await prefs.setString(
-                                    "userId", userCred.user!.uid);
-                                await prefs.setBool("isLoggedIn", true);
-                                showFacebookSSOSnackbar(context);
-                                context.go("/home");
-                              } else {
-                                context.pushReplacement(
-                                    "/auth/register/sso-biodata");
-                              }
-                            },
+                            onPressed: () async {},
                           ),
                         ),
                       ),
