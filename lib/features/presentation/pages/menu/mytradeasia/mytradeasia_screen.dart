@@ -8,6 +8,7 @@ import 'package:mytradeasia/features/presentation/state_management/auth_bloc/aut
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_event.dart';
 import 'package:mytradeasia/features/presentation/widgets/dialog_sheet_widget.dart';
 import 'package:mytradeasia/features/presentation/widgets/mytradeasia_widget.dart';
+import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
 
 class MyTradeAsiaScreen extends StatefulWidget {
@@ -57,13 +58,12 @@ class _MyTradeAsiaScreenState extends State<MyTradeAsiaScreen> {
                                 children: [
                                   // Image
                                   Padding(
-                                    padding:
-                                        const EdgeInsets.only(right: size20px),
-                                    child: Image.asset(
-                                      "assets/images/profile_picture.png",
-                                      width: size20px * 3.6,
-                                    ),
-                                  ),
+                                      padding: const EdgeInsets.only(
+                                          right: size20px),
+                                      child: Image.asset(
+                                        "assets/images/profile_picture.png",
+                                        width: size20px * 3.6,
+                                      )),
                                   // First, Last, Company Name
                                   Expanded(
                                     child: Column(
@@ -108,11 +108,29 @@ class _MyTradeAsiaScreenState extends State<MyTradeAsiaScreen> {
                                 }),
 
                             // change password menu
-                            MyTradeAsiaWidget(
-                                nama: "Change Password",
-                                urlIcon: "assets/images/icon_password.png",
-                                onPressedFunction: () {
-                                  context.go("/mytradeasia/change_password");
+                            FutureBuilder(
+                                future: isSSOAuth(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return Container();
+                                  }
+
+                                  if (snapshot.hasError) {
+                                    return Text('Error: ${snapshot.error}');
+                                  }
+
+                                  if (snapshot.data == true) {
+                                    return Container();
+                                  }
+                                  return MyTradeAsiaWidget(
+                                    nama: "Change Password",
+                                    urlIcon: "assets/images/icon_password.png",
+                                    onPressedFunction: () {
+                                      context
+                                          .go("/mytradeasia/change_password");
+                                    },
+                                  );
                                 }),
 
                             // settings menu

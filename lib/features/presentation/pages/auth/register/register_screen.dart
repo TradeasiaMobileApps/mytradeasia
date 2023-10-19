@@ -1,13 +1,18 @@
 import 'dart:developer';
 
+import 'dart:developer';
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/phone_authentication.dart';
-import 'package:mytradeasia/features/presentation/widgets/loading_overlay_widget.dart';
+import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../config/routes/parameters.dart';
 import '../../../../../config/themes/theme.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -26,6 +31,72 @@ class _RegisterScreenState extends State<RegisterScreen> {
       injections<PhoneAuthentication>();
 
   final _formKey = GlobalKey<FormState>();
+
+  final _auth = FirebaseAuth.instance;
+
+  void showSnackbar() {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24),
+      ),
+      backgroundColor: Colors.blue,
+      content: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            child: Image.network(
+                "https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-1024.png",
+                width: 30,
+                height: 30),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ),
+          SizedBox(
+            width: 20,
+          ),
+          Text(
+            "Signed in with Google",
+            style: body1Regular.copyWith(
+                color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+          )
+        ],
+      ),
+    ));
+  }
+
+  Future<UserCredential> signInWithGoogle() async {
+    // Trigger the authentication flow
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+
+    // Create a new credential
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    // Once signed in, return the UserCredential
+    return await FirebaseAuth.instance.signInWithCredential(credential);
+  }
+
+  Future<UserCredential> signInWithFacebook() async {
+    // Trigger the sign-in flow
+    final LoginResult loginResult = await FacebookAuth.instance.login();
+
+    // Create a credential from the access token
+    final OAuthCredential facebookAuthCredential =
+        FacebookAuthProvider.credential(loginResult.accessToken!.token);
+
+    // Once signed in, return the UserCredential
+    return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+  }
 
   @override
   void dispose() {
@@ -266,44 +337,62 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                             ),
                             onPressed: () async {
-                              OtpVerificationParameter param =
-                                  OtpVerificationParameter(
-                                      phone: _phoneNumberController.text,
-                                      email: _emailController.text);
-                              //TODO: captcha OTP
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return const LoadingOverlay();
-                                },
-                              );
-                              await _phoneAuthentication
-                                  .call(
-                                      param:
-                                          "$countryNum${_phoneNumberController.text}")
-                                  .then((value) {
-                                if (value == "invalid-phone-number") {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(const SnackBar(
-                                    content: Text("Invalid Phone Number"),
-                                    duration: Duration(milliseconds: 3000),
-                                  ));
-                                } else if (value == "verification-completed") {
-                                  print(value);
-                                } else if (value == "code-sent") {
-                                  context.go("/auth/register/otp-register",
-                                      extra: param);
-                                } else {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(const SnackBar(
-                                    content: Text("There seem to be an error"),
-                                    duration: Duration(milliseconds: 3000),
-                                  ));
-                                }
-                              });
-                              // .whenComplete(() =>
-                              // context.go("/auth/register/otp-register",
-                              //     extra: param);
+                              List<String> userSignInMethods =
+                                  await _auth.fetchSignInMethodsForEmail(
+                                      _emailController.text);
+                              if (userSignInMethods.first != "password") {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                  content: Text(
+                                    "Account already signed up with SSO",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  duration: Duration(milliseconds: 1500),
+                                  backgroundColor: Colors.redAccent,
+                                ));
+                              } else {
+                                OtpVerificationParameter param =
+                                    OtpVerificationParameter(
+                                        phone: _phoneNumberController.text,
+                                        email: _emailController.text);
+                                //TODO: captcha OTP
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return const LoadingOverlay();
+                                  },
+                                );
+                                await _phoneAuthentication
+                                    .call(
+                                        param:
+                                            "$countryNum${_phoneNumberController.text}")
+                                    .then((value) {
+                                  if (value == "invalid-phone-number") {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(const SnackBar(
+                                      content: Text("Invalid Phone Number"),
+                                      duration: Duration(milliseconds: 3000),
+                                    ));
+                                  } else if (value ==
+                                      "verification-completed") {
+                                    print(value);
+                                  } else if (value == "code-sent") {
+                                    context.go("/auth/register/otp-register",
+                                        extra: param);
+                                  } else {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(const SnackBar(
+                                      content:
+                                          Text("There seem to be an error"),
+                                      duration: Duration(milliseconds: 3000),
+                                    ));
+                                  }
+                                });
+                                // .whenComplete(() =>
+                                // context.go("/auth/register/otp-register",
+                                //     extra: param);
+                              }
                             },
                             child: Text(
                               "Sign Up",
@@ -373,8 +462,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               "assets/images/logo_google.png",
                               width: size20px + 4,
                             ),
-                            onPressed: () {
-                              print(countryNum + _phoneNumberController.text);
+                            onPressed: () async {
+                              UserCredential userCred =
+                                  await signInWithGoogle();
+                              log("User Cred : ${userCred.user!.uid}");
+                              log("User Cred : ${userCred.user!.email}");
+                              log("User Cred : ${userCred.user!.displayName?.split(" ")}");
+                              log("User Cred : ${userCred.user!.toString()}");
+
+                              bool userExists =
+                                  await checkIfUserExists(userCred.user!.uid);
+                              if (userExists) {
+                                final SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                await prefs.setString(
+                                    "email", userCred.user!.email!);
+                                await prefs.setString(
+                                    "userId", userCred.user!.uid);
+                                await prefs.setBool("isLoggedIn", true);
+                                showGoogleSSOSnackbar(context);
+                                context.go("/home");
+                              } else {
+                                context.pushReplacement(
+                                    "/auth/register/sso-biodata");
+                              }
                             },
                           ),
                         ),
@@ -400,7 +511,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               "assets/images/logo_facebook.png",
                               width: size20px + 4,
                             ),
-                            onPressed: () {},
+                            onPressed: () async {
+                              UserCredential userCred =
+                                  await signInWithFacebook();
+
+                              bool userExists =
+                                  await checkIfUserExists(userCred.user!.uid);
+                              if (userExists) {
+                                final SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                await prefs.setString(
+                                    "email", userCred.user!.email!);
+                                await prefs.setString(
+                                    "userId", userCred.user!.uid);
+                                await prefs.setBool("isLoggedIn", true);
+                                showFacebookSSOSnackbar(context);
+                                context.go("/home");
+                              } else {
+                                context.pushReplacement(
+                                    "/auth/register/sso-biodata");
+                              }
+                            },
                           ),
                         ),
                       ),

@@ -1,4 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:mytradeasia/config/themes/theme.dart';
 import 'package:mytradeasia/features/data/model/cart_models/cart_models.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_entity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -51,4 +56,87 @@ Future<bool> canCallApi() async {
     return true; // More than a day has passed since the last call
   }
   return false; // Less than a day has passed since the last call
+}
+
+Future<bool> checkIfUserExists(String userId) async {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final CollectionReference biodata = _firestore.collection('biodata');
+  final DocumentSnapshot documentSnapshot = await biodata.doc(userId).get();
+
+  return documentSnapshot.exists;
+}
+
+Future<bool> isSSOAuth() async {
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  List<String> userSignInMethods =
+      await _auth.fetchSignInMethodsForEmail(_auth.currentUser!.email!);
+  return userSignInMethods.first != "password";
+}
+
+void showGoogleSSOSnackbar(BuildContext context) {
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    behavior: SnackBarBehavior.floating,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(24),
+    ),
+    backgroundColor: Colors.blue,
+    content: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          child: Image.network(
+              "https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-1024.png",
+              width: 30,
+              height: 30),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+        SizedBox(
+          width: 20,
+        ),
+        Text(
+          "Signed in with Google",
+          style: body1Regular.copyWith(
+              color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+        )
+      ],
+    ),
+  ));
+}
+
+void showFacebookSSOSnackbar(BuildContext context) {
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    behavior: SnackBarBehavior.floating,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(24),
+    ),
+    backgroundColor: Colors.blue,
+    content: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          child: Image.network(
+              "https://cdn2.iconfinder.com/data/icons/oneui/24/facebook_katana-1024.png",
+              width: 30,
+              height: 30),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+        SizedBox(
+          width: 20,
+        ),
+        Text(
+          "Signed in with Facebook",
+          style: body1Regular.copyWith(
+              color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+        )
+      ],
+    ),
+  ));
 }
