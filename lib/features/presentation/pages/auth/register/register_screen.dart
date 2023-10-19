@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -269,12 +271,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       phone: _phoneNumberController.text,
                                       email: _emailController.text);
                               //TODO: captcha OTP
-                              // showDialog(
-                              //   context: context,
-                              //   builder: (context) {
-                              //     return const LoadingOverlay();
-                              //   },
-                              // );
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return const LoadingOverlay();
+                                },
+                              );
                               await _phoneAuthentication
                                   .call(
                                       param:
@@ -284,21 +286,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(const SnackBar(
                                     content: Text("Invalid Phone Number"),
-                                    duration: Duration(milliseconds: 300),
+                                    duration: Duration(milliseconds: 3000),
                                   ));
                                 } else if (value == "verification-completed") {
+                                  print(value);
+                                } else if (value == "code-sent") {
                                   context.go("/auth/register/otp-register",
                                       extra: param);
                                 } else {
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(const SnackBar(
                                     content: Text("There seem to be an error"),
-                                    duration: Duration(milliseconds: 300),
+                                    duration: Duration(milliseconds: 3000),
                                   ));
                                 }
                               });
-                              context.go("/auth/register/otp-register",
-                                  extra: param);
+                              // .whenComplete(() =>
+                              // context.go("/auth/register/otp-register",
+                              //     extra: param);
                             },
                             child: Text(
                               "Sign Up",

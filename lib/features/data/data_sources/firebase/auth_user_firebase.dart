@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,14 +10,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AuthUserFirebase {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  late PhoneAuthCredential phoneAuthCredential;
   var verificationId = '';
 
   Future<String> postRegisterUser(UserModel userData) async {
-    // await _auth.signInWithCredential(
-    //     PhoneAuthProvider.credential(verificationId: verificationId, smsCode: smsCode));
     try {
       await _auth.createUserWithEmailAndPassword(
           email: userData.email!, password: userData.password!);
+
+      FirebaseAuth.instance.currentUser!
+          .linkWithCredential(phoneAuthCredential);
 
       String docsId = FirebaseAuth.instance.currentUser!.uid.toString();
       Map<String, dynamic> data = userData.toMap();
@@ -34,6 +38,8 @@ class AuthUserFirebase {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
           email: auth["email"]!, password: auth["password"]!);
+
+      // final t = await _auth.signInWithPhoneNumber(phoneNumber)
 
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString("email", auth["email"]!);
@@ -130,39 +136,42 @@ class AuthUserFirebase {
   }
 
   Future<String> phoneAuthentication(String phoneNo) async {
-    var res = "";
     try {
-      await _auth.verifyPhoneNumber(
+      Completer<String> completer = Completer();
+      // var res = "";
+      await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: phoneNo,
         verificationCompleted: (credential) async {
+          phoneAuthCredential = credential;
           // await _auth.signInWithCredential(credential);
-          res = "verification-complete";
-          log(credential.smsCode.toString());
-          log(credential.token.toString());
-          log(credential.verificationId.toString());
-          log(credential.accessToken.toString());
+          completer.complete("verification-complete");
+          print("test1");
         },
         verificationFailed: (e) {
+          print("test2");
           if (e.code == "invalid-phone-number") {
-            res = "invalid-phone-number";
+            // res = "invalid-phone-number";
+            completer.complete("invalid-phone-number");
           } else {
             log(e.toString());
-            res = "error";
+            // res = "error";
+            completer.complete("error");
           }
         },
         codeSent: (verificationId, resendToken) {
+          print("test3");
           this.verificationId = verificationId;
+          completer.complete("code-sent");
         },
         codeAutoRetrievalTimeout: (verificationId) {
           this.verificationId = verificationId;
         },
       );
+      return completer.future;
     } catch (e) {
       log(e.toString());
-      res = "error";
+      return "error";
     }
-
-    return res;
   }
 
   Future<bool> verifyOTP(String otp) async {

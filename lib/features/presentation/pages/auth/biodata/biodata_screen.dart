@@ -1,6 +1,4 @@
 // ignore_for_file: use_build_context_synchronously
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -11,7 +9,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../config/themes/theme.dart';
 import '../../../widgets/dialog_sheet_widget.dart';
 import 'package:country_picker/country_picker.dart';
-// import '../homescreen.dart';
 
 class BiodataScreen extends StatefulWidget {
   const BiodataScreen({super.key, required this.email, required this.phone});
@@ -30,7 +27,7 @@ class _BiodataScreenState extends State<BiodataScreen> {
   final TextEditingController _countryController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  final auth = FirebaseAuth.instance;
+  // final auth = FirebaseAuth.instance;
   String countryName = '';
 
   bool _passwordVisible = false;
