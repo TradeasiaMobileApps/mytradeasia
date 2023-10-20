@@ -340,22 +340,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               List<String> userSignInMethods =
                                   await _auth.fetchSignInMethodsForEmail(
                                       _emailController.text);
-                              if (userSignInMethods.first != "password") {
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(const SnackBar(
-                                  content: Text(
-                                    "Account already signed up with SSO",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  duration: Duration(milliseconds: 1500),
-                                  backgroundColor: Colors.redAccent,
-                                ));
+                              print(userSignInMethods);
+                              if (userSignInMethods.isNotEmpty) {
+                                if (userSignInMethods.first != "password") {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(const SnackBar(
+                                    content: Text(
+                                      "Account already signed up with SSO",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    duration: Duration(milliseconds: 1500),
+                                    backgroundColor: Colors.redAccent,
+                                  ));
+                                }
                               } else {
                                 OtpVerificationParameter param =
                                     OtpVerificationParameter(
-                                        phone: _phoneNumberController.text,
+                                        phone:
+                                            "$countryNum${_phoneNumberController.text}",
                                         email: _emailController.text);
+                                BiodataParameter param2 = BiodataParameter(
+                                    email: _emailController.text,
+                                    phone:
+                                        "$countryNum${_phoneNumberController.text}");
                                 //TODO: captcha OTP
                                 // ignore: use_build_context_synchronously
                                 showDialog(
@@ -364,32 +372,37 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     return const LoadingOverlay();
                                   },
                                 );
-                                await _phoneAuthentication
-                                    .call(
-                                        param:
-                                            "$countryNum${_phoneNumberController.text}")
-                                    .then((value) {
-                                  if (value == "invalid-phone-number") {
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(const SnackBar(
-                                      content: Text("Invalid Phone Number"),
-                                      duration: Duration(milliseconds: 3000),
-                                    ));
-                                  } else if (value ==
-                                      "verification-completed") {
-                                    print(value);
-                                  } else if (value == "code-sent") {
-                                    context.go("/auth/register/otp-register",
-                                        extra: param);
-                                  } else {
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(const SnackBar(
-                                      content:
-                                          Text("There seem to be an error"),
-                                      duration: Duration(milliseconds: 3000),
-                                    ));
-                                  }
-                                });
+
+                                context.go("/auth/register/biodata",
+                                    extra: param2);
+                                //TODO:Uncomment this when used
+
+                                // await _phoneAuthentication
+                                //     .call(
+                                //         param:
+                                //             "$countryNum${_phoneNumberController.text}")
+                                //     .then((value) {
+                                //   if (value == "invalid-phone-number") {
+                                //     ScaffoldMessenger.of(context)
+                                //         .showSnackBar(const SnackBar(
+                                //       content: Text("Invalid Phone Number"),
+                                //       duration: Duration(milliseconds: 3000),
+                                //     ));
+                                //   } else if (value ==
+                                //       "verification-completed") {
+                                //     print(value);
+                                //   } else if (value == "code-sent") {
+                                //     context.go("/auth/register/otp-register",
+                                //         extra: param);
+                                //   } else {
+                                //     ScaffoldMessenger.of(context)
+                                //         .showSnackBar(const SnackBar(
+                                //       content:
+                                //           Text("There seem to be an error"),
+                                //       duration: Duration(milliseconds: 3000),
+                                //     ));
+                                //   }
+                                // });
                                 // .whenComplete(() =>
                                 // context.go("/auth/register/otp-register",
                                 //     extra: param);

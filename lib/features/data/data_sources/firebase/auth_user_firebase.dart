@@ -20,8 +20,10 @@ class AuthUserFirebase {
       await _auth.createUserWithEmailAndPassword(
           email: userData.email!, password: userData.password!);
 
-      FirebaseAuth.instance.currentUser!
-          .linkWithCredential(phoneAuthCredential);
+      //TODO:Uncomment this when used
+
+      // FirebaseAuth.instance.currentUser!
+      //     .linkWithCredential(phoneAuthCredential);
 
       String docsId = FirebaseAuth.instance.currentUser!.uid.toString();
       Map<String, dynamic> data = userData.toMap();

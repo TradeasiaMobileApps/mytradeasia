@@ -29,6 +29,7 @@ class _BiodataScreenState extends State<BiodataScreen> {
   final _formKey = GlobalKey<FormState>();
   // final auth = FirebaseAuth.instance;
   String countryName = '';
+  String countryCode = '';
 
   bool _passwordVisible = false;
 
@@ -84,6 +85,7 @@ class _BiodataScreenState extends State<BiodataScreen> {
                           password: _passwordController.text,
                           phone: widget.phone,
                           role: role,
+                          countryCode: countryCode == '' ? "ID" : countryCode,
                         ),
                         context,
                       ));
@@ -245,6 +247,7 @@ class _BiodataScreenState extends State<BiodataScreen> {
                       const Text("Country", style: heading3),
                       const SizedBox(height: 8.0),
                       TextFormField(
+                        readOnly: true,
                         controller: _countryController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -276,6 +279,7 @@ class _BiodataScreenState extends State<BiodataScreen> {
                                 onSelect: (Country country) {
                                   // countryName = country.displayName;
                                   print(country.countryCode);
+                                  countryCode = country.countryCode;
                                   _countryController.text = country.name;
                                 },
                                 // Optional. Sets the theme for the country list picker.
