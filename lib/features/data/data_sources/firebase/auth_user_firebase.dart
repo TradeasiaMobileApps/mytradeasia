@@ -26,7 +26,7 @@ class AuthUserFirebase {
       String docsId = FirebaseAuth.instance.currentUser!.uid.toString();
       Map<String, dynamic> data = userData.toMap();
       data["uid"] = docsId;
-      FirebaseFirestore.instance.collection('biodata').doc(docsId).set(data);
+      _firestore.collection('biodata').doc(docsId).set(data);
       return 'success';
     } on FirebaseAuthException catch (e) {
       return e.code;
@@ -175,11 +175,19 @@ class AuthUserFirebase {
     return recentlySeenData;
   }
 
+  void sendResetPassword(String email) async {
+    await _auth.sendPasswordResetEmail(email: email);
+  }
+
+  void confirmPasswordReset(String code, String newPassword) async {
+    await _auth.confirmPasswordReset(code: code, newPassword: newPassword);
+  }
+
   Future<String> phoneAuthentication(String phoneNo) async {
     try {
       Completer<String> completer = Completer();
       // var res = "";
-      await FirebaseAuth.instance.verifyPhoneNumber(
+      await _auth.verifyPhoneNumber(
         phoneNumber: phoneNo,
         verificationCompleted: (credential) async {
           phoneAuthCredential = credential;

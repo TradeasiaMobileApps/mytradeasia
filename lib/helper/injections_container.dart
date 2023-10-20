@@ -68,6 +68,7 @@ import 'package:mytradeasia/features/domain/usecases/user_usecases/login.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/logout.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/phone_authentication.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/register.dart';
+import 'package:mytradeasia/features/domain/usecases/user_usecases/send_reset_pass.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/sso_register_user.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/update_profile.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/verify_otp.dart';
@@ -178,6 +179,7 @@ Future<void> initializeDependencies() async {
   injections
       .registerSingleton<GetSearatesRoute>(GetSearatesRoute(injections()));
   injections.registerSingleton<TrackByBL>(TrackByBL(injections()));
+  injections.registerSingleton<SendResetPass>(SendResetPass(injections()));
 
   //Bloc
   injections

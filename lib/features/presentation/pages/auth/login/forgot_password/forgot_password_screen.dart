@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mytradeasia/features/domain/usecases/user_usecases/send_reset_pass.dart';
+import 'package:mytradeasia/helper/injections_container.dart';
 
 import '../../../../../../config/themes/theme.dart';
 
@@ -12,6 +14,7 @@ class ForgotPasswordScreen extends StatefulWidget {
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final TextEditingController _emailController = TextEditingController();
+  final SendResetPass _sendResetPass = injections<SendResetPass>();
 
   @override
   void dispose() {
@@ -103,7 +106,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         ),
                         onPressed: () {
                           /* With go_route */
-                          context.go("/auth/login/reset_password");
+                          _sendResetPass.call(param: _emailController.text);
+                          // context.go("/auth/login/reset_password");
                         },
                         child: Text(
                           "Send",
