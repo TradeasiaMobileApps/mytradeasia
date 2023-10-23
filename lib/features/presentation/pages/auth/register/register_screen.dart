@@ -3,6 +3,7 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:linkedin_login/linkedin_login.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/phone_authentication.dart';
 import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
@@ -30,6 +31,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final _auth = FirebaseAuth.instance;
+
+  UserObject? user;
+  bool logoutUser = false;
 
   Future<UserCredential> signInWithGoogle() async {
     // Trigger the authentication flow
@@ -459,7 +463,72 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               "assets/images/logo_linkedin.png",
                               width: size20px + 10,
                             ),
-                            onPressed: () async {},
+                            onPressed: () {
+                              setState(() {
+                                user = null;
+                                logoutUser = true;
+                              });
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute<void>(
+                                  builder: (final BuildContext context) =>
+                                      LinkedInUserWidget(
+                                    appBar: AppBar(
+                                      title: const Text('OAuth User'),
+                                    ),
+                                    destroySession: logoutUser,
+                                    redirectUrl:
+                                        "http://localhost:8080/callback",
+                                    clientId: "77pv0j45iro4cd",
+                                    clientSecret: "LQKSW66VfAIrulyQ",
+                                    projection: const [
+                                      ProjectionParameters.id,
+                                      ProjectionParameters.localizedFirstName,
+                                      ProjectionParameters.localizedLastName,
+                                      ProjectionParameters.firstName,
+                                      ProjectionParameters.lastName,
+                                      ProjectionParameters.profilePicture,
+                                    ],
+                                    onError: (final UserFailedAction e) {
+                                      print('Error: ${e.toString()}');
+                                      print(
+                                          'Error: ${e.stackTrace.toString()}');
+                                    },
+                                    onGetUserProfile: (final UserSucceededAction
+                                        linkedInUser) {
+                                      print(
+                                        'Access token ${linkedInUser.user}',
+                                      );
+
+                                      print(
+                                          'User id: ${linkedInUser.user.sub}');
+
+                                      user = UserObject(
+                                        firstName: linkedInUser.user.givenName,
+                                        lastName: linkedInUser.user.familyName,
+                                        email: linkedInUser.user.email,
+                                        profileImageUrl:
+                                            linkedInUser.user.picture,
+                                      );
+
+                                      setState(() {
+                                        logoutUser = false;
+                                      });
+
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                  fullscreenDialog: true,
+                                ),
+                              );
+                              // const snackbar = SnackBar(
+                              //   content:
+                              //       Text("Linkedin is not available right now"),
+                              //   backgroundColor: yellowColor,
+                              // );
+                              // ScaffoldMessenger.of(context)
+                              //     .showSnackBar(snackbar);
+                            },
                           ),
                         ),
                       ),
@@ -507,4 +576,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
     );
   }
+}
+
+class UserObject {
+  UserObject({
+    required this.firstName,
+    required this.lastName,
+    required this.email,
+    required this.profileImageUrl,
+  });
+
+  final String? firstName;
+  final String? lastName;
+  final String? email;
+  final String? profileImageUrl;
 }

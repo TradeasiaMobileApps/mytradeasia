@@ -352,7 +352,15 @@ class _LoginScreenState extends State<LoginScreen> {
                               "assets/images/logo_linkedin.png",
                               width: size20px + 10,
                             ),
-                            onPressed: () async {},
+                            onPressed: () {
+                              const snackbar = SnackBar(
+                                content:
+                                    Text("Linkedin is not available right now"),
+                                backgroundColor: yellowColor,
+                              );
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackbar);
+                            },
                           ),
                         ),
                       ),

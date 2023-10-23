@@ -106,37 +106,3 @@ void showGoogleSSOSnackbar(BuildContext context) {
     ),
   ));
 }
-
-void showFacebookSSOSnackbar(BuildContext context) {
-  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    behavior: SnackBarBehavior.floating,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(24),
-    ),
-    backgroundColor: Colors.blue,
-    content: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          child: Image.network(
-              "https://cdn2.iconfinder.com/data/icons/oneui/24/facebook_katana-1024.png",
-              width: 30,
-              height: 30),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-          ),
-        ),
-        SizedBox(
-          width: 20,
-        ),
-        Text(
-          "Signed in with Facebook",
-          style: body1Regular.copyWith(
-              color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
-        )
-      ],
-    ),
-  ));
-}
