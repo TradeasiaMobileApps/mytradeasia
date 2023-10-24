@@ -174,7 +174,12 @@ class _BiodataScreenState extends State<BiodataScreen> {
                       const SizedBox(height: 8.0),
                       TextFormField(
                         controller: _firstNameController,
-                        validator: passwordValidator,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "First Name is empty";
+                          }
+                          return null;
+                        },
                         decoration: InputDecoration(
                           hintText: "Enter your first name",
                           hintStyle: body1Regular.copyWith(color: greyColor),
@@ -335,14 +340,7 @@ class _BiodataScreenState extends State<BiodataScreen> {
                       TextFormField(
                         obscureText: !_passwordVisible,
                         controller: _passwordController,
-                        validator: (valuePassword) {
-                          if (valuePassword!.isEmpty ||
-                              valuePassword.length < 6) {
-                            return "Password must be longer than 6 characters";
-                          }
-
-                          return null;
-                        },
+                        validator: passwordValidator,
                         decoration: InputDecoration(
                           hintText: "Enter your Password",
                           hintStyle: body1Regular.copyWith(color: greyColor),
@@ -356,6 +354,7 @@ class _BiodataScreenState extends State<BiodataScreen> {
                           focusedBorder: const OutlineInputBorder(
                             borderSide: BorderSide(color: secondaryColor1),
                           ),
+                          errorMaxLines: 3,
                           suffixIcon: IconButton(
                             onPressed: () {
                               setState(() {
