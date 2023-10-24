@@ -49,6 +49,22 @@ class _BiodataScreenState extends State<BiodataScreen> {
     super.dispose();
   }
 
+  String? passwordValidator(String? password) {
+    // Check if the password is at least 8 characters long.
+    // Check if the password contains a number.
+    // Check if the password contains a lowercase letter.
+    // Check if the password contains an uppercase letter.
+    // Check if the password contains a special character.
+
+    if (!RegExp(r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@#$%^&+=!]).{8,}$')
+        .hasMatch(password!)) {
+      return "The password must be at least 8 characters long and include a number, lowercase letter, uppercase letter and special character";
+    }
+
+    // If all of the above conditions are met, the password is valid.
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     var authBloc = BlocProvider.of<AuthBloc>(context);
@@ -158,12 +174,7 @@ class _BiodataScreenState extends State<BiodataScreen> {
                       const SizedBox(height: 8.0),
                       TextFormField(
                         controller: _firstNameController,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "First Name is empty";
-                          }
-                          return null;
-                        },
+                        validator: passwordValidator,
                         decoration: InputDecoration(
                           hintText: "Enter your first name",
                           hintStyle: body1Regular.copyWith(color: greyColor),
