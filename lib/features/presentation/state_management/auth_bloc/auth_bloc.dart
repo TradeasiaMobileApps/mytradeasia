@@ -65,6 +65,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
                 textForButton: "Go back",
                 navigatorFunction: () {
                   context.pop(context);
+                  context.pop(context);
                 }),
           );
         } else if (response == 'wrong-password') {
@@ -76,6 +77,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
                 subtitle: "Wrong password provided for that user.",
                 textForButton: "Go back",
                 navigatorFunction: () {
+                  context.pop(context);
                   context.pop(context);
                 }),
           );

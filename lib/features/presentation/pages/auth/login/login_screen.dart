@@ -66,6 +66,20 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
   }
 
+  String? passwordValidator(String? password) {
+    // Check if the password is at least 8 characters long.
+    // Check if the password contains a number.
+    // Check if the password contains a lowercase letter.
+    // Check if the password contains an uppercase letter.
+    // Check if the password contains a special character.
+    if (!RegExp(r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@#$%^&+=!]).{8,}$')
+        .hasMatch(password!)) {
+      return "The password must be at least 8 characters long and include a number, lowercase letter, uppercase letter and special character";
+    }
+    // If all of the above conditions are met, the password is valid.
+    return null;
+  }
+
   checkConnection() async {
     bool result = await InternetConnectionChecker().hasConnection;
     if (result == true) {
@@ -164,17 +178,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           obscureText: !_passwordVisible,
                           keyboardType: TextInputType.visiblePassword,
                           controller: _phoneNumberController,
-                          validator: (valuePassword) {
-                            if (valuePassword!.isEmpty ||
-                                valuePassword.length < 6) {
-                              return "Password must be filled";
-                            }
-
-                            return null;
-                          },
+                          validator: passwordValidator,
                           decoration: InputDecoration(
                             hintText: "Enter your password",
                             hintStyle: body1Regular.copyWith(color: greyColor),
+                            errorMaxLines: 3,
                             contentPadding:
                                 const EdgeInsets.symmetric(horizontal: 20.0),
                             border: const OutlineInputBorder(),
@@ -242,11 +250,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                               onPressed: () {
-                                // authBloc.add(const AuthLoading());
-                                setState(() {
-                                  _connection = !_connection;
-                                });
                                 if (_formKey.currentState!.validate()) {
+                                  setState(() {
+                                    _connection = !_connection;
+                                  });
                                   authBloc.add(LoginWithEmail(
                                       _emailController.text,
                                       _phoneNumberController.text,
@@ -402,15 +409,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       TextButton(
                         onPressed: () {
                           context.go("/auth/register");
-
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) {
-                          //       return const RegisterScreen();
-                          //     },
-                          //   ),
-                          // );
                         },
                         child: Text("Sign up here",
                             style:
