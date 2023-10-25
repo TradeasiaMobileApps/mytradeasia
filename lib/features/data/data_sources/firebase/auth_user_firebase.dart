@@ -58,8 +58,6 @@ class AuthUserFirebase {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
           email: auth["email"]!, password: auth["password"]!);
 
-      // final t = await _auth.signInWithPhoneNumber(phoneNumber)
-
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString("email", auth["email"]!);
       await prefs.setBool("isLoggedIn", true);
@@ -237,6 +235,16 @@ class AuthUserFirebase {
     } catch (e) {
       log(e.toString());
       return false;
+    }
+  }
+
+  void deleteAccount() async {
+    try {
+      String docsId = _auth.currentUser!.uid.toString();
+      _firestore.collection('biodata').doc(docsId).delete();
+      await _auth.currentUser!.delete();
+    } catch (e) {
+      log(e.toString());
     }
   }
 }

@@ -66,3 +66,7 @@ class AuthLoading extends AuthEvent {
 class LogOut extends AuthEvent {
   const LogOut();
 }
+
+class DeleteAcc extends AuthEvent {
+  const DeleteAcc();
+}

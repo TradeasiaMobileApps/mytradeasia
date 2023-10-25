@@ -121,4 +121,9 @@ class UserRepositoryImpl implements UserRepository {
     }
     return response;
   }
+
+  @override
+  void deleteAccount() {
+    _authUserFirebase.deleteAccount();
+  }
 }

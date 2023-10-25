@@ -17,4 +17,5 @@ abstract class UserRepository {
   Future<String> phoneAuthentication(String s);
   Future<bool> verifyOtp(String s);
   void sendResetPassword(String s);
+  void deleteAccount();
 }

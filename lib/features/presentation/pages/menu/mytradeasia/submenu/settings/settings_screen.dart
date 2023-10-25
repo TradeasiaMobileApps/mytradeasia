@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_event.dart';
 
 import '../../../../../../../config/themes/theme.dart';
 
@@ -20,6 +23,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var authBloc = BlocProvider.of<AuthBloc>(context);
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -223,6 +227,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       ),
                                       onPressed: () {
                                         // re enter email step
+                                        authBloc.add(const DeleteAcc());
+                                        context.go("/auth");
                                       },
                                       child: Text(
                                         "Yes",
