@@ -22,6 +22,7 @@ class MessageScreenState extends State<MessageScreen> {
   String title = 'GroupChannels';
   bool hasMore = false;
   List<GroupChannel> channelList = [];
+  List<GroupChannel> channelSaved = [];
 
   // LIST<MEMBER> Length is EXACTLY 2
   String lookForOtherUser(
@@ -86,6 +87,16 @@ class MessageScreenState extends State<MessageScreen> {
     return formatter.format(messageDateTime);
   }
 
+  void searchMessage(String query) {
+    channelList = channelSaved.where((gc) {
+      final channelName = gc.name.toLowerCase();
+      final input = query.toLowerCase();
+
+      return channelName.contains(input);
+    }).toList();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     // const int index = 2;
@@ -136,6 +147,9 @@ class MessageScreenState extends State<MessageScreen> {
                           borderSide: BorderSide(color: secondaryColor1),
                         ),
                       ),
+                      onChanged: (value) {
+                        searchMessage(value);
+                      },
                     ),
                   ),
                 ),
@@ -449,6 +463,7 @@ class MessageScreenState extends State<MessageScreen> {
   void refresh() {
     setState(() {
       channelList = collection.channelList;
+      channelSaved = channelList;
     });
   }
 }
