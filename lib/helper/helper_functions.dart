@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -70,6 +72,10 @@ Future<bool> isSSOAuth() async {
   FirebaseAuth _auth = FirebaseAuth.instance;
   List<String> userSignInMethods =
       await _auth.fetchSignInMethodsForEmail(_auth.currentUser!.email!);
+  log("Sign In Method : ${userSignInMethods.toString()}");
+  if (userSignInMethods.isEmpty) {
+    return true;
+  }
   return userSignInMethods.first != "password";
 }
 
@@ -99,6 +105,40 @@ void showGoogleSSOSnackbar(BuildContext context) {
         ),
         Text(
           "Signed in with Google",
+          style: body1Regular.copyWith(
+              color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+        )
+      ],
+    ),
+  ));
+}
+
+void showLinkedinSSOSnackbar(BuildContext context) {
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    duration: const Duration(seconds: 1, milliseconds: 500),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(24),
+    ),
+    backgroundColor: Colors.blue,
+    content: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          child: Image.network(
+              "https://cdn1.iconfinder.com/data/icons/logotypes/32/circle-linkedin-1024.png",
+              width: 30,
+              height: 30),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+        SizedBox(
+          width: 20,
+        ),
+        Text(
+          "Signed in with Linkedin",
           style: body1Regular.copyWith(
               color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
         )

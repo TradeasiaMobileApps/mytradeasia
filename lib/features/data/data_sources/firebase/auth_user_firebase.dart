@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mytradeasia/features/data/model/user_credential_models/user_credential_model.dart';
@@ -11,6 +12,7 @@ class AuthUserFirebase {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   var verificationId = '';
+  final dio = Dio();
 
   Future<String> postRegisterUser(UserModel userData) async {
     // await _auth.signInWithCredential(
@@ -80,6 +82,33 @@ class AuthUserFirebase {
       await prefs.setString("email", userCredential.user!.email!);
       await prefs.setBool("isLoggedIn", true);
       return UserCredentialModel.fromUserCredential(userCredential);
+    } on FirebaseAuthException catch (e) {
+      return {'code': e.code, 'message': e.message};
+    }
+  }
+
+  Future<dynamic> linkedinAuth() async {
+    final url = 'https://linkedin-firebase-auth-integrator.vercel.app/token';
+
+    final headers = {
+      'Content-Type': 'application/json',
+    };
+
+    final body = {
+      "accessToken": "AQvez430u... (your entire token)",
+      "uid": "nYUzD08Ra"
+    };
+
+    try {
+      final response = await dio.post(
+        url,
+        data: body,
+        options: Options(headers: headers),
+      );
+      if (response.statusCode == 200) {
+      } else {
+        return {'code': response.statusCode, 'message': 'error'};
+      }
     } on FirebaseAuthException catch (e) {
       return {'code': e.code, 'message': e.message};
     }

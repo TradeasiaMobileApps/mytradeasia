@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -27,6 +28,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _phoneNumberController = TextEditingController();
   final PhoneAuthentication _phoneAuthentication =
       injections<PhoneAuthentication>();
+
+  final dio = Dio();
 
   final _formKey = GlobalKey<FormState>();
 
@@ -495,13 +498,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           'Error: ${e.stackTrace.toString()}');
                                     },
                                     onGetUserProfile: (final UserSucceededAction
-                                        linkedInUser) {
+                                        linkedInUser) async {
                                       print(
-                                        'Access token ${linkedInUser.user}',
+                                        'Access token ${linkedInUser.token.accessToken?.accessToken}',
                                       );
 
                                       print(
-                                          'User id: ${linkedInUser.user.sub}');
+                                          'User : ${linkedInUser.user.toJson()}');
 
                                       user = UserObject(
                                         firstName: linkedInUser.user.givenName,
@@ -510,6 +513,70 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         profileImageUrl:
                                             linkedInUser.user.picture,
                                       );
+
+                                      final url =
+                                          'https://linkedin-firebase-auth-integrator.vercel.app/token';
+
+                                      final headers = {
+                                        'Content-Type': 'application/json',
+                                      };
+
+                                      final body = {
+                                        "accessToken": linkedInUser
+                                            .token.accessToken?.accessToken,
+                                        "uid": linkedInUser.user.sub
+                                      };
+
+                                      try {
+                                        final response = await dio.post(
+                                          url,
+                                          data: body,
+                                          options: Options(headers: headers),
+                                        );
+                                        if (response.statusCode == 200) {
+                                          log("Success : ${response.data}");
+                                          final userCredential =
+                                              await FirebaseAuth.instance
+                                                  .signInWithCustomToken(
+                                                      response.data[
+                                                          'firebaseToken']);
+                                          log("User Credential : ${userCredential.user.toString()}");
+                                          FirebaseAuth.instance
+                                              .authStateChanges()
+                                              .listen((User? user) async {
+                                            if (user != null) {
+                                              await user.updateEmail(
+                                                  linkedInUser.user.email!);
+                                              await user.updateDisplayName(
+                                                  linkedInUser.user.name!);
+                                            }
+                                          });
+                                          log("Name : ${FirebaseAuth.instance.currentUser?.displayName}");
+                                          bool userExists =
+                                              await checkIfUserExists(
+                                                  userCredential.user!.uid);
+                                          if (userExists) {
+                                            final SharedPreferences prefs =
+                                                await SharedPreferences
+                                                    .getInstance();
+                                            await prefs.setString("email",
+                                                userCredential.user!.email!);
+                                            await prefs.setString("userId",
+                                                userCredential.user!.uid);
+                                            await prefs.setBool(
+                                                "isLoggedIn", true);
+                                            showLinkedinSSOSnackbar(context);
+                                            context.go("/home");
+                                          } else {
+                                            context.pushReplacement(
+                                                "/auth/register/sso-biodata");
+                                          }
+                                        } else {
+                                          log("Error ${response.statusCode} : ${response.data}");
+                                        }
+                                      } on FirebaseAuthException catch (e) {
+                                        log("Firebase Error : ${e.message}");
+                                      }
 
                                       setState(() {
                                         logoutUser = false;
