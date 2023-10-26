@@ -486,10 +486,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               width: size20px + 10,
                             ),
                             onPressed: () {
-                              setState(() {
-                                user = null;
-                                logoutUser = true;
-                              });
                               Navigator.push(
                                 context,
                                 MaterialPageRoute<void>(
@@ -593,8 +589,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         } else {
                                           log("Error ${response.statusCode} : ${response.data}");
                                         }
-                                      } on FirebaseAuthException catch (e) {
-                                        log("Firebase Error : ${e.message}");
+                                      } catch (e) {
+                                        const snackbar = SnackBar(
+                                          content: Text(
+                                              "An error occurred, Please try again"),
+                                          backgroundColor: yellowColor,
+                                        );
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(snackbar);
                                       }
 
                                       setState(() {
