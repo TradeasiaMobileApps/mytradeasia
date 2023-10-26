@@ -1,6 +1,4 @@
 // ignore_for_file: use_build_context_synchronously
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -11,7 +9,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../config/themes/theme.dart';
 import '../../../widgets/dialog_sheet_widget.dart';
 import 'package:country_picker/country_picker.dart';
-// import '../homescreen.dart';
 
 class BiodataScreen extends StatefulWidget {
   const BiodataScreen({super.key, required this.email, required this.phone});
@@ -30,8 +27,9 @@ class _BiodataScreenState extends State<BiodataScreen> {
   final TextEditingController _countryController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  final auth = FirebaseAuth.instance;
+  // final auth = FirebaseAuth.instance;
   String countryName = '';
+  String countryCode = '';
 
   bool _passwordVisible = false;
 
@@ -49,6 +47,22 @@ class _BiodataScreenState extends State<BiodataScreen> {
     _countryController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  String? passwordValidator(String? password) {
+    // Check if the password is at least 8 characters long.
+    // Check if the password contains a number.
+    // Check if the password contains a lowercase letter.
+    // Check if the password contains an uppercase letter.
+    // Check if the password contains a special character.
+
+    if (!RegExp(r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@#$%^&+=!]).{8,}$')
+        .hasMatch(password!)) {
+      return "The password must be at least 8 characters long and include a number, lowercase letter, uppercase letter and special character";
+    }
+
+    // If all of the above conditions are met, the password is valid.
+    return null;
   }
 
   @override
@@ -87,6 +101,7 @@ class _BiodataScreenState extends State<BiodataScreen> {
                           password: _passwordController.text,
                           phone: widget.phone,
                           role: role,
+                          countryCode: countryCode == '' ? "ID" : countryCode,
                         ),
                         context,
                       ));
@@ -248,6 +263,7 @@ class _BiodataScreenState extends State<BiodataScreen> {
                       const Text("Country", style: heading3),
                       const SizedBox(height: 8.0),
                       TextFormField(
+                        readOnly: true,
                         controller: _countryController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -279,6 +295,7 @@ class _BiodataScreenState extends State<BiodataScreen> {
                                 onSelect: (Country country) {
                                   // countryName = country.displayName;
                                   print(country.countryCode);
+                                  countryCode = country.countryCode;
                                   _countryController.text = country.name;
                                 },
                                 // Optional. Sets the theme for the country list picker.
@@ -323,14 +340,7 @@ class _BiodataScreenState extends State<BiodataScreen> {
                       TextFormField(
                         obscureText: !_passwordVisible,
                         controller: _passwordController,
-                        validator: (valuePassword) {
-                          if (valuePassword!.isEmpty ||
-                              valuePassword.length < 6) {
-                            return "Password must be longer than 6 characters";
-                          }
-
-                          return null;
-                        },
+                        validator: passwordValidator,
                         decoration: InputDecoration(
                           hintText: "Enter your Password",
                           hintStyle: body1Regular.copyWith(color: greyColor),
@@ -344,6 +354,7 @@ class _BiodataScreenState extends State<BiodataScreen> {
                           focusedBorder: const OutlineInputBorder(
                             borderSide: BorderSide(color: secondaryColor1),
                           ),
+                          errorMaxLines: 3,
                           suffixIcon: IconButton(
                             onPressed: () {
                               setState(() {

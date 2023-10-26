@@ -65,6 +65,7 @@ dependencies:
   linkedin_login:
     git:
       url: https://github.com/modanism/custom-flutter-linkedin-login
+  flutter_spinkit: ^5.2.0
 
   
 

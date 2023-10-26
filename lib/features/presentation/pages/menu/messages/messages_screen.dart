@@ -222,15 +222,75 @@ class MessageScreenState extends State<MessageScreen> {
                                 children: [
                                   Stack(
                                     children: [
-                                      ClipRRect(
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(size20px * 5)),
-                                        child: Image.asset(
-                                          "assets/images/profile_picture.png",
-                                          height: size20px + 34.0,
-                                          width: size20px + 34.0,
-                                        ),
+                                      FutureBuilder(
+                                        future: groupChannel.getAllMetaData(),
+                                        builder: (context, snapshot) {
+                                          String image =
+                                              "assets/images/icon_complaint.png";
+
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return ClipRRect(
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(
+                                                          size20px * 5)),
+                                              child: Image.asset(
+                                                "assets/images/icon_complaint.png",
+                                                height: size20px + 24.0,
+                                                width: size20px + 24.0,
+                                              ),
+                                            );
+                                          } else {
+                                            switch (snapshot.data!["status"]) {
+                                              case "Product":
+                                                image =
+                                                    "assets/images/icon_products_message.png";
+                                                break;
+                                              case "Sample":
+                                                image =
+                                                    "assets/images/icon_sample.png";
+                                                break;
+                                              case "MOQ":
+                                                image =
+                                                    "assets/images/icon_moq.png";
+                                                break;
+                                              case "Price":
+                                                image =
+                                                    "assets/images/icon_price.png";
+                                                break;
+                                              case "Payment":
+                                                image =
+                                                    "assets/images/icon_payment.png";
+                                                break;
+                                              default:
+                                                image =
+                                                    "assets/images/icon_complaint.png";
+                                            }
+
+                                            return ClipRRect(
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(
+                                                          size20px * 5)),
+                                              child: Image.asset(
+                                                image,
+                                                height: size20px + 24.0,
+                                                width: size20px + 24.0,
+                                              ),
+                                            );
+                                          }
+                                        },
                                       ),
+                                      // ClipRRect(
+                                      //   borderRadius: const BorderRadius.all(
+                                      //       Radius.circular(size20px * 5)),
+                                      //   child: Image.asset(
+                                      //     "assets/images/profile_picture.png",
+                                      //     height: size20px + 34.0,
+                                      //     width: size20px + 34.0,
+                                      //   ),
+                                      // ),
                                       sender.connectionStatus.name != "offline"
                                           ? Positioned(
                                               bottom: 0,
@@ -269,50 +329,48 @@ class MessageScreenState extends State<MessageScreen> {
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                             FutureBuilder<Map<String, String>>(
-                                                future: groupChannel
-                                                    .getAllMetaData(),
-                                                builder: (context, snapshot) {
+                                              future:
+                                                  groupChannel.getAllMetaData(),
+                                              builder: (context, snapshot) {
+                                                if (snapshot.connectionState ==
+                                                    ConnectionState.waiting) {
+                                                  return SizedBox();
+                                                } else {
                                                   if (snapshot
-                                                          .connectionState ==
-                                                      ConnectionState.waiting) {
-                                                    return SizedBox();
-                                                  } else {
-                                                    if (snapshot
-                                                            .data!["status"] !=
-                                                        null) {
-                                                      return Container(
-                                                        height: 18,
-                                                        width: 50,
-                                                        margin: const EdgeInsets
-                                                            .only(left: 10),
-                                                        decoration: BoxDecoration(
-                                                            color: const Color
-                                                                    .fromARGB(
-                                                                99,
-                                                                49,
-                                                                200,
-                                                                180),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        20)),
-                                                        child: Center(
-                                                          child: Text(
-                                                            snapshot.data?[
-                                                                    "status"] ??
-                                                                "",
-                                                            style:
-                                                                text10.copyWith(
-                                                                    color: Colors
-                                                                        .green),
-                                                          ),
+                                                          .data!["status"] !=
+                                                      null) {
+                                                    return Container(
+                                                      height: 18,
+                                                      width: 50,
+                                                      margin:
+                                                          const EdgeInsets.only(
+                                                              left: 10),
+                                                      decoration: BoxDecoration(
+                                                          color: const Color
+                                                                  .fromARGB(
+                                                              99, 49, 200, 180),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      20)),
+                                                      child: Center(
+                                                        child: Text(
+                                                          snapshot.data?[
+                                                                  "status"] ??
+                                                              "",
+                                                          style:
+                                                              text10.copyWith(
+                                                                  color: Colors
+                                                                      .green),
                                                         ),
-                                                      );
-                                                    } else {
-                                                      return Container();
-                                                    }
+                                                      ),
+                                                    );
+                                                  } else {
+                                                    return Container();
                                                   }
-                                                })
+                                                }
+                                              },
+                                            ),
                                           ],
                                         ),
                                         const SizedBox(height: size20px / 4),

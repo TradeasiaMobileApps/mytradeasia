@@ -109,11 +109,21 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
+  void sendResetPassword(String s) {
+    return _authUserFirebase.sendResetPassword(s);
+  }
+
+  @override
   Future<dynamic> googleAuth() async {
     final response = await _authUserFirebase.googleAuth();
     if (response is Map) {
       return response["code"];
     }
     return response;
+  }
+
+  @override
+  void deleteAccount() {
+    _authUserFirebase.deleteAccount();
   }
 }

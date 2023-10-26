@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,20 +12,25 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AuthUserFirebase {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  late PhoneAuthCredential phoneAuthCredential;
   var verificationId = '';
   final dio = Dio();
 
   Future<String> postRegisterUser(UserModel userData) async {
-    // await _auth.signInWithCredential(
-    //     PhoneAuthProvider.credential(verificationId: verificationId, smsCode: smsCode));
     try {
       await _auth.createUserWithEmailAndPassword(
           email: userData.email!, password: userData.password!);
 
+      //TODO:Uncomment this when used
+
+      // FirebaseAuth.instance.currentUser!
+      //     .linkWithCredential(phoneAuthCredential);
+
       String docsId = FirebaseAuth.instance.currentUser!.uid.toString();
       Map<String, dynamic> data = userData.toMap();
       data["uid"] = docsId;
-      FirebaseFirestore.instance.collection('biodata').doc(docsId).set(data);
+      _firestore.collection('biodata').doc(docsId).set(data);
       return 'success';
     } on FirebaseAuthException catch (e) {
       return e.code;
@@ -198,40 +204,51 @@ class AuthUserFirebase {
     return recentlySeenData;
   }
 
+  void sendResetPassword(String email) async {
+    await _auth.sendPasswordResetEmail(email: email);
+  }
+
+  void confirmPasswordReset(String code, String newPassword) async {
+    await _auth.confirmPasswordReset(code: code, newPassword: newPassword);
+  }
+
   Future<String> phoneAuthentication(String phoneNo) async {
-    var res = "";
     try {
+      Completer<String> completer = Completer();
+      // var res = "";
       await _auth.verifyPhoneNumber(
         phoneNumber: phoneNo,
         verificationCompleted: (credential) async {
+          phoneAuthCredential = credential;
           // await _auth.signInWithCredential(credential);
-          res = "verification-complete";
-          log(credential.smsCode.toString());
-          log(credential.token.toString());
-          log(credential.verificationId.toString());
-          log(credential.accessToken.toString());
+          completer.complete("verification-complete");
+          print("test1");
         },
         verificationFailed: (e) {
+          print("test2");
           if (e.code == "invalid-phone-number") {
-            res = "invalid-phone-number";
+            // res = "invalid-phone-number";
+            completer.complete("invalid-phone-number");
           } else {
             log(e.toString());
-            res = "error";
+            // res = "error";
+            completer.complete("error");
           }
         },
         codeSent: (verificationId, resendToken) {
+          print("test3");
           this.verificationId = verificationId;
+          completer.complete("code-sent");
         },
         codeAutoRetrievalTimeout: (verificationId) {
           this.verificationId = verificationId;
         },
       );
+      return completer.future;
     } catch (e) {
       log(e.toString());
-      res = "error";
+      return "error";
     }
-
-    return res;
   }
 
   Future<bool> verifyOTP(String otp) async {
@@ -247,6 +264,16 @@ class AuthUserFirebase {
     } catch (e) {
       log(e.toString());
       return false;
+    }
+  }
+
+  void deleteAccount() async {
+    try {
+      String docsId = _auth.currentUser!.uid.toString();
+      _firestore.collection('biodata').doc(docsId).delete();
+      await _auth.currentUser!.delete();
+    } catch (e) {
+      log(e.toString());
     }
   }
 }
