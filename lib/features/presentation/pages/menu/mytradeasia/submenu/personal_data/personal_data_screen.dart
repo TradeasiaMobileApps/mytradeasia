@@ -470,9 +470,9 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
                                       imageUrl:
                                           "assets/images/icon_forward.png",
                                       navigationPage: () {
-                                        // context.go(
-                                        //     "/mytradeasia/personal_data/change_email");
-                                        print(state.user!);
+                                        context.go(
+                                            "/mytradeasia/personal_data/change_email");
+                                        // print(state.user!);
                                       },
                                     ),
                                   ),

@@ -71,6 +71,7 @@ import 'package:mytradeasia/features/domain/usecases/user_usecases/phone_authent
 import 'package:mytradeasia/features/domain/usecases/user_usecases/register.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/send_reset_pass.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/sso_register_user.dart';
+import 'package:mytradeasia/features/domain/usecases/user_usecases/update_email.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/update_profile.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/verify_otp.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_bloc.dart';
@@ -182,6 +183,7 @@ Future<void> initializeDependencies() async {
   injections.registerSingleton<TrackByBL>(TrackByBL(injections()));
   injections.registerSingleton<SendResetPass>(SendResetPass(injections()));
   injections.registerSingleton<DeleteAccount>(DeleteAccount(injections()));
+  injections.registerSingleton<UpdateEmail>(UpdateEmail(injections()));
 
   //Bloc
   injections
