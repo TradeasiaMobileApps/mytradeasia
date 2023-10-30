@@ -337,6 +337,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     extra: param2);
                                 //TODO:Uncomment this when used
 
+                                // DO NOT DELETE THIS
+
                                 // await _phoneAuthentication
                                 //     .call(
                                 //         param:
@@ -634,15 +636,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         onPressed: () {
                           /* With go_route */
                           context.go("/auth/login");
-
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) {
-                          //       return const LoginScreen();
-                          //     },
-                          //   ),
-                          // );
                         },
                         child: Text("Sign in here",
                             style:
@@ -653,12 +646,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ],
               ),
             ),
-            // if (valueLoading.isLoading)
-            //   SizedBox(
-            //     width: double.infinity,
-            //     height: MediaQuery.of(context).size.height,
-            //     child: const LoadingOverlay(),
-            //   ),
           ],
         ),
       ),

@@ -16,6 +16,7 @@ abstract class UserRepository {
   Future<String> updateProfile(Map<String, dynamic> data);
   Future<String> phoneAuthentication(String s);
   Future<bool> verifyOtp(String s);
+  Future<String> updateEmail(String s);
   void sendResetPassword(String s);
   void deleteAccount();
 }

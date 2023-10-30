@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AuthUserFirebase {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  AuthCredential? _credential;
 
   late PhoneAuthCredential phoneAuthCredential;
   var verificationId = '';
@@ -57,14 +58,16 @@ class AuthUserFirebase {
 
   Future<dynamic> postLoginUser(Map<String, String> auth) async {
     try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+      UserCredential _userCredential = await _auth.signInWithEmailAndPassword(
+          email: auth["email"]!, password: auth["password"]!);
+      _credential = EmailAuthProvider.credential(
           email: auth["email"]!, password: auth["password"]!);
 
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString("email", auth["email"]!);
       await prefs.setBool("isLoggedIn", true);
 
-      return UserCredentialModel.fromUserCredential(userCredential);
+      return UserCredentialModel.fromUserCredential(_userCredential);
     } on FirebaseAuthException catch (e) {
       return {'code': e.code, 'message': e.message};
     }
@@ -274,6 +277,26 @@ class AuthUserFirebase {
       await _auth.currentUser!.delete();
     } catch (e) {
       log(e.toString());
+    }
+  }
+
+  Future<String> updateEmail(String newEmail) async {
+    Completer<String> completer = Completer();
+    try {
+      final user = FirebaseAuth.instance.currentUser!;
+      // await user.sendEmailVerification()
+
+      if (_credential != null) {
+        await user.reauthenticateWithCredential(_credential!);
+      }
+
+      await user.updateEmail(newEmail);
+      completer.complete("success");
+      return completer.future;
+    } on FirebaseAuthException catch (e) {
+      log(e.toString());
+      completer.complete(e.code);
+      return completer.future;
     }
   }
 }

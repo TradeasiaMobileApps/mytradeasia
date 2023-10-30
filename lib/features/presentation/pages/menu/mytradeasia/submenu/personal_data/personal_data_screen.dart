@@ -470,9 +470,9 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
                                       imageUrl:
                                           "assets/images/icon_forward.png",
                                       navigationPage: () {
-                                        // context.go(
-                                        //     "/mytradeasia/personal_data/change_email");
-                                        print(state.user!);
+                                        context.go(
+                                            "/mytradeasia/personal_data/change_email");
+                                        // print(state.user!);
                                       },
                                     ),
                                   ),
@@ -511,7 +511,8 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
                   ),
                 ),
                 onPressed: () async {
-                  _updateMyProfile(state.user!.uid!, user);
+                  print(state.user!.email);
+                  // _updateMyProfile(state.user!.uid!, user);
                 },
                 child: Text(
                   "Edit Personal Data",
