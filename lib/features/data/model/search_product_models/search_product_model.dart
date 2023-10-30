@@ -1,6 +1,7 @@
+import 'package:mytradeasia/features/domain/entities/product_entities/product_entity.dart';
 import 'package:mytradeasia/features/domain/entities/search_product_entities/search_product_entity.dart';
 
-class SearchProductModel extends SearchProductEntity {
+class SearchProductModel extends ProductEntity {
   const SearchProductModel({
     String? productname,
     String? productimage,
