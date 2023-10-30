@@ -1,10 +1,14 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/update_email.dart';
+import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_event.dart';
 import 'package:mytradeasia/features/presentation/widgets/dialog_sheet_widget.dart';
+import 'package:mytradeasia/features/presentation/widgets/loading_overlay_widget.dart';
 import 'package:mytradeasia/features/presentation/widgets/text_editing_widget.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
 
@@ -32,6 +36,8 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var authBloc = BlocProvider.of<AuthBloc>(context);
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -83,6 +89,7 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width,
                         child: TextEditingWidget(
+                            // key: _formKey,
                             readOnly: false,
                             controller: _oldEmailController,
                             hintText: "Enter your old email address"),
@@ -94,6 +101,7 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width,
                         child: TextEditingWidget(
+                            // key: _formKey,
                             readOnly: false,
                             controller: _newEmailController,
                             hintText: "Enter your new email address"),
@@ -105,6 +113,7 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width,
                         child: TextEditingWidget(
+                            // key: _formKey,
                             readOnly: false,
                             controller: _confirmEmailController,
                             hintText: "Enter your new email adress"),
@@ -133,92 +142,199 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
                   ),
                 ),
               ),
-              onPressed: () async {
+              onPressed: () {
                 // context.go("/mytradeasia/personal_data/change_email/otp_email");
-                if (_newEmailController.text == _confirmEmailController.text) {
-                  await _updateEmail
-                      .call(param: _newEmailController.text)
-                      .then((res) {
-                    switch (res) {
-                      case "invalid-email":
-                        showDialog(
-                          context: context,
-                          builder: (context) => DialogWidget(
-                              urlIcon: "assets/images/logo_delete_account.png",
-                              title: "Email is invalid",
-                              subtitle: "The email you type is invalid",
-                              textForButton: "Close",
-                              navigatorFunction: () {
-                                context.pop();
-                              }),
-                        );
-                        break;
-                      case "email-already-in-use":
-                        showDialog(
-                          context: context,
-                          builder: (context) => DialogWidget(
-                              urlIcon: "assets/images/logo_delete_account.png",
-                              title: "Email already in use",
-                              subtitle: "The email is already used",
-                              textForButton: "Close",
-                              navigatorFunction: () {
-                                context.pop();
-                              }),
-                        );
-                        break;
-                      case "requires-recent-login":
-                        showDialog(
-                          context: context,
-                          builder: (context) => DialogWidget(
-                              urlIcon: "assets/images/logo_delete_account.png",
-                              title: "Requires recent login",
-                              subtitle: "You need to re-login",
-                              textForButton: "Close",
-                              navigatorFunction: () {
-                                context.pop();
-                              }),
-                        );
-                        break;
-                      default:
-                        showDialog(
-                          barrierDismissible: false,
-                          context: context,
-                          builder: (context) {
-                            return DialogWidget(
-                                urlIcon:
-                                    "assets/images/icon_sukses_reset_password.png",
-                                title: "Successful Email Update",
-                                subtitle:
-                                    "Lorem ipsum dolor sit amet consectetur. Egestas porttitor risus enim cursus rutrum molestie tortor",
-                                textForButton: "Go to Home",
-                                navigatorFunction: () {
-                                  /* with go_router */
-                                  context.go("/home");
-                                });
-                          },
-                        );
-                    }
-                  });
-                } else {
+                if (_formKey.currentState!.validate()) {
                   showDialog(
+                    barrierDismissible: false,
                     context: context,
-                    builder: (context) => DialogWidget(
-                        urlIcon: "assets/images/logo_delete_account.png",
-                        title: "Confirm email does not match",
-                        subtitle:
-                            "New email and confirm email need to be match",
-                        textForButton: "Close",
-                        navigatorFunction: () {
-                          context.pop();
-                        }),
+                    builder: (context) {
+                      return DialogWidgetYesNo(
+                          urlIcon:
+                              "assets/images/icon_sukses_reset_password.png",
+                          title: "Are you sure?",
+                          subtitle:
+                              "You'll need to re-log in after changing email",
+                          textForButtonYes: "Proceed",
+                          textForButtonNo: "No",
+                          navigatorFunctionYes: () async {
+                            context.pop();
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return const LoadingOverlay();
+                              },
+                            );
+                            if (_newEmailController.text ==
+                                _confirmEmailController.text) {
+                              await _updateEmail
+                                  .call(param: _newEmailController.text)
+                                  .then((res) {
+                                switch (res) {
+                                  case "invalid-email":
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => DialogWidget(
+                                          urlIcon:
+                                              "assets/images/logo_delete_account.png",
+                                          title: "Email is invalid",
+                                          subtitle:
+                                              "The email you type is invalid",
+                                          textForButton: "Close",
+                                          navigatorFunction: () {
+                                            context.pop();
+                                            context.pop();
+                                          }),
+                                    );
+                                    break;
+                                  case "email-already-in-use":
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => DialogWidget(
+                                          urlIcon:
+                                              "assets/images/logo_delete_account.png",
+                                          title: "Email already in use",
+                                          subtitle: "The email is already used",
+                                          textForButton: "Close",
+                                          navigatorFunction: () {
+                                            context.pop();
+                                            context.pop();
+                                          }),
+                                    );
+                                    break;
+                                  case "requires-recent-login":
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => DialogWidget(
+                                          urlIcon:
+                                              "assets/images/logo_delete_account.png",
+                                          title: "Requires recent login",
+                                          subtitle: "You need to re-login",
+                                          textForButton: "Close",
+                                          navigatorFunction: () {
+                                            context.pop();
+                                            context.pop();
+                                          }),
+                                    );
+
+                                    break;
+                                  default:
+                                    authBloc.add(const LogOut());
+                                    // context.pop();
+                                    context.go("/");
+                                }
+                              });
+                            } else {
+                              showDialog(
+                                context: context,
+                                builder: (context) => DialogWidget(
+                                    urlIcon:
+                                        "assets/images/logo_delete_account.png",
+                                    title: "Confirm email does not match",
+                                    subtitle:
+                                        "New email and confirm email need to be match",
+                                    textForButton: "Close",
+                                    navigatorFunction: () {
+                                      context.pop();
+                                    }),
+                              );
+                            }
+                          },
+                          navigatorFunctionNo: () {
+                            context.pop();
+                          });
+                      // return DialogWidget(
+                      //     urlIcon: "assets/images/icon_sukses_reset_password.png",
+                      //     title: "Are you sure?",
+                      //     subtitle:
+                      //         "You'll need to re-log in after changing email",
+                      //     textForButton: "Proceed",
+                      //     navigatorFunction: () async {
+                      //       context.pop();
+                      //       showDialog(
+                      //         context: context,
+                      //         builder: (context) {
+                      //           return const LoadingOverlay();
+                      //         },
+                      //       );
+                      //       if (_newEmailController.text ==
+                      //           _confirmEmailController.text) {
+                      //         await _updateEmail
+                      //             .call(param: _newEmailController.text)
+                      //             .then((res) {
+                      //           switch (res) {
+                      //             case "invalid-email":
+                      //               showDialog(
+                      //                 context: context,
+                      //                 builder: (context) => DialogWidget(
+                      //                     urlIcon:
+                      //                         "assets/images/logo_delete_account.png",
+                      //                     title: "Email is invalid",
+                      //                     subtitle:
+                      //                         "The email you type is invalid",
+                      //                     textForButton: "Close",
+                      //                     navigatorFunction: () {
+                      //                       context.pop();
+                      //                       context.pop();
+                      //                     }),
+                      //               );
+                      //               break;
+                      //             case "email-already-in-use":
+                      //               showDialog(
+                      //                 context: context,
+                      //                 builder: (context) => DialogWidget(
+                      //                     urlIcon:
+                      //                         "assets/images/logo_delete_account.png",
+                      //                     title: "Email already in use",
+                      //                     subtitle: "The email is already used",
+                      //                     textForButton: "Close",
+                      //                     navigatorFunction: () {
+                      //                       context.pop();
+                      //                       context.pop();
+                      //                     }),
+                      //               );
+                      //               break;
+                      //             case "requires-recent-login":
+                      //               showDialog(
+                      //                 context: context,
+                      //                 builder: (context) => DialogWidget(
+                      //                     urlIcon:
+                      //                         "assets/images/logo_delete_account.png",
+                      //                     title: "Requires recent login",
+                      //                     subtitle: "You need to re-login",
+                      //                     textForButton: "Close",
+                      //                     navigatorFunction: () {
+                      //                       context.pop();
+                      //                       context.pop();
+                      //                     }),
+                      //               );
+
+                      //               break;
+                      //             default:
+                      //               authBloc.add(const LogOut());
+                      //               // context.pop();
+                      //               context.go("/");
+                      //           }
+                      //         });
+                      //       } else {
+                      //         showDialog(
+                      //           context: context,
+                      //           builder: (context) => DialogWidget(
+                      //               urlIcon:
+                      //                   "assets/images/logo_delete_account.png",
+                      //               title: "Confirm email does not match",
+                      //               subtitle:
+                      //                   "New email and confirm email need to be match",
+                      //               textForButton: "Close",
+                      //               navigatorFunction: () {
+                      //                 context.pop();
+                      //               }),
+                      //         );
+                      //       }
+                      //     });
+                    },
                   );
                 }
-
-                // Navigator.push(context, MaterialPageRoute(
-                //   builder: (context) {
-                //     return const EmailChangeOtpScreen();
-                //   },
-                // ));
               },
               child: Text(
                 "Verify",

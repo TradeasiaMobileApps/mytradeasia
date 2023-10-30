@@ -30,6 +30,9 @@ class TextEditingWidget extends StatelessWidget {
         hintText: hintText,
         hintStyle: body1Regular.copyWith(color: greyColor),
         contentPadding: const EdgeInsets.symmetric(horizontal: 20.0),
+        errorBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: redColor2),
+            borderRadius: BorderRadius.all(Radius.circular(7.0))),
         enabledBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: greyColor3),
             borderRadius: BorderRadius.all(Radius.circular(7.0))),

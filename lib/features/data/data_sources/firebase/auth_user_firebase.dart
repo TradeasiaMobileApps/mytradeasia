@@ -257,7 +257,10 @@ class AuthUserFirebase {
       final user = FirebaseAuth.instance.currentUser!;
       // await user.sendEmailVerification()
 
-      await user.reauthenticateWithCredential(_credential!);
+      if (_credential != null) {
+        await user.reauthenticateWithCredential(_credential!);
+      }
+
       await user.updateEmail(newEmail);
       completer.complete("success");
       return completer.future;

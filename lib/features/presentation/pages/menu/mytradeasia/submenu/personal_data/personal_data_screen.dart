@@ -511,7 +511,8 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
                   ),
                 ),
                 onPressed: () async {
-                  _updateMyProfile(state.user!.uid!, user);
+                  print(state.user!.email);
+                  // _updateMyProfile(state.user!.uid!, user);
                 },
                 child: Text(
                   "Edit Personal Data",
