@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mytradeasia/features/domain/entities/product_entities/product_entity.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_to_rfq_entity.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/add_recently_seen.dart';
 import 'package:mytradeasia/features/presentation/state_management/cart_bloc/cart_bloc.dart';
@@ -820,14 +821,10 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                                                                     .all(Radius
                                                                         .circular(
                                                                             5))),
-                                                    child: IconButton(
-                                                      onPressed: () {
-                                                        print("cart icon");
-                                                      },
-                                                      icon: Image.asset(
-                                                        "assets/images/icon_cart.png",
-                                                      ),
-                                                    ),
+                                                    child: AddToCartButton(
+                                                        listProduct: searchState
+                                                            .searchProducts!,
+                                                        index: index),
                                                   ),
                                                 ],
                                               ),
