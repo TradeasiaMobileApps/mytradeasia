@@ -29,9 +29,11 @@ class _SSOBiodataScreenState extends State<SSOBiodataScreen> {
 
   @override
   void initState() {
-    _firstNameController.text = auth.currentUser!.displayName!.split(" ").first;
-    _lastNameController.text = auth.currentUser!.displayName!.split(" ").last;
-
+    if (auth.currentUser!.displayName != null) {
+      _firstNameController.text =
+          auth.currentUser!.displayName!.split(" ").first;
+      _lastNameController.text = auth.currentUser!.displayName!.split(" ").last;
+    }
     super.initState();
   }
 
