@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:mytradeasia/core/resources/data_state.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/search_product_service.dart';
-import 'package:mytradeasia/features/domain/entities/search_product_entities/search_product_entity.dart';
+import 'package:mytradeasia/features/domain/entities/product_entities/product_entity.dart';
 import 'package:mytradeasia/features/domain/repository/search_product_repository.dart';
 
 class SearchProductRepositoryImpl implements SearchProductRepo {
@@ -12,7 +12,7 @@ class SearchProductRepositoryImpl implements SearchProductRepo {
   SearchProductRepositoryImpl(this._searchProductService);
 
   @override
-  Future<DataState<List<SearchProductEntity>>> getSearchProduct(
+  Future<DataState<List<ProductEntity>>> getSearchProduct(
       String productName) async {
     try {
       final response =

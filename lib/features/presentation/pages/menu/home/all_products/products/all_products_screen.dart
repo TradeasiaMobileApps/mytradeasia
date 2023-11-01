@@ -768,20 +768,20 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                                                             ProductToRfq
                                                                 product =
                                                                 ProductToRfq(
-                                                              productName: state
-                                                                  .products![
+                                                              productName: searchState
+                                                                  .searchProducts![
                                                                       index]
                                                                   .productname!,
-                                                              productImage: state
-                                                                  .products![
+                                                              productImage: searchState
+                                                                  .searchProducts![
                                                                       index]
                                                                   .productimage!,
-                                                              hsCode: state
-                                                                  .products![
+                                                              hsCode: searchState
+                                                                  .searchProducts![
                                                                       index]
                                                                   .hsCode!,
-                                                              casNumber: state
-                                                                  .products![
+                                                              casNumber: searchState
+                                                                  .searchProducts![
                                                                       index]
                                                                   .casNumber!,
                                                             );
@@ -820,14 +820,10 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                                                                     .all(Radius
                                                                         .circular(
                                                                             5))),
-                                                    child: IconButton(
-                                                      onPressed: () {
-                                                        print("cart icon");
-                                                      },
-                                                      icon: Image.asset(
-                                                        "assets/images/icon_cart.png",
-                                                      ),
-                                                    ),
+                                                    child: AddToCartButton(
+                                                        listProduct: searchState
+                                                            .searchProducts!,
+                                                        index: index),
                                                   ),
                                                 ],
                                               ),

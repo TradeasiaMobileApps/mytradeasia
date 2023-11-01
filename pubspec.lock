@@ -109,10 +109,10 @@ packages:
     dependency: "direct main"
     description:
       name: cloud_firestore
-      sha256: "666ae6914f5d9dde04d7fb49c5983d3bf7b887021a79a3ac17de2e95386b8006"
+      sha256: "7dd7e9505e4e895c87e7bc0c4cf49a2c0b0255fae900ab7fcac3c5daa9f422d5"
       url: "https://pub.dev"
     source: hosted
-    version: "4.12.1"
+    version: "4.12.0"
   cloud_firestore_platform_interface:
     dependency: transitive
     description:
@@ -173,10 +173,10 @@ packages:
     dependency: "direct main"
     description:
       name: country_picker
-      sha256: "931454ceb75c7e1230ac5620bfe601a5a293b4436d8de8bf7fea776a05a9568c"
+      sha256: e440350c2f6397955499d5a647cc90599ba3048651c6858370483f55c346b525
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.22"
+    version: "2.0.21"
   cross_file:
     dependency: transitive
     description:
