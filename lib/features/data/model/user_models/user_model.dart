@@ -2,17 +2,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mytradeasia/features/domain/entities/user_entities/user_entity.dart';
 
 class UserModel extends UserEntity {
-  const UserModel({
-    String? email,
-    String? password,
-    String? role,
-    String? companyName,
-    String? country,
-    String? countryCode,
-    String? firstName,
-    String? lastName,
-    String? phone,
-  }) : super(
+  const UserModel(
+      {String? email,
+      String? password,
+      String? role,
+      String? companyName,
+      String? country,
+      String? countryCode,
+      String? firstName,
+      String? lastName,
+      String? phone,
+      String? profilePicUrl})
+      : super(
           email: email,
           password: password,
           role: role,
@@ -22,6 +23,7 @@ class UserModel extends UserEntity {
           firstName: firstName,
           lastName: lastName,
           phone: phone,
+          profilePicUrl: profilePicUrl,
         );
 
   Map<String, dynamic> toMap() {
@@ -33,6 +35,7 @@ class UserModel extends UserEntity {
       'firstName': firstName,
       'lastName': lastName,
       'phone': phone,
+      'profilePicUrl': profilePicUrl,
     };
   }
 
@@ -59,6 +62,10 @@ class UserModel extends UserEntity {
       phone: documentSnapshot.data().toString().contains('phone')
           ? documentSnapshot.get('phone')
           : "",
+      profilePicUrl:
+          documentSnapshot.data().toString().contains('profilePicUrl')
+              ? documentSnapshot.get('profilePicUrl')
+              : "",
     );
   }
 }

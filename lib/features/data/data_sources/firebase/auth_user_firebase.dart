@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mytradeasia/features/data/model/user_credential_models/user_credential_model.dart';
 import 'package:mytradeasia/features/data/model/user_models/user_model.dart';
@@ -11,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AuthUserFirebase {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   AuthCredential? _credential;
 
   late PhoneAuthCredential phoneAuthCredential;
@@ -94,9 +97,23 @@ class AuthUserFirebase {
     }
   }
 
+  Future<String> uploadImageToStorage(String childName, Uint8List file) async {
+    print("uploadImage");
+    Reference ref = _firebaseStorage.ref().child(childName);
+    UploadTask uploadTask = ref.putData(file);
+    TaskSnapshot snapshot = await uploadTask;
+    String downloadUrl = await snapshot.ref.getDownloadURL();
+    return downloadUrl;
+  }
+
   Future<String> updateProfile(Map<String, dynamic> data) async {
+    print("updateProfile");
     final DocumentReference docRef =
-        FirebaseFirestore.instance.collection('biodata').doc(getCurrentUId());
+        FirebaseFirestore.instance.collection('biodata').doc(data["uid"]);
+    String imageUrl = "";
+    if (data["image"] != null) {
+      imageUrl = await uploadImageToStorage(data["uid"], data["image"]);
+    }
 
     return docRef.get().then((docSnapshot) async {
       var response = "network-error";
@@ -106,6 +123,7 @@ class AuthUserFirebase {
           'lastName': data["lastName"],
           'phone': data["phone"],
           'companyName': data["companyName"],
+          'profilePicUrl': imageUrl,
         }).then((_) {
           return "success";
         }).catchError((e) {

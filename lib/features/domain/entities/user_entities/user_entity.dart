@@ -10,6 +10,7 @@ class UserEntity extends Equatable {
   final String? firstName;
   final String? lastName;
   final String? phone;
+  final String? profilePicUrl;
 
   const UserEntity({
     this.email,
@@ -21,6 +22,7 @@ class UserEntity extends Equatable {
     this.firstName,
     this.lastName,
     this.phone,
+    this.profilePicUrl,
   });
 
   @override
@@ -35,6 +37,7 @@ class UserEntity extends Equatable {
       firstName,
       lastName,
       phone,
+      profilePicUrl,
     ];
   }
 }
