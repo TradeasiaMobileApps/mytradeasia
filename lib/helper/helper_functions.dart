@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -70,12 +72,16 @@ Future<bool> isSSOAuth() async {
   FirebaseAuth _auth = FirebaseAuth.instance;
   List<String> userSignInMethods =
       await _auth.fetchSignInMethodsForEmail(_auth.currentUser!.email!);
+  log("Sign In Method : ${userSignInMethods.toString()}");
+  if (userSignInMethods.isEmpty) {
+    return true;
+  }
   return userSignInMethods.first != "password";
 }
 
 void showGoogleSSOSnackbar(BuildContext context) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    behavior: SnackBarBehavior.floating,
+    duration: const Duration(seconds: 1, milliseconds: 500),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(24),
     ),
@@ -107,9 +113,9 @@ void showGoogleSSOSnackbar(BuildContext context) {
   ));
 }
 
-void showFacebookSSOSnackbar(BuildContext context) {
+void showLinkedinSSOSnackbar(BuildContext context) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    behavior: SnackBarBehavior.floating,
+    duration: const Duration(seconds: 1, milliseconds: 500),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(24),
     ),
@@ -120,7 +126,7 @@ void showFacebookSSOSnackbar(BuildContext context) {
       children: [
         Container(
           child: Image.network(
-              "https://cdn2.iconfinder.com/data/icons/oneui/24/facebook_katana-1024.png",
+              "https://cdn1.iconfinder.com/data/icons/logotypes/32/circle-linkedin-1024.png",
               width: 30,
               height: 30),
           decoration: BoxDecoration(
@@ -132,7 +138,7 @@ void showFacebookSSOSnackbar(BuildContext context) {
           width: 20,
         ),
         Text(
-          "Signed in with Facebook",
+          "Signed in with Linkedin",
           style: body1Regular.copyWith(
               color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
         )

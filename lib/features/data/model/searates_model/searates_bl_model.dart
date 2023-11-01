@@ -222,12 +222,12 @@ class Locations {
 class Facilities {
   int? id;
   String? name;
-  Null? countryCode;
-  Null? locode;
-  Null? bicCode;
-  Null? smdgCode;
-  Null? lat;
-  Null? lng;
+  String? countryCode;
+  String? locode;
+  String? bicCode;
+  String? smdgCode;
+  String? lat;
+  String? lng;
 
   Facilities(
       {this.id,

@@ -1,10 +1,11 @@
 import 'dart:developer';
 
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:go_router/go_router.dart';
+import 'package:linkedin_login/linkedin_login.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/phone_authentication.dart';
 import 'package:mytradeasia/features/presentation/widgets/loading_overlay_widget.dart';
 import 'package:mytradeasia/helper/helper_functions.dart';
@@ -30,43 +31,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final PhoneAuthentication _phoneAuthentication =
       injections<PhoneAuthentication>();
 
+  final dio = Dio();
+
   final _formKey = GlobalKey<FormState>();
 
   final _auth = FirebaseAuth.instance;
 
-  void showSnackbar() {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
-      ),
-      backgroundColor: Colors.blue,
-      content: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            child: Image.network(
-                "https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-1024.png",
-                width: 30,
-                height: 30),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-            ),
-          ),
-          SizedBox(
-            width: 20,
-          ),
-          Text(
-            "Signed in with Google",
-            style: body1Regular.copyWith(
-                color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
-          )
-        ],
-      ),
-    ));
-  }
+  UserObject? user;
+  bool logoutUser = false;
 
   Future<UserCredential> signInWithGoogle() async {
     // Trigger the authentication flow
@@ -84,18 +56,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     // Once signed in, return the UserCredential
     return await FirebaseAuth.instance.signInWithCredential(credential);
-  }
-
-  Future<UserCredential> signInWithFacebook() async {
-    // Trigger the sign-in flow
-    final LoginResult loginResult = await FacebookAuth.instance.login();
-
-    // Create a credential from the access token
-    final OAuthCredential facebookAuthCredential =
-        FacebookAuthProvider.credential(loginResult.accessToken!.token);
-
-    // Once signed in, return the UserCredential
-    return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
   }
 
   @override
@@ -524,29 +484,140 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                             ),
                             child: Image.asset(
-                              "assets/images/logo_facebook.png",
-                              width: size20px + 4,
+                              "assets/images/logo_linkedin.png",
+                              width: size20px + 10,
                             ),
-                            onPressed: () async {
-                              UserCredential userCred =
-                                  await signInWithFacebook();
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute<void>(
+                                  builder: (final BuildContext context) =>
+                                      LinkedInUserWidget(
+                                    appBar: AppBar(
+                                      title: const Text('OAuth User'),
+                                    ),
+                                    destroySession: logoutUser,
+                                    redirectUrl:
+                                        "http://localhost:8080/callback",
+                                    clientId: "77pv0j45iro4cd",
+                                    clientSecret: "LQKSW66VfAIrulyQ",
+                                    projection: const [
+                                      ProjectionParameters.id,
+                                      ProjectionParameters.localizedFirstName,
+                                      ProjectionParameters.localizedLastName,
+                                      ProjectionParameters.firstName,
+                                      ProjectionParameters.lastName,
+                                      ProjectionParameters.profilePicture,
+                                    ],
+                                    onError: (final UserFailedAction e) {
+                                      print('Error: ${e.toString()}');
+                                      print(
+                                          'Error: ${e.stackTrace.toString()}');
+                                    },
+                                    onGetUserProfile: (final UserSucceededAction
+                                        linkedInUser) async {
+                                      print(
+                                        'Access token ${linkedInUser.token.accessToken?.accessToken}',
+                                      );
 
-                              bool userExists =
-                                  await checkIfUserExists(userCred.user!.uid);
-                              if (userExists) {
-                                final SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                await prefs.setString(
-                                    "email", userCred.user!.email!);
-                                await prefs.setString(
-                                    "userId", userCred.user!.uid);
-                                await prefs.setBool("isLoggedIn", true);
-                                showFacebookSSOSnackbar(context);
-                                context.go("/home");
-                              } else {
-                                context.pushReplacement(
-                                    "/auth/register/sso-biodata");
-                              }
+                                      print(
+                                          'User : ${linkedInUser.user.toJson()}');
+
+                                      user = UserObject(
+                                        firstName: linkedInUser.user.givenName,
+                                        lastName: linkedInUser.user.familyName,
+                                        email: linkedInUser.user.email,
+                                        profileImageUrl:
+                                            linkedInUser.user.picture,
+                                      );
+
+                                      final url =
+                                          'https://linkedin-firebase-auth-integrator.vercel.app/token';
+
+                                      final headers = {
+                                        'Content-Type': 'application/json',
+                                      };
+
+                                      final body = {
+                                        "accessToken": linkedInUser
+                                            .token.accessToken?.accessToken,
+                                        "uid": linkedInUser.user.sub
+                                      };
+
+                                      try {
+                                        final response = await dio.post(
+                                          url,
+                                          data: body,
+                                          options: Options(headers: headers),
+                                        );
+                                        if (response.statusCode == 200) {
+                                          log("Success : ${response.data}");
+                                          final userCredential =
+                                              await FirebaseAuth.instance
+                                                  .signInWithCustomToken(
+                                                      response.data[
+                                                          'firebaseToken']);
+                                          log("User Credential : ${userCredential.user.toString()}");
+                                          FirebaseAuth.instance
+                                              .authStateChanges()
+                                              .listen((User? user) async {
+                                            if (user != null) {
+                                              await user.updateEmail(
+                                                  linkedInUser.user.email!);
+                                              await user.updateDisplayName(
+                                                  linkedInUser.user.name!);
+                                            }
+                                          });
+                                          log("Name : ${FirebaseAuth.instance.currentUser?.displayName}");
+                                          bool userExists =
+                                              await checkIfUserExists(
+                                                  userCredential.user!.uid);
+                                          if (userExists) {
+                                            final SharedPreferences prefs =
+                                                await SharedPreferences
+                                                    .getInstance();
+                                            await prefs.setString("email",
+                                                userCredential.user!.email!);
+                                            await prefs.setString("userId",
+                                                userCredential.user!.uid);
+                                            await prefs.setBool(
+                                                "isLoggedIn", true);
+                                            showLinkedinSSOSnackbar(context);
+                                            context.go("/home");
+                                          } else {
+                                            context.pushReplacement(
+                                                "/auth/register/sso-biodata");
+                                          }
+                                        } else {
+                                          log("Error ${response.statusCode} : ${response.data}");
+                                        }
+                                      } catch (e) {
+                                        const snackbar = SnackBar(
+                                          content: Text(
+                                              "An error occurred, Please try again"),
+                                          backgroundColor: yellowColor,
+                                        );
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(snackbar);
+                                      }
+
+                                      setState(() {
+                                        logoutUser = false;
+                                      });
+
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                  fullscreenDialog: true,
+                                ),
+                              );
+                              // const snackbar = SnackBar(
+                              //   content:
+                              //       Text("Linkedin is not available right now"),
+                              //   backgroundColor: yellowColor,
+                              // );
+                              // ScaffoldMessenger.of(context)
+                              //     .showSnackBar(snackbar);
                             },
                           ),
                         ),
@@ -580,4 +651,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
     );
   }
+}
+
+class UserObject {
+  UserObject({
+    required this.firstName,
+    required this.lastName,
+    required this.email,
+    required this.profileImageUrl,
+  });
+
+  final String? firstName;
+  final String? lastName;
+  final String? email;
+  final String? profileImageUrl;
 }

@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
-import 'package:mytradeasia/features/domain/entities/search_product_entities/search_product_entity.dart';
+import 'package:mytradeasia/features/domain/entities/product_entities/product_entity.dart';
 
 abstract class SearchProductState extends Equatable {
-  final List<SearchProductEntity>? searchProducts;
+  final List<ProductEntity>? searchProducts;
   final DioException? error;
 
   const SearchProductState({this.searchProducts, this.error});
@@ -21,7 +21,7 @@ class SearchProductLoading extends SearchProductState {
 }
 
 class SearchProductDone extends SearchProductState {
-  const SearchProductDone(List<SearchProductEntity> products)
+  const SearchProductDone(List<ProductEntity> products)
       : super(searchProducts: products);
 }
 
