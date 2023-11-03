@@ -1,3 +1,4 @@
+import 'package:auto_localization/auto_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -31,6 +32,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await AutoLocalization.init(appLanguage: 'en', userLanguage: 'ru');
   SendbirdChat.init(appId: 'DCD5F067-8067-49BF-954E-CEB3631B555F');
 
   await initializeDependencies();

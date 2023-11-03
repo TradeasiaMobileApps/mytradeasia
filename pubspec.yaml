@@ -67,6 +67,7 @@ dependencies:
       url: https://github.com/modanism/custom-flutter-linkedin-login
   flutter_spinkit: ^5.2.0
   firebase_storage: ^11.4.0
+  auto_localization: ^2.0.2
 
   
 

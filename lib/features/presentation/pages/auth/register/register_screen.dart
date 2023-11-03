@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:auto_localization/auto_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:linkedin_login/linkedin_login.dart';
@@ -86,6 +87,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   const SizedBox(height: 50.48),
+                  AutoLocalBuilder(
+                    text: const ["Sign Up Here"],
+                    builder: (TranslationWorker tw) {
+                      return Text(tw.get("Sign Up Here"));
+                    },
+                  ),
                   const Text("Sign Up Here", style: heading1),
                   const SizedBox(
                     height: 5.0,
@@ -636,6 +643,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         onPressed: () {
                           /* With go_route */
                           context.go("/auth/login");
+                          // AutoLocalization.clearCache();
+                          AutoLocalization.setAppLanguage = "en";
+                          AutoLocalization.setUserLanguage = "id";
+
+                          // setState(() {});
                         },
                         child: Text("Sign in here",
                             style:
