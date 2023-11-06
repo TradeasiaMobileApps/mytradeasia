@@ -11,10 +11,8 @@ import 'package:mytradeasia/features/presentation/widgets/text_editing_widget.da
 import 'package:mytradeasia/helper/helper_functions.dart';
 
 class AddToCartButton extends StatefulWidget {
-  final List<ProductEntity> listProduct;
-  final int index;
-  const AddToCartButton(
-      {Key? key, required this.listProduct, required this.index})
+  final ProductEntity productEntity;
+  const AddToCartButton({Key? key, required this.productEntity})
       : super(key: key);
 
   @override
@@ -334,8 +332,7 @@ class _AddToCartButtonState extends State<AddToCartButton> {
         // Check if product already exist in cart
         bool chosen = false;
         for (var item in cartState.cartItems!) {
-          if (item.productName ==
-              widget.listProduct[widget.index].productname!) {
+          if (item.productName == widget.productEntity.productname!) {
             chosen = true;
           }
         }
@@ -353,7 +350,7 @@ class _AddToCartButtonState extends State<AddToCartButton> {
           return IconButton(
             onPressed: () {
               addToCartBottomSheet(
-                product: widget.listProduct[widget.index],
+                product: widget.productEntity,
               );
             },
             icon: Image.asset(
