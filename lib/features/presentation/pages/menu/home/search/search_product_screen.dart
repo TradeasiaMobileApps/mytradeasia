@@ -11,6 +11,7 @@ import 'package:mytradeasia/features/presentation/state_management/product_bloc/
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/search_product/search_product_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/search_product/search_product_state.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
+import 'package:mytradeasia/features/presentation/widgets/add_to_cart_button.dart';
 
 import '../../../../../../config/routes/parameters.dart';
 import '../all_products/products/products_detail_screen.dart';
@@ -397,13 +398,9 @@ class _SearchScreenState extends State<SearchScreen> {
                                                   borderRadius:
                                                       BorderRadius.all(
                                                           Radius.circular(5))),
-                                              child: IconButton(
-                                                onPressed: () {
-                                                  print("cart icon");
-                                                },
-                                                icon: Image.asset(
-                                                  "assets/images/icon_cart.png",
-                                                ),
+                                              child: AddToCartButton(
+                                                productEntity: state
+                                                    .searchProducts![index],
                                               ),
                                             ),
                                           ],
