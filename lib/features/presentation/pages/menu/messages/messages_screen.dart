@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -188,12 +189,11 @@ class MessageScreenState extends State<MessageScreen> {
                       itemCount: channelList.isEmpty ? 0 : channelList.length,
                       itemBuilder: (context, index) {
                         final groupChannel = channelList[index];
-                        // log("COUNT : ${state.channels == null ? 0 : state.channels!.length}");
 
-                        final sender = groupChannel.members.firstWhere(
-                            (element) =>
-                                element.userId !=
-                                userState.sendbirdUser!.userId);
+                        // final sender = groupChannel.members.firstWhere(
+                        //     (element) =>
+                        //         element.userId !=
+                        //         userState.sendbirdUser!.userId);
                         final dateTime = messageDateTime(groupChannel);
 
                         return InkWell(
@@ -305,85 +305,82 @@ class MessageScreenState extends State<MessageScreen> {
                                       //     width: size20px + 34.0,
                                       //   ),
                                       // ),
-                                      sender.connectionStatus.name != "offline"
-                                          ? Positioned(
-                                              bottom: 0,
-                                              right: 0,
-                                              child: Container(
-                                                width: 14,
-                                                height: 14,
-                                                decoration: BoxDecoration(
-                                                    color: Colors.green,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20)),
-                                              ),
-                                            )
-                                          : Container(),
                                     ],
                                   ),
                                   const SizedBox(width: size20px),
                                   Expanded(
+                                    flex: 3,
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
                                         Row(
                                           children: [
-                                            Text(
-                                              // ASSUMPTIONS : ONLY 2 Member inside the Group Channel
-                                              //TODO:change this
-                                              groupChannel.name.length > 15
-                                                  ? "${groupChannel.name.substring(0, 15)} ..."
-                                                  : groupChannel.name,
-                                              style: heading3.copyWith(
-                                                color: blackColor,
+                                            Expanded(
+                                              flex: 7,
+                                              child: AutoSizeText(
+                                                // ASSUMPTIONS : ONLY 2 Member inside the Group Channel
+                                                //TODO:change this
+                                                groupChannel.name.length > 17
+                                                    ? "${groupChannel.name.substring(0, 17)} ..."
+                                                    : groupChannel.name,
+                                                style: heading3.copyWith(
+                                                  color: blackColor,
+                                                ),
+                                                minFontSize: 10,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
                                               ),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
                                             ),
-                                            FutureBuilder<Map<String, String>>(
-                                              future:
-                                                  groupChannel.getAllMetaData(),
-                                              builder: (context, snapshot) {
-                                                if (snapshot.connectionState ==
-                                                    ConnectionState.waiting) {
-                                                  return SizedBox();
-                                                } else {
+                                            Flexible(
+                                              flex: 4,
+                                              child: FutureBuilder<
+                                                  Map<String, String>>(
+                                                future: groupChannel
+                                                    .getAllMetaData(),
+                                                builder: (context, snapshot) {
                                                   if (snapshot
-                                                          .data!["status"] !=
-                                                      null) {
-                                                    return Container(
-                                                      height: 18,
-                                                      width: 50,
-                                                      margin:
-                                                          const EdgeInsets.only(
-                                                              left: 10),
-                                                      decoration: BoxDecoration(
-                                                          color: const Color
-                                                                  .fromARGB(
-                                                              99, 49, 200, 180),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      20)),
-                                                      child: Center(
-                                                        child: Text(
-                                                          snapshot.data?[
-                                                                  "status"] ??
-                                                              "",
-                                                          style:
-                                                              text10.copyWith(
-                                                                  color: Colors
-                                                                      .green),
-                                                        ),
-                                                      ),
-                                                    );
+                                                          .connectionState ==
+                                                      ConnectionState.waiting) {
+                                                    return SizedBox();
                                                   } else {
-                                                    return Container();
+                                                    if (snapshot
+                                                            .data!["status"] !=
+                                                        null) {
+                                                      return Container(
+                                                        height: 18,
+                                                        width: 50,
+                                                        margin: const EdgeInsets
+                                                            .only(left: 10),
+                                                        decoration: BoxDecoration(
+                                                            color: const Color
+                                                                    .fromARGB(
+                                                                99,
+                                                                49,
+                                                                200,
+                                                                180),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        20)),
+                                                        child: Center(
+                                                          child: Text(
+                                                            snapshot.data?[
+                                                                    "status"] ??
+                                                                "",
+                                                            style:
+                                                                text8.copyWith(
+                                                                    color: Colors
+                                                                        .green),
+                                                          ),
+                                                        ),
+                                                      );
+                                                    } else {
+                                                      return Container();
+                                                    }
                                                   }
-                                                }
-                                              },
+                                                },
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -398,28 +395,32 @@ class MessageScreenState extends State<MessageScreen> {
                                       ],
                                     ),
                                   ),
-                                  const SizedBox(width: size20px),
-                                  Column(
-                                    children: [
-                                      Text(
-                                        dateTime,
-                                        style:
-                                            text10.copyWith(color: greyColor2),
-                                      ),
-                                      const SizedBox(height: size20px / 4),
-                                      groupChannel.unreadMessageCount != 0
-                                          ? CircleAvatar(
-                                              maxRadius: 12,
-                                              backgroundColor: secondaryColor1,
-                                              child: Text(
-                                                groupChannel.unreadMessageCount
-                                                    .toString(),
-                                                style: body1Regular.copyWith(
-                                                    color: whiteColor),
-                                              ),
-                                            )
-                                          : Container()
-                                    ],
+                                  // const SizedBox(width: size20px),
+                                  Flexible(
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          dateTime,
+                                          style: text10.copyWith(
+                                              color: greyColor2),
+                                        ),
+                                        const SizedBox(height: size20px / 4),
+                                        groupChannel.unreadMessageCount != 0
+                                            ? CircleAvatar(
+                                                maxRadius: 12,
+                                                backgroundColor:
+                                                    secondaryColor1,
+                                                child: Text(
+                                                  groupChannel
+                                                      .unreadMessageCount
+                                                      .toString(),
+                                                  style: body1Regular.copyWith(
+                                                      color: whiteColor),
+                                                ),
+                                              )
+                                            : Container()
+                                      ],
+                                    ),
                                   )
                                 ],
                               ),
