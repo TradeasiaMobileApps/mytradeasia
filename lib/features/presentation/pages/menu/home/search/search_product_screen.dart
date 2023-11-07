@@ -399,9 +399,9 @@ class _SearchScreenState extends State<SearchScreen> {
                                                       BorderRadius.all(
                                                           Radius.circular(5))),
                                               child: AddToCartButton(
-                                                  listProduct:
-                                                      state.searchProducts!,
-                                                  index: index),
+                                                productEntity: state
+                                                    .searchProducts![index],
+                                              ),
                                             ),
                                           ],
                                         ),
