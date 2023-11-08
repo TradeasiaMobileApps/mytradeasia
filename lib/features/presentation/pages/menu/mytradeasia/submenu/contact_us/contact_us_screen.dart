@@ -38,7 +38,7 @@ class ContactUsScreen extends StatelessWidget {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
                   child: Container(
-                    height: size20px * 9,
+                    height: size20px * 12.5,
                     width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
                       border: Border.all(color: greyColor3),

@@ -69,7 +69,7 @@ class _MyTradeAsiaScreenState extends State<MyTradeAsiaScreen> {
                                     child: Column(
                                       children: [
                                         SizedBox(
-                                            height: size20px * 2.5,
+                                            height: size20px * 3,
                                             width: MediaQuery.of(context)
                                                 .size
                                                 .width,
