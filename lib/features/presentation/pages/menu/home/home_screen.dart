@@ -559,8 +559,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                             vertical: size20px),
                                         child: Text("Industry", style: text18)),
                                     SizedBox(
-                                      height:
-                                          MediaQuery.of(context).size.height *
+                                      height: MediaQuery.of(context)
+                                                  .size
+                                                  .height <
+                                              600
+                                          ? MediaQuery.of(context).size.height *
+                                              0.3
+                                          : MediaQuery.of(context).size.height *
                                               0.24,
                                       width: MediaQuery.of(context).size.width,
                                       child: GridView(
@@ -568,6 +573,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         physics:
                                             const NeverScrollableScrollPhysics(),
                                         shrinkWrap: true,
+                                        clipBehavior: Clip.none,
                                         gridDelegate:
                                             const SliverGridDelegateWithFixedCrossAxisCount(
                                                 crossAxisCount: 4,

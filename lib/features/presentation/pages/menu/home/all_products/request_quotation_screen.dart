@@ -12,7 +12,6 @@ import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_data
 import 'package:mytradeasia/features/presentation/pages/menu/other/languages_screen.dart';
 import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
-// import 'package:mytradeasia/old_file_tobedeleted/view/menu/other/languages_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../../widgets/text_editing_widget.dart';
@@ -462,86 +461,87 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                                                                 ),
                                                               ),
                                                             ),
-                                                            Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
-                                                              children: [
-                                                                Padding(
-                                                                  padding: const EdgeInsets
-                                                                          .only(
-                                                                      bottom: size20px -
-                                                                          15.0),
-                                                                  child: Text(
-                                                                    widget.products[index].productName.length >
-                                                                            31
-                                                                        ? "${widget.products[index].productName.substring(0, 31)}..."
-                                                                        : widget
-                                                                            .products[index]
-                                                                            .productName,
-                                                                    style:
-                                                                        heading3,
+                                                            Flexible(
+                                                              child: Column(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                children: [
+                                                                  Padding(
+                                                                    padding: const EdgeInsets
+                                                                            .only(
+                                                                        bottom: size20px -
+                                                                            15.0),
+                                                                    child: Text(
+                                                                      widget.products[index].productName.length >
+                                                                              31
+                                                                          ? "${widget.products[index].productName.substring(0, 31)}..."
+                                                                          : widget
+                                                                              .products[index]
+                                                                              .productName,
+                                                                      style:
+                                                                          heading3,
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                    ),
                                                                   ),
-                                                                ),
-                                                                Row(
-                                                                  children: [
-                                                                    Column(
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .start,
-                                                                      children: [
-                                                                        const Text(
-                                                                            "HS Code :",
-                                                                            style:
-                                                                                body2Medium),
-                                                                        Text(
-                                                                            widget.products[index].hsCode,
-                                                                            style: body2Medium.copyWith(color: greyColor2)),
-                                                                      ],
-                                                                    ),
-                                                                    const SizedBox(
-                                                                        width: size20px +
-                                                                            10.0),
-                                                                    Column(
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .start,
-                                                                      children: [
-                                                                        const Text(
-                                                                            "CAS Number :",
-                                                                            style:
-                                                                                body2Medium),
-                                                                        Text(
-                                                                            widget.products[index].hsCode,
-                                                                            style: body2Medium.copyWith(color: greyColor2)),
-                                                                      ],
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                const SizedBox(
-                                                                    height: 2),
-                                                                Column(
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    const Text(
-                                                                        "Quantity :",
-                                                                        style:
-                                                                            body2Medium),
-                                                                    Text(
-                                                                        widget.products[index].quantity == null || widget.products[index].unit == null
-                                                                            ? "Not yet added"
-                                                                            : "${parseDoubleToIntegerIfNecessary(widget.products[index].quantity!)} ${widget.products[index].unit}",
-                                                                        style: body2Medium.copyWith(
-                                                                            color:
-                                                                                greyColor2)),
-                                                                  ],
-                                                                ),
-                                                              ],
+                                                                  Row(
+                                                                    children: [
+                                                                      Column(
+                                                                        crossAxisAlignment:
+                                                                            CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          const Text(
+                                                                              "HS Code :",
+                                                                              style: body2Medium),
+                                                                          Text(
+                                                                              widget.products[index].hsCode,
+                                                                              style: body2Medium.copyWith(color: greyColor2)),
+                                                                        ],
+                                                                      ),
+                                                                      const SizedBox(
+                                                                          width:
+                                                                              size20px + 10.0),
+                                                                      Column(
+                                                                        crossAxisAlignment:
+                                                                            CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          const Text(
+                                                                              "CAS Number :",
+                                                                              style: body2Medium),
+                                                                          Text(
+                                                                              widget.products[index].hsCode,
+                                                                              style: body2Medium.copyWith(color: greyColor2)),
+                                                                        ],
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  const SizedBox(
+                                                                      height:
+                                                                          2),
+                                                                  Column(
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      const Text(
+                                                                          "Quantity :",
+                                                                          style:
+                                                                              body2Medium),
+                                                                      Text(
+                                                                          widget.products[index].quantity == null || widget.products[index].unit == null
+                                                                              ? "Not yet added"
+                                                                              : "${parseDoubleToIntegerIfNecessary(widget.products[index].quantity!)} ${widget.products[index].unit}",
+                                                                          style:
+                                                                              body2Medium.copyWith(color: greyColor2)),
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              ),
                                                             )
                                                           ],
                                                         ),

@@ -263,7 +263,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                             color: whiteColor,
                             child: SizedBox(
                               width: MediaQuery.of(context).size.width,
-                              height: size20px * 8.0,
+                              height: size20px * 8.3,
                               child: Padding(
                                 padding: const EdgeInsets.only(
                                     top: 10.0,
