@@ -3,6 +3,7 @@ import 'package:mytradeasia/core/resources/data_state.dart';
 import 'package:mytradeasia/features/domain/usecases/sales_force_login_usecases/get_sales_force_login.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_login/salesforce_login_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_login/salesforce_login_state.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SalesforceLoginBloc
     extends Bloc<SalesforceLoginEvent, SalesforceLoginState> {
@@ -16,6 +17,8 @@ class SalesforceLoginBloc
       LoginSalesforce event, Emitter<SalesforceLoginState> emit) async {
     final dataState = await _getSalesforceLogin();
     if (dataState is DataSuccess) {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString("tokenSF", dataState.data!.accessToken!);
       emit(SalesforceLoginDone(dataState.data!));
     }
 
