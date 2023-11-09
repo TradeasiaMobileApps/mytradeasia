@@ -6,14 +6,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mytradeasia/features/domain/entities/product_entities/product_entity.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_to_rfq_entity.dart';
+import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/search_product/search_product_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/search_product/search_product_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/search_product/search_product_state.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
-import 'package:mytradeasia/features/presentation/widgets/add_to_cart_button.dart';
+import 'package:mytradeasia/features/presentation/widgets/product_card.dart';
 
 import '../../../../../../config/routes/parameters.dart';
+import '../../../../state_management/auth_bloc/auth_state.dart';
 import '../all_products/products/products_detail_screen.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -186,8 +189,6 @@ class _SearchScreenState extends State<SearchScreen> {
                             physics: const BouncingScrollPhysics(),
                             padding: EdgeInsets.zero,
                             itemBuilder: (context, index) {
-                              String url =
-                                  "https://chemtradea.chemtradeasia.com/";
                               return InkWell(
                                 onTap: () async {
                                   Navigator.push(
@@ -226,188 +227,76 @@ class _SearchScreenState extends State<SearchScreen> {
                                         FieldValue.arrayUnion([data])
                                   });
                                 },
-                                child: Card(
-                                  shadowColor: blackColor,
-                                  elevation: 3.0,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(
-                                              size24px / 4),
-                                          child: SizedBox(
-                                            height: size20px * 5.5,
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  const BorderRadius.all(
-                                                      Radius.circular(
-                                                          size20px / 2)),
-                                              child: CachedNetworkImage(
-                                                  imageUrl:
-                                                      "$url${state.searchProducts![index].productimage}",
-                                                  fit: BoxFit.fill,
-                                                  placeholder: (context, url) =>
-                                                      const Center(
-                                                        child:
-                                                            CircularProgressIndicator
-                                                                .adaptive(),
-                                                      ),
-                                                  errorWidget: (context, url,
-                                                          error) =>
-                                                      const Icon(Icons.error)),
+                                child: BlocBuilder<AuthBloc, AuthState>(
+                                  builder: (context, authState) {
+                                    return authState.role != "Sales"
+                                        ? ProductCard(
+                                            product: ProductEntity(
+                                              productname: state
+                                                  .searchProducts![index]
+                                                  .productname,
+                                              productimage: state
+                                                  .searchProducts![index]
+                                                  .productimage,
+                                              casNumber: state
+                                                  .searchProducts![index]
+                                                  .casNumber,
+                                              hsCode: state
+                                                  .searchProducts![index]
+                                                  .hsCode,
+                                              seoUrl: state
+                                                  .searchProducts![index]
+                                                  .seoUrl,
                                             ),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 10.0),
-                                          child: Text(
-                                            state.searchProducts![index]
-                                                    .productname ??
-                                                "",
-                                            style: text14,
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10.0),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                const Text("CAS Number :",
-                                                    style: text10),
-                                                Text(
-                                                    state.searchProducts![index]
-                                                            .casNumber ??
-                                                        "",
-                                                    style: text10.copyWith(
-                                                        color: greyColor2)),
-                                              ],
-                                            ),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                const Text("HS Code :",
-                                                    style: text10),
-                                                Text(
-                                                    state.searchProducts![index]
-                                                            .hsCode ??
-                                                        "",
-                                                    style: text10.copyWith(
-                                                        color: greyColor2)),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 10.0,
-                                            right: 10.0,
-                                            top: 10.0,
-                                            bottom: 12.0),
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                              child: SizedBox(
-                                                  height: 30,
-                                                  width: MediaQuery.of(context)
-                                                      .size
-                                                      .width,
-                                                  child: ElevatedButton(
-                                                      style: ButtonStyle(
-                                                          backgroundColor:
-                                                              MaterialStateProperty
-                                                                  .all<Color>(
-                                                                      primaryColor1),
-                                                          shape: MaterialStateProperty
-                                                              .all<
-                                                                  RoundedRectangleBorder>(
-                                                            RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          7.0),
-                                                            ),
-                                                          ),
-                                                          padding: MaterialStateProperty
-                                                              .all<EdgeInsets>(
-                                                                  EdgeInsets
-                                                                      .zero)),
-                                                      onPressed: () {
-                                                        List<ProductToRfq>
-                                                            products = [];
-                                                        ProductToRfq product =
-                                                            ProductToRfq(
-                                                          productName: state
-                                                              .searchProducts![
-                                                                  index]
-                                                              .productname!,
-                                                          productImage: state
-                                                              .searchProducts![
-                                                                  index]
-                                                              .productimage!,
-                                                          hsCode: state
-                                                              .searchProducts![
-                                                                  index]
-                                                              .hsCode!,
-                                                          casNumber: state
-                                                              .searchProducts![
-                                                                  index]
-                                                              .casNumber!,
-                                                        );
-                                                        products.add(product);
+                                            onPressed: () {
+                                              List<ProductToRfq> products = [];
+                                              ProductToRfq product =
+                                                  ProductToRfq(
+                                                productName: state
+                                                    .searchProducts![index]
+                                                    .productname!,
+                                                productImage: state
+                                                    .searchProducts![index]
+                                                    .productimage!,
+                                                hsCode: state
+                                                    .searchProducts![index]
+                                                    .hsCode!,
+                                                casNumber: state
+                                                    .searchProducts![index]
+                                                    .casNumber!,
+                                              );
+                                              products.add(product);
 
-                                                        RequestQuotationParameter
-                                                            param =
-                                                            RequestQuotationParameter(
-                                                          products: products,
-                                                        );
-                                                        context.go(
-                                                            "/home/request_quotation",
-                                                            extra: param);
-                                                      },
-                                                      child: Text(
-                                                        "Send Inquiry",
-                                                        style: text12.copyWith(
-                                                            color: whiteColor),
-                                                      ))),
+                                              RequestQuotationParameter param =
+                                                  RequestQuotationParameter(
+                                                products: products,
+                                              );
+                                              context.go(
+                                                  "/home/request_quotation",
+                                                  extra: param);
+                                            },
+                                          )
+                                        : ProductCard(
+                                            product: ProductEntity(
+                                              productname: state
+                                                  .searchProducts![index]
+                                                  .productname,
+                                              productimage: state
+                                                  .searchProducts![index]
+                                                  .productimage,
+                                              casNumber: state
+                                                  .searchProducts![index]
+                                                  .casNumber,
+                                              hsCode: state
+                                                  .searchProducts![index]
+                                                  .hsCode,
+                                              seoUrl: state
+                                                  .searchProducts![index]
+                                                  .seoUrl,
                                             ),
-                                            const SizedBox(width: 2),
-                                            Container(
-                                              height: 30,
-                                              width: 30,
-                                              decoration: const BoxDecoration(
-                                                  color: secondaryColor1,
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(5))),
-                                              child: AddToCartButton(
-                                                productEntity: state
-                                                    .searchProducts![index],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  ),
+                                            isNotRecentSeenCard: false,
+                                          );
+                                  },
                                 ),
                               );
                             },
@@ -604,7 +493,7 @@ class _RecentlySeenWidgetState extends State<RecentlySeenWidget> {
               docsData["recentlySeen"] == null
                   ? const Text("Tidak ada product")
                   : SizedBox(
-                      height: 120,
+                      height: 125,
                       width: double.infinity,
                       child: ListView.builder(
                         shrinkWrap: true,

@@ -446,98 +446,122 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 const NeverScrollableScrollPhysics(),
                                             itemBuilder: (context, index) {
                                               return InkWell(
-                                                  onTap: () async {
-                                                    context.pushNamed("product",
-                                                        pathParameters: {
-                                                          'url': state
-                                                              .topProductData![
-                                                                  index]
-                                                              .seoUrl!
-                                                        });
+                                                onTap: () async {
+                                                  context.pushNamed("product",
+                                                      pathParameters: {
+                                                        'url': state
+                                                            .topProductData![
+                                                                index]
+                                                            .seoUrl!
+                                                      });
 
-                                                    Map<String, dynamic> data =
-                                                        {
-                                                      "productName": state
-                                                          .topProductData![
-                                                              index]
-                                                          .productname,
-                                                      "seo_url": state
-                                                          .topProductData![
-                                                              index]
-                                                          .seoUrl,
-                                                      "casNumber": state
-                                                          .topProductData![
-                                                              index]
-                                                          .casNumber,
-                                                      "hsCode": state
-                                                          .topProductData![
-                                                              index]
-                                                          .hsCode,
-                                                      "productImage": state
-                                                          .topProductData![
-                                                              index]
-                                                          .productimage
-                                                    };
+                                                  Map<String, dynamic> data = {
+                                                    "productName": state
+                                                        .topProductData![index]
+                                                        .productname,
+                                                    "seo_url": state
+                                                        .topProductData![index]
+                                                        .seoUrl,
+                                                    "casNumber": state
+                                                        .topProductData![index]
+                                                        .casNumber,
+                                                    "hsCode": state
+                                                        .topProductData![index]
+                                                        .hsCode,
+                                                    "productImage": state
+                                                        .topProductData![index]
+                                                        .productimage
+                                                  };
 
-                                                    await _addRecentlySeen(
-                                                        param: data);
-                                                  },
-                                                  //product cards
-                                                  child: ProductCard(
-                                                      product: ProductEntity(
-                                                          productname: state
-                                                              .topProductData![
-                                                                  index]
-                                                              .productname,
-                                                          productimage: state
-                                                              .topProductData![
-                                                                  index]
-                                                              .productimage!,
-                                                          hsCode: state
-                                                              .topProductData![
-                                                                  index]
-                                                              .hsCode!,
-                                                          casNumber: state
-                                                              .topProductData![
-                                                                  index]
-                                                              .casNumber!,
-                                                          seoUrl: state
-                                                              .topProductData![
-                                                                  index]
-                                                              .seoUrl!),
-                                                      onPressed: () {
-                                                        List<ProductToRfq>
-                                                            products = [];
-                                                        ProductToRfq product =
-                                                            ProductToRfq(
-                                                          productName: state
-                                                              .topProductData![
-                                                                  index]
-                                                              .productname!,
-                                                          productImage: state
-                                                              .topProductData![
-                                                                  index]
-                                                              .productimage!,
-                                                          hsCode: state
-                                                              .topProductData![
-                                                                  index]
-                                                              .hsCode!,
-                                                          casNumber: state
-                                                              .topProductData![
-                                                                  index]
-                                                              .casNumber!,
-                                                        );
-                                                        products.add(product);
+                                                  await _addRecentlySeen(
+                                                      param: data);
+                                                },
+                                                //product cards
 
-                                                        RequestQuotationParameter
-                                                            param =
-                                                            RequestQuotationParameter(
-                                                          products: products,
-                                                        );
-                                                        context.go(
-                                                            "/home/request_quotation",
-                                                            extra: param);
-                                                      }));
+                                                child: streamSnapshot
+                                                            .data['role'] !=
+                                                        "Sales"
+                                                    ? ProductCard(
+                                                        product: ProductEntity(
+                                                            productname: state
+                                                                .topProductData![
+                                                                    index]
+                                                                .productname,
+                                                            productimage: state
+                                                                .topProductData![
+                                                                    index]
+                                                                .productimage!,
+                                                            hsCode: state
+                                                                .topProductData![
+                                                                    index]
+                                                                .hsCode!,
+                                                            casNumber: state
+                                                                .topProductData![
+                                                                    index]
+                                                                .casNumber!,
+                                                            seoUrl: state
+                                                                .topProductData![
+                                                                    index]
+                                                                .seoUrl!),
+                                                        onPressed: () {
+                                                          List<ProductToRfq>
+                                                              products = [];
+                                                          ProductToRfq product =
+                                                              ProductToRfq(
+                                                            productName: state
+                                                                .topProductData![
+                                                                    index]
+                                                                .productname!,
+                                                            productImage: state
+                                                                .topProductData![
+                                                                    index]
+                                                                .productimage!,
+                                                            hsCode: state
+                                                                .topProductData![
+                                                                    index]
+                                                                .hsCode!,
+                                                            casNumber: state
+                                                                .topProductData![
+                                                                    index]
+                                                                .casNumber!,
+                                                          );
+                                                          products.add(product);
+
+                                                          RequestQuotationParameter
+                                                              param =
+                                                              RequestQuotationParameter(
+                                                            products: products,
+                                                          );
+                                                          context.go(
+                                                              "/home/request_quotation",
+                                                              extra: param);
+                                                        })
+                                                    : ProductCard(
+                                                        product: ProductEntity(
+                                                            productname: state
+                                                                .topProductData![
+                                                                    index]
+                                                                .productname,
+                                                            productimage: state
+                                                                .topProductData![
+                                                                    index]
+                                                                .productimage!,
+                                                            hsCode: state
+                                                                .topProductData![
+                                                                    index]
+                                                                .hsCode!,
+                                                            casNumber: state
+                                                                .topProductData![
+                                                                    index]
+                                                                .casNumber!,
+                                                            seoUrl: state
+                                                                .topProductData![
+                                                                    index]
+                                                                .seoUrl!),
+                                                        isNotRecentSeenCard:
+                                                            false,
+                                                      ),
+                                              );
                                             },
                                           );
                                         } else {

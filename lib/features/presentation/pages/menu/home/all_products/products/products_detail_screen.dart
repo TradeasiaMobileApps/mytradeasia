@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/config/routes/parameters.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
+import 'package:mytradeasia/features/domain/entities/product_entities/product_entity.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_to_rfq_entity.dart';
 import 'package:mytradeasia/features/presentation/state_management/cart_bloc/cart_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/cart_bloc/cart_event.dart';
@@ -16,6 +17,7 @@ import 'package:mytradeasia/features/presentation/state_management/product_bloc/
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/detail_product_bloc/detail_product_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/detail_product_bloc/detail_product_state.dart';
 import 'package:mytradeasia/features/presentation/widgets/cart_button.dart';
+import 'package:mytradeasia/features/presentation/widgets/product_card.dart';
 import 'package:sendbird_chat_sdk/sendbird_chat_sdk.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -581,125 +583,27 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                                             .seoUrl ??
                                         "/en/acrylic-acid"
                                   });
-                                  // Navigator.push(context, MaterialPageRoute(
-                                  //   builder: (context) {
-                                  //     return ProductsDetailScreen(
-                                  //         urlProduct: snapshot
-                                  //                 .data
-                                  //                 ?.relatedProducts[
-                                  //                     indexRelated]
-                                  //                 .seoUrl ??
-                                  //             "/en/acrylic-acid");
-                                  //   },
-                                  // ));
                                 },
-                                child: Card(
-                                  shadowColor: blackColor,
-                                  elevation: 3.0,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.all(size24px / 4),
-                                        child: ClipRRect(
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(size20px / 2)),
-                                          child: SizedBox(
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            height: size20px * 5.5,
-                                            child: state
-                                                        .detailProductData
-                                                        ?.relatedProducts?[
-                                                            indexRelated]
-                                                        .productimage !=
-                                                    null
-                                                ? CachedNetworkImage(
-                                                    imageUrl: url +
-                                                        state
-                                                            .detailProductData!
-                                                            .relatedProducts![
-                                                                indexRelated]
-                                                            .productimage!,
-                                                    // state.detailProductData!.relatedProducts[indexRelated].productimage,
-                                                    fit: BoxFit.fill,
-                                                    placeholder:
-                                                        (context, url) =>
-                                                            const Center(
-                                                      child:
-                                                          CircularProgressIndicator
-                                                              .adaptive(),
-                                                    ),
-                                                    errorWidget: (context, url,
-                                                            error) =>
-                                                        const Icon(Icons.error),
-                                                  )
-                                                : const CircularProgressIndicator
-                                                    .adaptive(),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 5.0, horizontal: 10.0),
-                                          child: Text(
-                                            state
-                                                .detailProductData!
-                                                .relatedProducts![indexRelated]
-                                                .productname!,
-                                            style: text14,
-                                            maxLines: 2,
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: size20px / 2,
-                                            vertical: size20px / 5),
-                                        child: Row(
-                                          children: [
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                const Text("CAS Number :",
-                                                    style: text10),
-                                                Text(
-                                                    state
-                                                        .detailProductData!
-                                                        .relatedProducts![
-                                                            indexRelated]
-                                                        .casNumber!,
-                                                    style: text10.copyWith(
-                                                        color: greyColor2)),
-                                              ],
-                                            ),
-                                            const Spacer(),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                const Text("HS Code :",
-                                                    style: text10),
-                                                Text(
-                                                    state
-                                                        .detailProductData!
-                                                        .relatedProducts![
-                                                            indexRelated]
-                                                        .hsCode!,
-                                                    style: text10.copyWith(
-                                                        color: greyColor2)),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
+                                child: ProductCard(
+                                  product: ProductEntity(
+                                    productname: state
+                                        .detailProductData!
+                                        .relatedProducts![indexRelated]
+                                        .productname,
+                                    productimage: state
+                                        .detailProductData!
+                                        .relatedProducts![indexRelated]
+                                        .productimage,
+                                    casNumber: state
+                                        .detailProductData!
+                                        .relatedProducts![indexRelated]
+                                        .casNumber,
+                                    hsCode: state.detailProductData!
+                                        .relatedProducts![indexRelated].hsCode,
+                                    seoUrl: state.detailProductData!
+                                        .relatedProducts![indexRelated].seoUrl,
                                   ),
+                                  isNotRecentSeenCard: false,
                                 ),
                               );
                             },
