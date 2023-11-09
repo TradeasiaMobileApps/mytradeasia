@@ -14,7 +14,7 @@ class SalesforceLoginService {
     String passwordSalesforce = "Salesforce.1";
 
     String urlSalesforce =
-        "https://test.salesforce.com/services/oauth2/token?grant_type=password&client_id=$clientId&client_secret=$clientSecret&username=$userName&password=$passwordSalesforce";
+        "https://tradeasia--newmind.sandbox.my.salesforce.com/services/oauth2/token?grant_type=password&client_id=$clientId&client_secret=$clientSecret&username=$userName&password=$passwordSalesforce";
 
     final response = await dio.post(
       urlSalesforce,
