@@ -3,7 +3,7 @@ import 'package:mytradeasia/features/domain/entities/sales_force_data_entities/s
 class SalesforceCPModel extends SalesforceCPEntity {
   int? totalSize;
   bool? done;
-  List<Records>? records;
+  List<CPRecords>? records;
 
   SalesforceCPModel({this.totalSize, this.done, this.records});
 
@@ -11,9 +11,9 @@ class SalesforceCPModel extends SalesforceCPEntity {
     totalSize = json['totalSize'];
     done = json['done'];
     if (json['records'] != null) {
-      records = <Records>[];
+      records = <CPRecords>[];
       json['records'].forEach((v) {
-        records!.add(new Records.fromJson(v));
+        records!.add(new CPRecords.fromJson(v));
       });
     }
   }
@@ -29,7 +29,7 @@ class SalesforceCPModel extends SalesforceCPEntity {
   }
 }
 
-class Records {
+class CPRecords {
   Attributes? attributes;
   String? id;
   String? createdById;
@@ -130,7 +130,7 @@ class Records {
   String? aWBStatusDescriptionC;
   String? aWBLastStatusUpdatedC;
 
-  Records(
+  CPRecords(
       {this.attributes,
       this.id,
       this.createdById,
@@ -231,7 +231,7 @@ class Records {
       this.aWBStatusDescriptionC,
       this.aWBLastStatusUpdatedC});
 
-  Records.fromJson(Map<String, dynamic> json) {
+  CPRecords.fromJson(Map<String, dynamic> json) {
     attributes = json['attributes'] != null
         ? new Attributes.fromJson(json['attributes'])
         : null;

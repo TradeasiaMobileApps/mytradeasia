@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:mytradeasia/core/constants/constants.dart';
 import 'package:mytradeasia/features/data/model/sales_force_data_models/sales_force_cp_model.dart';
@@ -39,6 +41,7 @@ class SalesforceDataService {
       ),
     );
     final data = SalesforceCPModel.fromJson(response.data);
+    log("SF CP DATA : ${response.data}");
     return Response<SalesforceCPModel>(
       statusCode: response.statusCode,
       requestOptions: response.requestOptions,

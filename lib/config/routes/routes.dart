@@ -137,7 +137,11 @@ class Routes {
                 GoRoute(
                     path: "order",
                     builder: (context, state) {
-                      return const OrderDetailScreen();
+                      OrderDetailParameter param =
+                          state.extra as OrderDetailParameter;
+                      return OrderDetailScreen(
+                        cpRecord: param.cpRecord,
+                      );
                     }),
                 GoRoute(
                     path: "tracking_document",

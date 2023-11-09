@@ -1,35 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
+import 'package:mytradeasia/features/data/model/sales_force_data_models/sales_force_cp_model.dart';
+import 'package:mytradeasia/helper/helper_functions.dart';
 
 class OrderDetailScreen extends StatelessWidget {
-  const OrderDetailScreen({super.key});
+  OrderDetailScreen({super.key, required this.cpRecord});
 
-  static const orderData = {
-    "P.I Number": "PI/TI/221110703/2022",
-    "Customer Name": "Amelia Azzahra",
-    "POL": "Any Port in Vietnam",
-    "POD": "Chattogram, Bangladesh",
-    "Qty": "84,00 MT",
-    "AWB": "...",
-    "ETD": "2023/01/17 13:00 PM",
-    "ETA": "2023/01/31 13:00 PM",
-    "B/L Number": "...",
-  };
-
-  Widget dataRow(int index) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(child: Text(orderData.keys.toList()[index])),
-        const Text(":     "),
-        Expanded(child: Text(orderData.values.toList()[index])),
-      ],
-    );
-  }
+  final CPRecords cpRecord;
 
   @override
   Widget build(BuildContext context) {
     const int index = 1;
+
+    var orderData = {
+      "P.I Number": cpRecord.pINoC ?? "",
+      "Customer Name": cpRecord.accountNameBackendC ?? "",
+      "POL": "",
+      "POD": "",
+      "Qty":
+          "${parseDoubleToIntegerIfNecessary(cpRecord.quantityC!)} ${cpRecord.uOMC ?? ""}",
+      "AWB": " - ",
+      "ETD": " - ",
+      "ETA": " - ",
+      "B/L Number": cpRecord.bLNoC ?? "",
+    };
+
+    Widget dataRow(int index) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(child: Text(orderData.keys.toList()[index])),
+          const Text(":     "),
+          Expanded(child: Text(orderData.values.toList()[index])),
+        ],
+      );
+    }
+
     return Scaffold(
       backgroundColor: whiteColor,
       appBar: AppBar(
@@ -75,9 +81,14 @@ class OrderDetailScreen extends StatelessWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              "Dipentene",
-                              style: heading2,
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.55,
+                              child: Text(
+                                cpRecord.productNameC ?? "",
+                                style: heading2,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
                             const SizedBox(height: 10.0),
                             Row(
@@ -91,7 +102,7 @@ class OrderDetailScreen extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 5.0),
                                     Text(
-                                      "138 - 86 - 3",
+                                      " - ",
                                       style: body1Regular.copyWith(
                                           color: greyColor2),
                                     ),

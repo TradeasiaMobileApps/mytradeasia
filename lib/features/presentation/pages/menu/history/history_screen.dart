@@ -4,7 +4,7 @@ import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mytradeasia/features/presentation/pages/menu/history/order/order_detail_screen.dart';
+import 'package:mytradeasia/config/routes/parameters.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_data/salesforce_data_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_data/salesforce_data_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_data/salesforce_data_state.dart';
@@ -125,14 +125,90 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                               ),
                                             ),
                                             // Order Detail
-                                            const BottomSheetHistory(
-                                              title: "Order Detail",
-                                              subTitle:
-                                                  "Lorem ipsum dolor sit amet consectetur. In est porta nisi pulvinar lectus fringilla eget volutpat.",
-                                              urlLogo:
-                                                  "assets/images/icon_order_detail.png",
-                                              navigationPage:
-                                                  OrderDetailScreen(),
+                                            // BottomSheetHistory(
+                                            //   title: "Order Detail",
+                                            //   subTitle:
+                                            //       "Lorem ipsum dolor sit amet consectetur. In est porta nisi pulvinar lectus fringilla eget volutpat.",
+                                            //   urlLogo:
+                                            //       "assets/images/icon_order_detail.png",
+                                            //   navigationPage: OrderDetailScreen(
+                                            //     cpEntity: state.cpEntity!,
+                                            //   ),
+                                            // ),
+                                            InkWell(
+                                              onTap: () {
+                                                OrderDetailParameter param =
+                                                    OrderDetailParameter(
+                                                        cpRecord: state
+                                                            .cpEntity!
+                                                            .records![index]);
+                                                context.go("/history/order",
+                                                    extra: param);
+
+                                                // Navigator.push(context, MaterialPageRoute(
+                                                //   builder: (context) {
+                                                //     return navigationPage;
+                                                //   },
+                                                // ));
+                                              },
+                                              child: Container(
+                                                height: 110.0,
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      color: greyColor3),
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                    Radius.circular(7.0),
+                                                  ),
+                                                ),
+                                                child: Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 20.0,
+                                                      vertical: 15.0),
+                                                  child: Row(
+                                                    children: [
+                                                      Image.asset(
+                                                        "assets/images/icon_order_detail.png",
+                                                        width: 43.0,
+                                                        height: 43.0,
+                                                      ),
+                                                      const SizedBox(
+                                                          width: 20.0),
+                                                      Expanded(
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              "Order Detail",
+                                                              style: heading3,
+                                                            ),
+                                                            const SizedBox(
+                                                                height: 5.0),
+                                                            Text(
+                                                              "Lorem ipsum dolor sit amet consectetur. In est porta nisi pulvinar lectus fringilla eget volutpat.",
+                                                              style: body2Medium
+                                                                  .copyWith(
+                                                                color:
+                                                                    greyColor2,
+                                                              ),
+                                                              maxLines: 2,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
                                             ),
                                             // Tracking Shipping
                                             const SizedBox(height: 10.0),

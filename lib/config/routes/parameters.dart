@@ -1,3 +1,4 @@
+import 'package:mytradeasia/features/data/model/sales_force_data_models/sales_force_cp_model.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_to_rfq_entity.dart';
 import 'package:mytradeasia/features/domain/entities/searates_entities/searates_bl_entity.dart';
 
@@ -51,4 +52,9 @@ class OtpVerificationParameter {
 class RequestQuotationParameter {
   List<ProductToRfq> products;
   RequestQuotationParameter({required this.products});
+}
+
+class OrderDetailParameter {
+  CPRecords cpRecord;
+  OrderDetailParameter({required this.cpRecord});
 }

@@ -4,7 +4,7 @@ import 'package:mytradeasia/features/data/model/sales_force_data_models/sales_fo
 class SalesforceCPEntity extends Equatable {
   int? totalSize;
   bool? done;
-  List<Records>? records;
+  List<CPRecords>? records;
 
   SalesforceCPEntity({this.totalSize, this.done, this.records});
 
