@@ -12,6 +12,7 @@ abstract class UserRepository {
   Future<String> getCurrentUserId();
   void addRecentlySeen(Map<String, dynamic> s);
   Future<List<dynamic>> getRecentlySeen();
+  void deleteRecentlySeen();
   Future<UserCredentialEntity> getUserCredentials();
   Future<String> updateProfile(Map<String, dynamic> data);
   Future<String> phoneAuthentication(String s);

@@ -225,6 +225,14 @@ class AuthUserFirebase {
     return recentlySeenData;
   }
 
+  void deleteRecentlySeen() async {
+    // String docsId = _auth.currentUser!.uid.toString();
+    await FirebaseFirestore.instance
+        .collection('biodata')
+        .doc(getCurrentUId())
+        .update({"recentlySeen": FieldValue.delete()});
+  }
+
   void sendResetPassword(String email) async {
     await _auth.sendPasswordResetEmail(email: email);
   }

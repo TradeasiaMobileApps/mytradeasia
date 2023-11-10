@@ -1,19 +1,20 @@
 import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_entity.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_to_rfq_entity.dart';
+import 'package:mytradeasia/features/domain/usecases/user_usecases/add_recently_seen.dart';
+import 'package:mytradeasia/features/domain/usecases/user_usecases/get_recently_seen.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/search_product/search_product_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/search_product/search_product_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/search_product/search_product_state.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
 import 'package:mytradeasia/features/presentation/widgets/product_card.dart';
+import 'package:mytradeasia/helper/injections_container.dart';
 
 import '../../../../../../config/routes/parameters.dart';
 import '../../../../state_management/auth_bloc/auth_state.dart';
@@ -30,8 +31,8 @@ class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchProductController =
       TextEditingController();
 
+  final AddRecentlySeen _addRecentlySeen = injections<AddRecentlySeen>();
   Timer? debouncerTime;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void dispose() {
@@ -204,8 +205,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                       },
                                     ),
                                   );
-                                  String docsId =
-                                      _auth.currentUser!.uid.toString();
+
                                   Map<String, dynamic> data = {
                                     "productName": state
                                         .searchProducts![index].productname,
@@ -219,13 +219,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                         .searchProducts![index].productimage
                                   };
 
-                                  await FirebaseFirestore.instance
-                                      .collection('biodata')
-                                      .doc(docsId)
-                                      .update({
-                                    "recentlySeen":
-                                        FieldValue.arrayUnion([data])
-                                  });
+                                  await _addRecentlySeen(param: data);
                                 },
                                 child: BlocBuilder<AuthBloc, AuthState>(
                                   builder: (context, authState) {
@@ -433,110 +427,94 @@ class RecentlySeenWidget extends StatefulWidget {
 }
 
 class _RecentlySeenWidgetState extends State<RecentlySeenWidget> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final String url = "https://chemtradea.chemtradeasia.com/";
+  final GetRecentlySeen _getRecentlySeen = injections<GetRecentlySeen>();
+  List _recentlySeen = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getRecentlyseen();
+  }
+
+  void getRecentlyseen() async {
+    _recentlySeen = await _getRecentlySeen();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: _firestore
-          .collection('biodata')
-          .where('uid', isEqualTo: _auth.currentUser!.uid.toString())
-          .snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator.adaptive();
-        } else if (snapshot.hasError) {
-          return const Text("Error");
-        } else if (snapshot.hasData) {
-          var docsData = snapshot.data!.docs[0].data();
-          return Column(
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: size20px - 4),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: size20px - 4),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      "Recently Seen",
-                      style: heading2,
+              const Text(
+                "Recently Seen",
+                style: heading2,
+              ),
+              InkWell(
+                onTap: () {},
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: secondaryColor5,
+                      borderRadius: BorderRadius.circular(size20px / 2)),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: size20px / 2, vertical: 3.0),
+                    child: Text(
+                      "Delete",
+                      style: body1Regular.copyWith(color: secondaryColor1),
                     ),
-                    InkWell(
-                      onTap: () async {
-                        String docsId = _auth.currentUser!.uid.toString();
-                        await FirebaseFirestore.instance
-                            .collection('biodata')
-                            .doc(docsId)
-                            .update(
-                          {"recentlySeen": FieldValue.delete()},
-                        );
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: secondaryColor5,
-                            borderRadius: BorderRadius.circular(size20px / 2)),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: size20px / 2, vertical: 3.0),
-                          child: Text(
-                            "Delete",
-                            style:
-                                body1Regular.copyWith(color: secondaryColor1),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+        _recentlySeen.isEmpty
+            ? const Text("Tidak ada product")
+            : SizedBox(
+                height: 125,
+                width: double.infinity,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: _recentlySeen.length,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ClipRRect(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(7.0)),
+                              child: CachedNetworkImage(
+                                imageUrl:
+                                    "$url${_recentlySeen[index]["productImage"]}",
+                                height: 76,
+                                width: 76,
+                                fit: BoxFit.fill,
+                              )),
+                          const SizedBox(height: size20px / 4),
+                          SizedBox(
+                            width: 76,
+                            child: Text(
+                              "${_recentlySeen[index]["productName"]}",
+                              maxLines: 2,
+                              style: body1Medium,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                    )
-                  ],
+                    );
+                  },
                 ),
               ),
-              docsData["recentlySeen"] == null
-                  ? const Text("Tidak ada product")
-                  : SizedBox(
-                      height: 125,
-                      width: double.infinity,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: docsData["recentlySeen"].length,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ClipRRect(
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(7.0)),
-                                    child: CachedNetworkImage(
-                                      imageUrl:
-                                          "$url${docsData["recentlySeen"][index]["productImage"]}",
-                                      height: 76,
-                                      width: 76,
-                                      fit: BoxFit.fill,
-                                    )),
-                                const SizedBox(height: size20px / 4),
-                                SizedBox(
-                                  width: 76,
-                                  child: Text(
-                                    "${docsData["recentlySeen"][index]["productName"]}",
-                                    maxLines: 2,
-                                    style: body1Medium,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-            ],
-          );
-        } else {
-          return Container();
-        }
-      },
+      ],
     );
   }
 }

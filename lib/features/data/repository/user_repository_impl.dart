@@ -131,4 +131,9 @@ class UserRepositoryImpl implements UserRepository {
   Future<String> updateEmail(String s) async {
     return await _authUserFirebase.updateEmail(s);
   }
+
+  @override
+  void deleteRecentlySeen() {
+    _authUserFirebase.deleteRecentlySeen();
+  }
 }
