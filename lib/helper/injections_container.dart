@@ -61,6 +61,7 @@ import 'package:mytradeasia/features/domain/usecases/search_product_usecases/get
 import 'package:mytradeasia/features/domain/usecases/top_product_usecases/get_top_product.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/add_recently_seen.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/delete_account.dart';
+import 'package:mytradeasia/features/domain/usecases/user_usecases/delete_recently_seen.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_current_userid.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_recently_seen.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_credentials.dart';
@@ -83,6 +84,7 @@ import 'package:mytradeasia/features/presentation/state_management/faq_bloc/faq_
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/detail_product_bloc/detail_product_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/list_product/list_product_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/search_product/search_product_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/recently_seen_bloc/recently_seen_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_data/salesforce_data_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_detail/salesforce_detail_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_login/salesforce_login_bloc.dart';
@@ -186,6 +188,8 @@ Future<void> initializeDependencies() async {
   injections.registerSingleton<SendResetPass>(SendResetPass(injections()));
   injections.registerSingleton<DeleteAccount>(DeleteAccount(injections()));
   injections.registerSingleton<UpdateEmail>(UpdateEmail(injections()));
+  injections
+      .registerSingleton<DeleteRecentlySeen>(DeleteRecentlySeen(injections()));
 
   //Bloc
   injections
@@ -217,4 +221,6 @@ Future<void> initializeDependencies() async {
       () => SearatesRouteBloc(injections()));
   injections
       .registerFactory<SearatesBLBloc>(() => SearatesBLBloc(injections()));
+  injections.registerFactory<RecentlySeenBloc>(
+      () => RecentlySeenBloc(injections(), injections(), injections()));
 }

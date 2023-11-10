@@ -10,6 +10,8 @@ import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_snap
 import 'package:mytradeasia/features/presentation/pages/menu/history/tracking_document/tracking_document_screen.dart';
 import 'package:mytradeasia/features/presentation/state_management/cart_bloc/cart_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/cart_bloc/cart_event.dart';
+import 'package:mytradeasia/features/presentation/state_management/recently_seen_bloc/recently_seen_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/recently_seen_bloc/recently_seen_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_login/salesforce_login_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_login/salesforce_login_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_login/salesforce_login_state.dart';
@@ -23,6 +25,8 @@ import 'package:mytradeasia/utils/sales_force_screen.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../../state_management/recently_seen_bloc/recently_seen_state.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -33,15 +37,14 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final GetUserSnapshot _getUserSnapshot = injections<GetUserSnapshot>();
   final AddRecentlySeen _addRecentlySeen = injections<AddRecentlySeen>();
-  final GetRecentlySeen _getRecentlySeen = injections<GetRecentlySeen>();
+  // final GetRecentlySeen _getRecentlySeen = injections<GetRecentlySeen>();
   final String url = "https://chemtradea.chemtradeasia.com/";
   final bool showAll = false;
-  List _recentlySeen = [];
+  // List _recentlySeen = [];
 
   @override
   void initState() {
     super.initState();
-    getRecentlyseen();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       BlocProvider.of<TopProductBloc>(context).add(const GetTopProduct());
 
@@ -49,11 +52,9 @@ class _HomeScreenState extends State<HomeScreen> {
           .add(const LoginSalesforce());
 
       BlocProvider.of<CartBloc>(context).add(const GetCartItems());
+      BlocProvider.of<RecentlySeenBloc>(context)
+          .add(const GetRecentlySeenEvent());
     });
-  }
-
-  void getRecentlyseen() async {
-    _recentlySeen = await _getRecentlySeen();
   }
 
   @override
@@ -664,86 +665,106 @@ class _HomeScreenState extends State<HomeScreen> {
                                       child: Text("Last Seen Products",
                                           style: text18),
                                     ),
-                                    _recentlySeen.isEmpty
-                                        ? const Center(
-                                            child: Text("Tidak ada product"))
-                                        : Column(
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    bottom: size20px),
-                                                child: GridView.builder(
-                                                  gridDelegate:
-                                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                                          crossAxisCount: 2,
-                                                          crossAxisSpacing: 15,
-                                                          mainAxisSpacing: 15,
-                                                          childAspectRatio:
-                                                              0.7),
-                                                  itemCount:
-                                                      _recentlySeen.length < 4
-                                                          ? _recentlySeen.length
+                                    BlocBuilder<RecentlySeenBloc,
+                                        RecentlySeenState>(
+                                      builder: (context, state) {
+                                        return state.products!.isEmpty
+                                            ? const Center(
+                                                child:
+                                                    Text("Tidak ada product"))
+                                            : Column(
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            bottom: size20px),
+                                                    child: GridView.builder(
+                                                      gridDelegate:
+                                                          const SliverGridDelegateWithFixedCrossAxisCount(
+                                                              crossAxisCount: 2,
+                                                              crossAxisSpacing:
+                                                                  15,
+                                                              mainAxisSpacing:
+                                                                  15,
+                                                              childAspectRatio:
+                                                                  0.7),
+                                                      itemCount: state.products!
+                                                                  .length <
+                                                              4
+                                                          ? state
+                                                              .products!.length
                                                           : 4,
-                                                  shrinkWrap: true,
-                                                  padding: EdgeInsets.zero,
-                                                  physics:
-                                                      const NeverScrollableScrollPhysics(),
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    return ProductCard(
-                                                      product: ProductEntity(
-                                                        productname:
-                                                            _recentlySeen[index]
-                                                                ["productName"],
-                                                        productimage:
-                                                            _recentlySeen[index]
-                                                                [
-                                                                "productImage"],
-                                                        casNumber:
-                                                            _recentlySeen[index]
-                                                                ["casNumber"],
-                                                        hsCode:
-                                                            _recentlySeen[index]
-                                                                ["hsCode"],
-                                                      ),
-                                                      isNotRecentSeenCard:
-                                                          false,
-                                                    );
-                                                  },
-                                                ),
-                                              ),
-                                              /* Button See More */
-                                              Center(
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    color: secondaryColor5,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            size20px * 5),
+                                                      shrinkWrap: true,
+                                                      padding: EdgeInsets.zero,
+                                                      physics:
+                                                          const NeverScrollableScrollPhysics(),
+                                                      itemBuilder:
+                                                          (context, index) {
+                                                        return ProductCard(
+                                                          product:
+                                                              ProductEntity(
+                                                            productname: state
+                                                                .products![
+                                                                    index]
+                                                                .productname,
+                                                            productimage: state
+                                                                .products![
+                                                                    index]
+                                                                .productimage,
+                                                            casNumber: state
+                                                                .products![
+                                                                    index]
+                                                                .casNumber,
+                                                            hsCode: state
+                                                                .products![
+                                                                    index]
+                                                                .hsCode,
+                                                          ),
+                                                          isNotRecentSeenCard:
+                                                              false,
+                                                        );
+                                                      },
+                                                    ),
                                                   ),
-                                                  child: InkWell(
-                                                    onTap: () {},
-                                                    child: Padding(
-                                                      padding: const EdgeInsets
-                                                              .symmetric(
-                                                          horizontal:
-                                                              size20px / 2,
-                                                          vertical:
-                                                              size20px / 5),
-                                                      child: Text(
-                                                        "Load More",
-                                                        style: text12.copyWith(
-                                                            color:
-                                                                secondaryColor1),
+                                                  /* Button See More */
+                                                  Center(
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        color: secondaryColor5,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(
+                                                                    size20px *
+                                                                        5),
+                                                      ),
+                                                      child: InkWell(
+                                                        onTap: () {},
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      size20px /
+                                                                          2,
+                                                                  vertical:
+                                                                      size20px /
+                                                                          5),
+                                                          child: Text(
+                                                            "Load More",
+                                                            style: text12.copyWith(
+                                                                color:
+                                                                    secondaryColor1),
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
-                                                ),
-                                              ),
-                                              /* End Button See More */
-                                            ],
-                                          ),
-                                    /* End Lastseen Section */
+                                                  /* End Button See More */
+                                                ],
+                                              );
+                                        /* End Lastseen Section */
+                                      },
+                                    )
                                   ],
                                 ),
                               )

@@ -1,3 +1,4 @@
+import 'package:mytradeasia/features/domain/entities/product_entities/all_product_entity.dart';
 import 'package:mytradeasia/features/domain/entities/user_entities/user_credential_entity.dart';
 import 'package:mytradeasia/features/domain/entities/user_entities/user_entity.dart';
 
@@ -11,7 +12,7 @@ abstract class UserRepository {
   Future<Map<String, dynamic>> getUserData();
   Future<String> getCurrentUserId();
   void addRecentlySeen(Map<String, dynamic> s);
-  Future<List<dynamic>> getRecentlySeen();
+  Future<List<AllProductEntities>> getRecentlySeen();
   void deleteRecentlySeen();
   Future<UserCredentialEntity> getUserCredentials();
   Future<String> updateProfile(Map<String, dynamic> data);

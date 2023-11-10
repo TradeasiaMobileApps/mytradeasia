@@ -1,4 +1,5 @@
 import 'package:mytradeasia/features/data/data_sources/firebase/auth_user_firebase.dart';
+import 'package:mytradeasia/features/data/model/all_product_models/all_product_model.dart';
 import 'package:mytradeasia/features/data/model/user_models/user_model.dart';
 import 'package:mytradeasia/features/domain/entities/user_entities/user_credential_entity.dart';
 import 'package:mytradeasia/features/domain/entities/user_entities/user_entity.dart';
@@ -74,7 +75,7 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<List> getRecentlySeen() async {
+  Future<List<AllProductModel>> getRecentlySeen() async {
     return _authUserFirebase.getRecentlySeen();
   }
 

@@ -7,17 +7,19 @@ import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_entity.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_to_rfq_entity.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/add_recently_seen.dart';
-import 'package:mytradeasia/features/domain/usecases/user_usecases/get_recently_seen.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/search_product/search_product_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/search_product/search_product_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/search_product/search_product_state.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
+import 'package:mytradeasia/features/presentation/state_management/recently_seen_bloc/recently_seen_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/recently_seen_bloc/recently_seen_event.dart';
 import 'package:mytradeasia/features/presentation/widgets/product_card.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
 
 import '../../../../../../config/routes/parameters.dart';
 import '../../../../state_management/auth_bloc/auth_state.dart';
+import '../../../../state_management/recently_seen_bloc/recently_seen_state.dart';
 import '../all_products/products/products_detail_screen.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -42,6 +44,15 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      BlocProvider.of<RecentlySeenBloc>(context)
+          .add(const GetRecentlySeenEvent());
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final searchProd = BlocProvider.of<SearchProductBloc>(context);
     return Scaffold(
@@ -56,7 +67,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 children: [
                   InkWell(
                     onTap: () {
-                      Navigator.pop(context);
+                      context.pop();
                       searchProd.add(const ClearSearch());
                     },
                     child: Image.asset(
@@ -428,93 +439,89 @@ class RecentlySeenWidget extends StatefulWidget {
 
 class _RecentlySeenWidgetState extends State<RecentlySeenWidget> {
   final String url = "https://chemtradea.chemtradeasia.com/";
-  final GetRecentlySeen _getRecentlySeen = injections<GetRecentlySeen>();
-  List _recentlySeen = [];
-
-  @override
-  void initState() {
-    super.initState();
-    getRecentlyseen();
-  }
-
-  void getRecentlyseen() async {
-    _recentlySeen = await _getRecentlySeen();
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: size20px - 4),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                "Recently Seen",
-                style: heading2,
-              ),
-              InkWell(
-                onTap: () {},
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: secondaryColor5,
-                      borderRadius: BorderRadius.circular(size20px / 2)),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: size20px / 2, vertical: 3.0),
-                    child: Text(
-                      "Delete",
-                      style: body1Regular.copyWith(color: secondaryColor1),
-                    ),
-                  ),
-                ),
-              )
-            ],
-          ),
-        ),
-        _recentlySeen.isEmpty
-            ? const Text("Tidak ada product")
-            : SizedBox(
-                height: 125,
-                width: double.infinity,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: _recentlySeen.length,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClipRRect(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(7.0)),
-                              child: CachedNetworkImage(
-                                imageUrl:
-                                    "$url${_recentlySeen[index]["productImage"]}",
-                                height: 76,
-                                width: 76,
-                                fit: BoxFit.fill,
-                              )),
-                          const SizedBox(height: size20px / 4),
-                          SizedBox(
-                            width: 76,
-                            child: Text(
-                              "${_recentlySeen[index]["productName"]}",
-                              maxLines: 2,
-                              style: body1Medium,
-                              overflow: TextOverflow.ellipsis,
+    return BlocBuilder<RecentlySeenBloc, RecentlySeenState>(
+      builder: (context, state) {
+        return state is RecentlySeenInit
+            ? const CircularProgressIndicator.adaptive()
+            : Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: size20px - 4),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Recently Seen",
+                          style: heading2,
+                        ),
+                        InkWell(
+                          onTap: () {},
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: secondaryColor5,
+                                borderRadius:
+                                    BorderRadius.circular(size20px / 2)),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: size20px / 2, vertical: 3.0),
+                              child: Text(
+                                "Delete",
+                                style: body1Regular.copyWith(
+                                    color: secondaryColor1),
+                              ),
                             ),
                           ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ),
-      ],
+                        )
+                      ],
+                    ),
+                  ),
+                  state.products!.isEmpty
+                      ? const Text("Tidak ada product")
+                      : SizedBox(
+                          height: 125,
+                          width: double.infinity,
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: state.products!.length,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    ClipRRect(
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(7.0)),
+                                        child: CachedNetworkImage(
+                                          imageUrl:
+                                              "$url${state.products![index].productimage}",
+                                          height: 76,
+                                          width: 76,
+                                          fit: BoxFit.fill,
+                                        )),
+                                    const SizedBox(height: size20px / 4),
+                                    SizedBox(
+                                      width: 76,
+                                      child: Text(
+                                        "${state.products![index].productname}",
+                                        maxLines: 2,
+                                        style: body1Medium,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                ],
+              );
+      },
     );
   }
 }
