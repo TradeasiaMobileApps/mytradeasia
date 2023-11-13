@@ -81,378 +81,391 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       builder: (context, state) {
                     log("STATE IS ${state}");
                     if (state is SalesforceCPDone) {
-                      return ListView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        padding: EdgeInsets.zero,
-                        itemCount: state.cpEntity != null
-                            ? state.cpEntity!.totalSize
-                            : 0,
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () {
-                              showModalBottomSheet<dynamic>(
-                                isScrollControlled: true,
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(40.0),
+                      if (state.cpEntity!.totalSize! < 1) {
+                        return const Center(
+                            child: Text(
+                          "No order yet. Please check regularly",
+                          style: body1Regular,
+                        ));
+                      } else {
+                        return ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          padding: EdgeInsets.zero,
+                          itemCount: state.cpEntity != null
+                              ? state.cpEntity!.totalSize
+                              : 0,
+                          itemBuilder: (context, index) {
+                            return InkWell(
+                              onTap: () {
+                                showModalBottomSheet<dynamic>(
+                                  isScrollControlled: true,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(40.0),
+                                    ),
                                   ),
-                                ),
-                                context: context,
-                                builder: (context) {
-                                  return Wrap(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(20.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Center(
-                                              child: Image.asset(
-                                                "assets/images/icon_spacing.png",
-                                                width: 25.0,
-                                              ),
-                                            ),
-                                            const Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 20.0),
-                                              child: Center(
-                                                child: Text(
-                                                  "Categories",
-                                                  style: heading2,
-                                                ),
-                                              ),
-                                            ),
-                                            // Order Detail
-                                            const BottomSheetHistory(
-                                              title: "Order Detail",
-                                              subTitle:
-                                                  "Lorem ipsum dolor sit amet consectetur. In est porta nisi pulvinar lectus fringilla eget volutpat.",
-                                              urlLogo:
-                                                  "assets/images/icon_order_detail.png",
-                                              navigationPage:
-                                                  OrderDetailScreen(),
-                                            ),
-                                            // Tracking Shipping
-                                            const SizedBox(height: 10.0),
-                                            InkWell(
-                                              onTap: () {
-                                                context.go(
-                                                    "/history/tracking_shipment");
-
-                                                // Navigator.push(context,
-                                                //     MaterialPageRoute(
-                                                //   builder: (context) {
-                                                //     return const TrackingShipmentScreen();
-                                                //   },
-                                                // ));
-                                              },
-                                              child: Container(
-                                                height: 110.0,
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      color: greyColor3),
-                                                  borderRadius:
-                                                      const BorderRadius.all(
-                                                    Radius.circular(7.0),
-                                                  ),
-                                                ),
-                                                child: Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      horizontal: 20.0,
-                                                      vertical: 15.0),
-                                                  child: Row(
-                                                    children: [
-                                                      Image.asset(
-                                                        "assets/images/icon_tracking_shipment.png",
-                                                        width: 43.0,
-                                                        height: 43.0,
-                                                      ),
-                                                      const SizedBox(
-                                                          width: 20.0),
-                                                      Expanded(
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            const Text(
-                                                              "Tracking Shipment",
-                                                              style: heading3,
-                                                            ),
-                                                            const SizedBox(
-                                                                height: 5.0),
-                                                            Text(
-                                                              "Lorem ipsum dolor sit amet consectetur. In est porta nisi pulvinar lectus fringilla eget volutpat.",
-                                                              style: body2Medium
-                                                                  .copyWith(
-                                                                color:
-                                                                    greyColor2,
-                                                              ),
-                                                              maxLines: 2,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            // Tracking Document
-                                            const SizedBox(height: 10.0),
-                                            InkWell(
-                                              onTap: () {
-                                                context.go(
-                                                    "/history/tracking_document");
-
-                                                // Navigator.push(context,
-                                                //     MaterialPageRoute(
-                                                //   builder: (context) {
-                                                //     return const TrackingDocumentScreen();
-                                                //   },
-                                                // ));
-                                              },
-                                              child: Container(
-                                                height: 110.0,
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      color: greyColor3),
-                                                  borderRadius:
-                                                      const BorderRadius.all(
-                                                    Radius.circular(7.0),
-                                                  ),
-                                                ),
-                                                child: Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      horizontal: 20.0,
-                                                      vertical: 15.0),
-                                                  child: Row(
-                                                    children: [
-                                                      Image.asset(
-                                                        "assets/images/icon_tracking_document.png",
-                                                        width: 43.0,
-                                                        height: 43.0,
-                                                      ),
-                                                      const SizedBox(
-                                                          width: 20.0),
-                                                      Expanded(
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            const Text(
-                                                              "Tracking Document",
-                                                              style: heading3,
-                                                            ),
-                                                            const SizedBox(
-                                                                height: 5.0),
-                                                            Text(
-                                                              "Lorem ipsum dolor sit amet consectetur. In est porta nisi pulvinar lectus fringilla eget volutpat.",
-                                                              style: body2Medium
-                                                                  .copyWith(
-                                                                color:
-                                                                    greyColor2,
-                                                              ),
-                                                              maxLines: 2,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  );
-                                },
-                              );
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 15.0),
-                              child: Card(
-                                margin: EdgeInsets.zero,
-                                elevation: 5.0,
-                                color: whiteColor,
-                                child: SizedBox(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: size20px * 8.0,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 10.0,
-                                        left: 20.0,
-                                        right: 20.0,
-                                        bottom: 15.0),
-                                    child: Column(
+                                  context: context,
+                                  builder: (context) {
+                                    return Wrap(
                                       children: [
-                                        Row(
-                                          children: [
-                                            Text(
-                                              state.cpEntity!.records![index]
-                                                      .pINoC ??
-                                                  "",
-                                              style: heading3.copyWith(
-                                                  color: secondaryColor1),
-                                            ),
-                                            const Spacer(),
-                                            Container(
-                                              height: size20px + 4,
-                                              decoration: const BoxDecoration(
-                                                color: greenColor2,
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(
-                                                      size20px / 2.0),
+                                        Padding(
+                                          padding: const EdgeInsets.all(20.0),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Center(
+                                                child: Image.asset(
+                                                  "assets/images/icon_spacing.png",
+                                                  width: 25.0,
                                                 ),
                                               ),
-                                              child: Center(
-                                                child: Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      horizontal: 8.0),
+                                              const Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 20.0),
+                                                child: Center(
                                                   child: Text(
-                                                    state
-                                                        .cpEntity!
-                                                        .records![index]
-                                                        .sTATUSC!,
-                                                    style:
-                                                        body1Regular.copyWith(
-                                                            color: greenColor1),
+                                                    "Categories",
+                                                    style: heading2,
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                            Image.asset(
-                                              "assets/images/icon_forward.png",
-                                              width: 24.0,
-                                              height: 24.0,
-                                              color: greyColor,
-                                            )
-                                          ],
-                                        ),
-                                        const SizedBox(height: 10.0),
-                                        const DottedLine(
-                                          dashColor: greyColor3,
-                                          dashGapLength: 3.0,
-                                          dashLength: 5.0,
-                                        ),
-                                        const SizedBox(height: 14.0),
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Image.asset(
-                                              "assets/images/products.png",
-                                              width: 80.0,
-                                              height: 80.0,
-                                              fit: BoxFit.fill,
-                                            ),
-                                            const SizedBox(width: 23.0),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                SizedBox(
+                                              // Order Detail
+                                              const BottomSheetHistory(
+                                                title: "Order Detail",
+                                                subTitle:
+                                                    "Lorem ipsum dolor sit amet consectetur. In est porta nisi pulvinar lectus fringilla eget volutpat.",
+                                                urlLogo:
+                                                    "assets/images/icon_order_detail.png",
+                                                navigationPage:
+                                                    OrderDetailScreen(),
+                                              ),
+                                              // Tracking Shipping
+                                              const SizedBox(height: 10.0),
+                                              InkWell(
+                                                onTap: () {
+                                                  context.go(
+                                                      "/history/tracking_shipment");
+
+                                                  // Navigator.push(context,
+                                                  //     MaterialPageRoute(
+                                                  //   builder: (context) {
+                                                  //     return const TrackingShipmentScreen();
+                                                  //   },
+                                                  // ));
+                                                },
+                                                child: Container(
+                                                  height: 110.0,
                                                   width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.5,
-                                                  child: Text(
-                                                    state
-                                                            .cpEntity!
-                                                            .records![index]
-                                                            .productNameC ??
-                                                        "",
-                                                    style: body1Medium,
-                                                    maxLines: 1,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
+                                                      .size
+                                                      .width,
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        color: greyColor3),
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                      Radius.circular(7.0),
+                                                    ),
                                                   ),
-                                                ),
-                                                const SizedBox(height: 5.0),
-                                                Row(
-                                                  children: [
-                                                    Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
+                                                  child: Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 20.0,
+                                                        vertical: 15.0),
+                                                    child: Row(
                                                       children: [
-                                                        const Text(
-                                                          "POL :",
-                                                          style: body2Medium,
+                                                        Image.asset(
+                                                          "assets/images/icon_tracking_shipment.png",
+                                                          width: 43.0,
+                                                          height: 43.0,
                                                         ),
-                                                        Text(
-                                                          "TBD",
-                                                          style: body2Light
-                                                              .copyWith(
+                                                        const SizedBox(
+                                                            width: 20.0),
+                                                        Expanded(
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              const Text(
+                                                                "Tracking Shipment",
+                                                                style: heading3,
+                                                              ),
+                                                              const SizedBox(
+                                                                  height: 5.0),
+                                                              Text(
+                                                                "Lorem ipsum dolor sit amet consectetur. In est porta nisi pulvinar lectus fringilla eget volutpat.",
+                                                                style: body2Medium
+                                                                    .copyWith(
                                                                   color:
-                                                                      greyColor2),
-                                                        ),
+                                                                      greyColor2,
+                                                                ),
+                                                                maxLines: 2,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        )
                                                       ],
                                                     ),
-                                                    const SizedBox(width: 50.0),
-                                                    Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        const Text(
-                                                          "POD :",
-                                                          style: body2Medium,
-                                                        ),
-                                                        Text(
-                                                          "TBD",
-                                                          style: body2Light
-                                                              .copyWith(
-                                                                  color:
-                                                                      greyColor2),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                                const SizedBox(height: 10.0),
-                                                Align(
-                                                  alignment:
-                                                      Alignment.centerRight,
-                                                  child: Text(
-                                                    "Qty : ${parseDoubleToIntegerIfNecessary(state.cpEntity!.records![index].quantityC!)} ${state.cpEntity!.records![index].uOMC}",
-                                                    style: body1Medium.copyWith(
-                                                        color: secondaryColor1),
                                                   ),
                                                 ),
-                                              ],
-                                            )
-                                          ],
-                                        ),
+                                              ),
+                                              // Tracking Document
+                                              const SizedBox(height: 10.0),
+                                              InkWell(
+                                                onTap: () {
+                                                  context.go(
+                                                      "/history/tracking_document");
+
+                                                  // Navigator.push(context,
+                                                  //     MaterialPageRoute(
+                                                  //   builder: (context) {
+                                                  //     return const TrackingDocumentScreen();
+                                                  //   },
+                                                  // ));
+                                                },
+                                                child: Container(
+                                                  height: 110.0,
+                                                  width: MediaQuery.of(context)
+                                                      .size
+                                                      .width,
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        color: greyColor3),
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                      Radius.circular(7.0),
+                                                    ),
+                                                  ),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 20.0,
+                                                        vertical: 15.0),
+                                                    child: Row(
+                                                      children: [
+                                                        Image.asset(
+                                                          "assets/images/icon_tracking_document.png",
+                                                          width: 43.0,
+                                                          height: 43.0,
+                                                        ),
+                                                        const SizedBox(
+                                                            width: 20.0),
+                                                        Expanded(
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              const Text(
+                                                                "Tracking Document",
+                                                                style: heading3,
+                                                              ),
+                                                              const SizedBox(
+                                                                  height: 5.0),
+                                                              Text(
+                                                                "Lorem ipsum dolor sit amet consectetur. In est porta nisi pulvinar lectus fringilla eget volutpat.",
+                                                                style: body2Medium
+                                                                    .copyWith(
+                                                                  color:
+                                                                      greyColor2,
+                                                                ),
+                                                                maxLines: 2,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
                                       ],
+                                    );
+                                  },
+                                );
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 15.0),
+                                child: Card(
+                                  margin: EdgeInsets.zero,
+                                  elevation: 5.0,
+                                  color: whiteColor,
+                                  child: SizedBox(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: size20px * 8.0,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 10.0,
+                                          left: 20.0,
+                                          right: 20.0,
+                                          bottom: 15.0),
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                state.cpEntity!.records![index]
+                                                        .pINoC ??
+                                                    "",
+                                                style: heading3.copyWith(
+                                                    color: secondaryColor1),
+                                              ),
+                                              const Spacer(),
+                                              Container(
+                                                height: size20px + 4,
+                                                decoration: const BoxDecoration(
+                                                  color: greenColor2,
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                    Radius.circular(
+                                                        size20px / 2.0),
+                                                  ),
+                                                ),
+                                                child: Center(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 8.0),
+                                                    child: Text(
+                                                      state
+                                                          .cpEntity!
+                                                          .records![index]
+                                                          .sTATUSC!,
+                                                      style:
+                                                          body1Regular.copyWith(
+                                                              color:
+                                                                  greenColor1),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Image.asset(
+                                                "assets/images/icon_forward.png",
+                                                width: 24.0,
+                                                height: 24.0,
+                                                color: greyColor,
+                                              )
+                                            ],
+                                          ),
+                                          const SizedBox(height: 10.0),
+                                          const DottedLine(
+                                            dashColor: greyColor3,
+                                            dashGapLength: 3.0,
+                                            dashLength: 5.0,
+                                          ),
+                                          const SizedBox(height: 14.0),
+                                          Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Image.asset(
+                                                "assets/images/products.png",
+                                                width: 80.0,
+                                                height: 80.0,
+                                                fit: BoxFit.fill,
+                                              ),
+                                              const SizedBox(width: 23.0),
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  SizedBox(
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.5,
+                                                    child: Text(
+                                                      state
+                                                              .cpEntity!
+                                                              .records![index]
+                                                              .productNameC ??
+                                                          "",
+                                                      style: body1Medium,
+                                                      maxLines: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 5.0),
+                                                  Row(
+                                                    children: [
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          const Text(
+                                                            "POL :",
+                                                            style: body2Medium,
+                                                          ),
+                                                          Text(
+                                                            "TBD",
+                                                            style: body2Light
+                                                                .copyWith(
+                                                                    color:
+                                                                        greyColor2),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      const SizedBox(
+                                                          width: 50.0),
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          const Text(
+                                                            "POD :",
+                                                            style: body2Medium,
+                                                          ),
+                                                          Text(
+                                                            "TBD",
+                                                            style: body2Light
+                                                                .copyWith(
+                                                                    color:
+                                                                        greyColor2),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  const SizedBox(height: 10.0),
+                                                  Align(
+                                                    alignment:
+                                                        Alignment.centerRight,
+                                                    child: Text(
+                                                      "Qty : ${parseDoubleToIntegerIfNecessary(state.cpEntity!.records![index].quantityC!)} ${state.cpEntity!.records![index].uOMC}",
+                                                      style: body1Medium.copyWith(
+                                                          color:
+                                                              secondaryColor1),
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                          );
-                        },
-                      );
+                            );
+                          },
+                        );
+                      }
                     } else if (state is SalesforceDataLoading) {
                       return const Center(
                         child: CircularProgressIndicator.adaptive(
