@@ -1,16 +1,13 @@
 import 'package:dio/dio.dart';
-import 'package:equatable/equatable.dart';
+// import 'package:equatable/equatable.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/all_product_entity.dart';
 
-abstract class RecentlySeenState extends Equatable {
+abstract class RecentlySeenState {
   //using allproductentity for object model
   final List<AllProductEntities>? products;
   final DioException? error;
 
   const RecentlySeenState({this.products, this.error});
-
-  @override
-  List<Object> get props => [products!, error!];
 }
 
 class RecentlySeenInit extends RecentlySeenState {
