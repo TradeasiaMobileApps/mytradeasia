@@ -36,9 +36,9 @@ class SalesforceDataRepositoryImpl implements SalesForceDataRepository {
   }
 
   @override
-  Future<DataState<SalesforceCPEntity>> getSalesforceCP(String token) async {
+  Future<DataState<SalesforceCPEntity>> getSalesforceCP(String userId) async {
     try {
-      final response = await _salesforceDataService.getCostPrice(token);
+      final response = await _salesforceDataService.getCostPrice(userId);
       if (response.statusCode == HttpStatus.ok) {
         return DataSuccess(response.data!);
       } else {

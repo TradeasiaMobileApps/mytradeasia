@@ -10,8 +10,8 @@ class GetDataSalesforce extends SalesforceDataEvent {
 }
 
 class GetCPSalesforce extends SalesforceDataEvent {
-  final String token;
-  const GetCPSalesforce(this.token);
+  final String userId;
+  const GetCPSalesforce(this.userId);
 }
 
 class CreateSFAccount extends SalesforceDataEvent {

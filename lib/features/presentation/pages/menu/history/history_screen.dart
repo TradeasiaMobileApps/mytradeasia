@@ -1,6 +1,8 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -9,7 +11,6 @@ import 'package:mytradeasia/features/presentation/state_management/salesforce_bl
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_data/salesforce_data_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_data/salesforce_data_state.dart';
 import 'package:mytradeasia/helper/helper_functions.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../../config/themes/theme.dart';
 
@@ -28,9 +29,18 @@ class _HistoryScreenState extends State<HistoryScreen> {
   }
 
   void getData() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString("tokenSF") ?? "";
-    BlocProvider.of<SalesforceDataBloc>(context).add(GetCPSalesforce(token));
+    String idSF = await FirebaseFirestore.instance
+        .collection('biodata')
+        .doc(FirebaseAuth.instance.currentUser?.uid.toString())
+        .get()
+        .then((DocumentSnapshot doc) {
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      return data['idSF'];
+    });
+
+    log("ID SF : $idSF");
+
+    BlocProvider.of<SalesforceDataBloc>(context).add(GetCPSalesforce(idSF));
   }
 
   @override
@@ -85,7 +95,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         return const Center(
                             child: Text(
                           "No order yet. Please check regularly",
-                          style: body1Regular,
+                          style: text16,
                         ));
                       } else {
                         return ListView.builder(

@@ -5,6 +5,7 @@ import 'package:mytradeasia/core/constants/constants.dart';
 import 'package:mytradeasia/features/data/model/sales_force_data_models/sales_force_cp_model.dart';
 import 'package:mytradeasia/features/data/model/sales_force_data_models/sales_force_create_account_model.dart';
 import 'package:mytradeasia/features/data/model/sales_force_data_models/sales_force_data_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SalesforceDataService {
   final dio = Dio();
@@ -31,12 +32,14 @@ class SalesforceDataService {
     );
   }
 
-  Future<Response<SalesforceCPModel>> getCostPrice(String token) async {
+  Future<Response<SalesforceCPModel>> getCostPrice(String userId) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final tokenSF = prefs.getString("tokenSF") ?? "";
     final response = await dio.get(
-      "https://tradeasia--newmind.sandbox.my.salesforce.com/services/data/v58.0/queryAll?q=$salesforceCPQuery",
+      "https://tradeasia--newmind.sandbox.my.salesforce.com/services/data/v58.0/queryAll?q=${salesforceCPQuery(userId)}",
       options: Options(
         headers: {
-          "Authorization": "Bearer $token",
+          "Authorization": "Bearer $tokenSF",
           "Content-Type": "application/json"
         },
       ),

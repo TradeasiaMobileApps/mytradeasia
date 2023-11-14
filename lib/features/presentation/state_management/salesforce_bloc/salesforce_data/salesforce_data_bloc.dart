@@ -35,7 +35,7 @@ class SalesforceDataBloc
       GetCPSalesforce event, Emitter<SalesforceDataState> emit) async {
     emit(const SalesforceDataLoading());
 
-    final dataState = await _getSalesForceCP(param: event.token);
+    final dataState = await _getSalesForceCP(param: event.userId);
     if (dataState is DataSuccess) {
       emit(SalesforceCPDone(dataState.data!));
     }
