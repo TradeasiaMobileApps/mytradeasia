@@ -342,7 +342,7 @@ class MessageScreenState extends State<MessageScreen> {
                                                   if (snapshot
                                                           .connectionState ==
                                                       ConnectionState.waiting) {
-                                                    return SizedBox();
+                                                    return const SizedBox();
                                                   } else {
                                                     if (snapshot
                                                             .data!["status"] !=
@@ -352,26 +352,42 @@ class MessageScreenState extends State<MessageScreen> {
                                                         width: 50,
                                                         margin: const EdgeInsets
                                                             .only(left: 10),
-                                                        decoration: BoxDecoration(
-                                                            color: const Color
-                                                                    .fromARGB(
-                                                                99,
-                                                                49,
-                                                                200,
-                                                                180),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        20)),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                                color: const Color
+                                                                        .fromARGB(
+                                                                    224,
+                                                                    243,
+                                                                    247,
+                                                                    250),
+                                                                border:
+                                                                    Border.all(
+                                                                  color: const Color
+                                                                          .fromARGB(
+                                                                      160,
+                                                                      18,
+                                                                      60,
+                                                                      105),
+                                                                ),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            20)),
                                                         child: Center(
                                                           child: Text(
                                                             snapshot.data?[
                                                                     "status"] ??
                                                                 "",
                                                             style:
-                                                                text8.copyWith(
-                                                                    color: Colors
-                                                                        .green),
+                                                                text10.copyWith(
+                                                              fontSize: 9,
+                                                              color: const Color
+                                                                      .fromARGB(
+                                                                  160,
+                                                                  18,
+                                                                  60,
+                                                                  105),
+                                                            ),
                                                           ),
                                                         ),
                                                       );
