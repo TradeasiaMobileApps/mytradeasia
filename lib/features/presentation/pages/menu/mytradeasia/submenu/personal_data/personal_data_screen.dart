@@ -216,7 +216,7 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
                               child: Stack(
                                 children: [
                                   if (_imageFile == null)
-                                    streamSnapshot.data["profilePicUrl"] == null
+                                    streamSnapshot.data["profilePicUrl"] == ""
                                         ? Container(
                                             decoration: BoxDecoration(
                                               border:
@@ -463,7 +463,7 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
                                                                           color:
                                                                               greyColor),
                                                                       contentPadding: const EdgeInsets
-                                                                          .symmetric(
+                                                                              .symmetric(
                                                                           horizontal:
                                                                               20.0),
                                                                       enabledBorder: const OutlineInputBorder(
