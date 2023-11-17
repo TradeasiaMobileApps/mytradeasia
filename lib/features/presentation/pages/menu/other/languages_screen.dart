@@ -1,7 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mytradeasia/features/domain/usecases/country_usecases/get_country_usecase.dart';
+import 'package:mytradeasia/features/presentation/state_management/countries_bloc/countries_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/countries_bloc/countries_event.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
 import '../../../../../config/themes/theme.dart';
+import '../../../state_management/countries_bloc/countries_state.dart';
 
 class LanguagesScreen extends StatefulWidget {
   const LanguagesScreen({super.key});
@@ -11,8 +16,6 @@ class LanguagesScreen extends StatefulWidget {
 }
 
 class _LanguagesScreenState extends State<LanguagesScreen> {
-  final GetCountryUsecase getCountryUseCase = GetCountryUsecase(injections());
-
   List<Map<String, dynamic>> countryList = [
     {"name": "Afghanistan", "dial_code": "(+93)", "code": "AF"},
     {"name": "Aland Islands", "dial_code": "+358", "code": "AX"},
@@ -317,12 +320,7 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
   @override
   void initState() {
     super.initState();
-    getCountry();
-  }
-
-  void getCountry() async {
-    final country = await getCountryUseCase.call();
-    print(country.data!.length);
+    BlocProvider.of<CountriesBloc>(context).add(const GetCountriesEvent());
   }
 
   @override
@@ -449,48 +447,93 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
                     style: body1Regular.copyWith(color: greyColor2),
                   ),
                 ),
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: countryList.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      height: size20px + 30.0,
-                      width: MediaQuery.of(context).size.width,
-                      color: whiteColor,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: size20px + 8, vertical: size20px / 4.0),
-                        child: Row(
-                          children: [
-                            Image.asset(
-                              "assets/images/logo_indonesia.png",
-                            ),
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: size20px + 3.0, right: size20px / 5),
-                                child: RichText(
-                                  text: TextSpan(
-                                    children: [
-                                      TextSpan(
-                                          text: countryList[index]["name"],
-                                          style: body1Regular),
-                                      const TextSpan(
-                                          text: "   ", style: body1Regular),
-                                      TextSpan(
-                                          text: countryList[index]["dial_code"],
-                                          style: body1Regular.copyWith(
-                                              color: greyColor2)),
-                                    ],
+                BlocBuilder<CountriesBloc, CountriesState>(
+                  builder: (context, state) {
+                    if (state is CountriesInit) {
+                      return const Center(
+                        child: CircularProgressIndicator.adaptive(),
+                      );
+                    } else if (state is CountriesLoaded) {
+                      return state.products != null
+                          ? ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: state.products!.length,
+                              itemBuilder: (context, index) {
+                                return Material(
+                                  color: Colors.white,
+                                  type: MaterialType.button,
+                                  child: InkWell(
+                                    onTap: () {},
+                                    // splashColor: Colors.black,
+                                    child: Container(
+                                      height: size20px + 30.0,
+                                      width: MediaQuery.of(context).size.width,
+                                      // color: whiteColor,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: size20px + 8,
+                                            vertical: size20px / 4.0),
+                                        child: Row(
+                                          children: [
+                                            Container(
+                                              clipBehavior:
+                                                  Clip.antiAliasWithSaveLayer,
+                                              width: 60,
+                                              decoration: BoxDecoration(
+                                                  shape: BoxShape.circle),
+                                              child: CachedNetworkImage(
+                                                // fit: BoxFit.fill,
+                                                imageUrl: state
+                                                    .products![index].flagUrl!,
+                                                width: 60,
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: size20px + 3.0,
+                                                    right: size20px / 5),
+                                                child: RichText(
+                                                  text: TextSpan(
+                                                    children: [
+                                                      TextSpan(
+                                                          text: state
+                                                              .products![index]
+                                                              .name,
+                                                          style: body1Regular),
+                                                      const TextSpan(
+                                                          text: "   ",
+                                                          style: body1Regular),
+                                                      TextSpan(
+                                                          text: state
+                                                              .products![index]
+                                                              .phoneCode,
+                                                          style: body1Regular
+                                                              .copyWith(
+                                                                  color:
+                                                                      greyColor2)),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
+                                );
+                              },
+                            )
+                          : const Center(
+                              child: Text("empty"),
+                            );
+                    } else {
+                      return const Center(
+                        child: Text("error occured"),
+                      );
+                    }
                   },
                 ),
               ],

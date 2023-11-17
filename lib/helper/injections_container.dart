@@ -82,6 +82,7 @@ import 'package:mytradeasia/features/domain/usecases/user_usecases/update_profil
 import 'package:mytradeasia/features/domain/usecases/user_usecases/verify_otp.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/cart_bloc/cart_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/countries_bloc/countries_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/dhl_shipment_bloc/dhl_shipment_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/industry_bloc/industry_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/faq_bloc/faq_bloc.dart';
@@ -232,4 +233,5 @@ Future<void> initializeDependencies() async {
       .registerFactory<SearatesBLBloc>(() => SearatesBLBloc(injections()));
   injections.registerFactory<RecentlySeenBloc>(
       () => RecentlySeenBloc(injections(), injections(), injections()));
+  injections.registerFactory<CountriesBloc>(() => CountriesBloc(injections()));
 }
