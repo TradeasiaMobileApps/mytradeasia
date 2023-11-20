@@ -1,15 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
 import 'package:mytradeasia/core/constants/constants.dart';
 import 'package:mytradeasia/core/resources/data_state.dart';
+import 'package:mytradeasia/features/data/model/sales_force_data_models/sales_force_create_opportunity_model.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_to_rfq_entity.dart';
 import 'package:mytradeasia/features/domain/entities/rfq_entities/rfq_entity.dart';
 import 'package:mytradeasia/features/domain/usecases/rfq_usecases/submit_rfq.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_data.dart';
 import 'package:mytradeasia/features/presentation/pages/menu/other/languages_screen.dart';
+import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_data/salesforce_data_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_data/salesforce_data_event.dart';
 import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -436,7 +440,7 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                                                           children: [
                                                             Padding(
                                                               padding: const EdgeInsets
-                                                                      .only(
+                                                                  .only(
                                                                   right:
                                                                       size20px +
                                                                           5.0),
@@ -472,7 +476,7 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                                                                 children: [
                                                                   Padding(
                                                                     padding: const EdgeInsets
-                                                                            .only(
+                                                                        .only(
                                                                         bottom: size20px -
                                                                             15.0),
                                                                     child: Text(
@@ -724,7 +728,7 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                                                   ),
                                                   Padding(
                                                     padding: const EdgeInsets
-                                                            .symmetric(
+                                                        .symmetric(
                                                         vertical:
                                                             size20px / 2.0),
                                                     child: Text(
@@ -780,7 +784,7 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                                                   // Button 2
                                                   Padding(
                                                     padding: const EdgeInsets
-                                                            .symmetric(
+                                                        .symmetric(
                                                         vertical: 5.0),
                                                     child: SizedBox(
                                                       height: size20px * 1.5,
@@ -923,6 +927,13 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                   ),
                 );
                 // print(response.data);
+
+                BlocProvider.of<SalesforceDataBloc>(context).add(
+                    CreateSFOpportunity(SalesforceCreateOpportunityForm(
+                        userId: "001j0000019LT4SAAW",
+                        companyName: _companyNameController.text,
+                        quantity: 10,
+                        hsCode: "Test")));
 
                 // context.goNamed("submitted_rfq");
               },

@@ -1,4 +1,5 @@
 import 'package:mytradeasia/features/data/model/sales_force_data_models/sales_force_create_account_model.dart';
+import 'package:mytradeasia/features/data/model/sales_force_data_models/sales_force_create_opportunity_model.dart';
 
 abstract class SalesforceDataEvent {
   const SalesforceDataEvent();
@@ -20,4 +21,10 @@ class CreateSFAccount extends SalesforceDataEvent {
 
   CreateSFAccount(
       {required this.token, required this.salesforceCreateAccountForm});
+}
+
+class CreateSFOpportunity extends SalesforceDataEvent {
+  final SalesforceCreateOpportunityForm salesforceCreateOpportunityForm;
+
+  CreateSFOpportunity(this.salesforceCreateOpportunityForm);
 }

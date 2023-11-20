@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:mytradeasia/core/constants/constants.dart';
 import 'package:mytradeasia/features/data/model/sales_force_data_models/sales_force_cp_model.dart';
 import 'package:mytradeasia/features/data/model/sales_force_data_models/sales_force_create_account_model.dart';
+import 'package:mytradeasia/features/data/model/sales_force_data_models/sales_force_create_opportunity_model.dart';
 import 'package:mytradeasia/features/data/model/sales_force_data_models/sales_force_data_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -85,9 +86,50 @@ class SalesforceDataService {
         });
 
     final data = SalesforceCreateAccountModel.fromJson(response.data);
-    log("SF ACCOUNT DATA : $data");
 
     return Response<SalesforceCreateAccountModel>(
+        statusCode: response.statusCode,
+        requestOptions: response.requestOptions,
+        data: data);
+  }
+
+  Future<Response<SalesforceCreateOpportunityModel>> createSFOpp(
+      SalesforceCreateOpportunityForm formData) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final tokenSF = prefs.getString("tokenSF") ?? "";
+
+    final response = await dio.post(
+        "https://tradeasia--newmind.sandbox.my.salesforce.com/services/data/v58.0/sobjects/Opportunity",
+        options: Options(
+          headers: {
+            "Authorization": "Bearer $tokenSF",
+            "Content-Type": "application/json"
+          },
+        ),
+        data: {
+          "Name": "Test Mods",
+          "Business_Entity__c": formData.companyName,
+          "AccountId": formData.userId,
+          "Product_Name__c": "01tj0000002wbhDAAQ",
+          "StageName": "Quotation",
+          "ForecastCategoryName": "Best Case",
+          "CloseDate": "2021-10-14",
+          "Worked_by__c": "Test",
+          "Origin__c": "Test",
+          "Quantity__c": formData.quantity,
+          "Description_of_Goods__c": "Test",
+          "H_S_Code__c": formData.hsCode,
+          "Packaging_Details__c": "Test",
+          "Total_of_Containers__c": 10.0,
+          "Container_Size__c": "20' FCL",
+          "Port_of_Discharge__c": "a028G00000147yLQAQ"
+        });
+
+    log("OPP DATA : ${response.data}");
+
+    final data = SalesforceCreateOpportunityModel.fromJson(response.data);
+
+    return Response<SalesforceCreateOpportunityModel>(
         statusCode: response.statusCode,
         requestOptions: response.requestOptions,
         data: data);
