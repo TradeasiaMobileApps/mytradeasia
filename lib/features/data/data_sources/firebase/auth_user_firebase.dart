@@ -222,13 +222,10 @@ class AuthUserFirebase {
     if (firestoreData['recentlySeen'] != null) {
       recentlySeenData = firestoreData['recentlySeen'];
     }
-    var test = recentlySeenData.map((e) {
+
+    return recentlySeenData.map((e) {
       return AllProductModel.fromFirebase(e);
     }).toList();
-
-    log(test.toString());
-
-    return test;
   }
 
   void deleteRecentlySeen() async {

@@ -458,7 +458,10 @@ class _RecentlySeenWidgetState extends State<RecentlySeenWidget> {
                           style: heading2,
                         ),
                         InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            BlocProvider.of<RecentlySeenBloc>(context)
+                                .add(const DeleteRecentlySeenEvent());
+                          },
                           child: Container(
                             decoration: BoxDecoration(
                                 color: secondaryColor5,

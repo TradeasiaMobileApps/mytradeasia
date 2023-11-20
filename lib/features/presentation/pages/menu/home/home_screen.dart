@@ -5,7 +5,6 @@ import 'package:mytradeasia/config/routes/parameters.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_entity.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_to_rfq_entity.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/add_recently_seen.dart';
-import 'package:mytradeasia/features/domain/usecases/user_usecases/get_recently_seen.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_snapshot.dart';
 import 'package:mytradeasia/features/presentation/pages/menu/history/tracking_document/tracking_document_screen.dart';
 import 'package:mytradeasia/features/presentation/state_management/cart_bloc/cart_bloc.dart';
@@ -40,6 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // final GetRecentlySeen _getRecentlySeen = injections<GetRecentlySeen>();
   final String url = "https://chemtradea.chemtradeasia.com/";
   final bool showAll = false;
+  int recentSeenLimit = 4;
   // List _recentlySeen = [];
 
   @override
@@ -55,6 +55,19 @@ class _HomeScreenState extends State<HomeScreen> {
       BlocProvider.of<RecentlySeenBloc>(context)
           .add(const GetRecentlySeenEvent());
     });
+  }
+
+  void increaseRecentSeenLimit(int num) {
+    int divnum = num - recentSeenLimit;
+    int dovnum = num % 4;
+
+    if (recentSeenLimit % 4 == 0 && divnum > 4) {
+      recentSeenLimit = recentSeenLimit + 4;
+    } else {
+      recentSeenLimit = recentSeenLimit + dovnum;
+    }
+
+    setState(() {});
   }
 
   @override
@@ -668,100 +681,107 @@ class _HomeScreenState extends State<HomeScreen> {
                                     BlocBuilder<RecentlySeenBloc,
                                         RecentlySeenState>(
                                       builder: (context, state) {
-                                        return state.products!.isEmpty
-                                            ? const Center(
-                                                child:
-                                                    Text("Tidak ada product"))
-                                            : Column(
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            bottom: size20px),
-                                                    child: GridView.builder(
-                                                      gridDelegate:
-                                                          const SliverGridDelegateWithFixedCrossAxisCount(
-                                                              crossAxisCount: 2,
-                                                              crossAxisSpacing:
-                                                                  15,
-                                                              mainAxisSpacing:
-                                                                  15,
-                                                              childAspectRatio:
-                                                                  0.7),
-                                                      itemCount: state.products!
-                                                                  .length <
-                                                              4
+                                        if (state is RecentlySeenInit) {
+                                          return const Center(
+                                              child: CircularProgressIndicator
+                                                  .adaptive());
+                                        } else if (state.products == null ||
+                                            state.products!.isEmpty) {
+                                          return const Center(
+                                              child: Text("Tidak ada product"));
+                                        } else {
+                                          return Column(
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    bottom: size20px),
+                                                child: GridView.builder(
+                                                  gridDelegate:
+                                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                                          crossAxisCount: 2,
+                                                          crossAxisSpacing: 15,
+                                                          mainAxisSpacing: 15,
+                                                          childAspectRatio:
+                                                              0.7),
+                                                  itemCount:
+                                                      state.products!.length < 4
                                                           ? state
                                                               .products!.length
-                                                          : 4,
-                                                      shrinkWrap: true,
-                                                      padding: EdgeInsets.zero,
-                                                      physics:
-                                                          const NeverScrollableScrollPhysics(),
-                                                      itemBuilder:
-                                                          (context, index) {
-                                                        return ProductCard(
-                                                          product:
-                                                              ProductEntity(
-                                                            productname: state
-                                                                .products![
-                                                                    index]
-                                                                .productname,
-                                                            productimage: state
-                                                                .products![
-                                                                    index]
-                                                                .productimage,
-                                                            casNumber: state
-                                                                .products![
-                                                                    index]
-                                                                .casNumber,
-                                                            hsCode: state
-                                                                .products![
-                                                                    index]
-                                                                .hsCode,
-                                                          ),
-                                                          isNotRecentSeenCard:
-                                                              false,
-                                                        );
-                                                      },
-                                                    ),
-                                                  ),
-                                                  /* Button See More */
-                                                  Center(
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                        color: secondaryColor5,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(
-                                                                    size20px *
-                                                                        5),
+                                                          : recentSeenLimit,
+                                                  shrinkWrap: true,
+                                                  padding: EdgeInsets.zero,
+                                                  physics:
+                                                      const NeverScrollableScrollPhysics(),
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    return ProductCard(
+                                                      product: ProductEntity(
+                                                        productname: state
+                                                            .products![index]
+                                                            .productname,
+                                                        productimage: state
+                                                            .products![index]
+                                                            .productimage,
+                                                        casNumber: state
+                                                            .products![index]
+                                                            .casNumber,
+                                                        hsCode: state
+                                                            .products![index]
+                                                            .hsCode,
                                                       ),
-                                                      child: InkWell(
-                                                        onTap: () {},
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  horizontal:
-                                                                      size20px /
-                                                                          2,
-                                                                  vertical:
-                                                                      size20px /
+                                                      isNotRecentSeenCard:
+                                                          false,
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                              /* Button See More */
+                                              state.products!.length > 4 &&
+                                                      recentSeenLimit <
+                                                          state.products!.length
+                                                  ? Center(
+                                                      child: Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color:
+                                                              secondaryColor5,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      size20px *
                                                                           5),
-                                                          child: Text(
-                                                            "Load More",
-                                                            style: text12.copyWith(
-                                                                color:
-                                                                    secondaryColor1),
+                                                        ),
+                                                        child: InkWell(
+                                                          onTap: () {
+                                                            increaseRecentSeenLimit(
+                                                                state.products!
+                                                                    .length);
+                                                          },
+                                                          child: Padding(
+                                                            padding: const EdgeInsets
+                                                                    .symmetric(
+                                                                horizontal:
+                                                                    size20px /
+                                                                        2,
+                                                                vertical:
+                                                                    size20px /
+                                                                        5),
+                                                            child: Text(
+                                                              "Load More",
+                                                              style: text12
+                                                                  .copyWith(
+                                                                      color:
+                                                                          secondaryColor1),
+                                                            ),
                                                           ),
                                                         ),
                                                       ),
-                                                    ),
-                                                  ),
-                                                  /* End Button See More */
-                                                ],
-                                              );
+                                                    )
+                                                  : const SizedBox(),
+                                              /* End Button See More */
+                                            ],
+                                          );
+                                        }
                                         /* End Lastseen Section */
                                       },
                                     )

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mytradeasia/features/domain/usecases/country_usecases/get_country_usecase.dart';
+import 'package:mytradeasia/helper/injections_container.dart';
 import '../../../../../config/themes/theme.dart';
 
 class LanguagesScreen extends StatefulWidget {
@@ -9,6 +11,8 @@ class LanguagesScreen extends StatefulWidget {
 }
 
 class _LanguagesScreenState extends State<LanguagesScreen> {
+  final GetCountryUsecase getCountryUseCase = GetCountryUsecase(injections());
+
   List<Map<String, dynamic>> countryList = [
     {"name": "Afghanistan", "dial_code": "(+93)", "code": "AF"},
     {"name": "Aland Islands", "dial_code": "+358", "code": "AX"},
@@ -309,6 +313,17 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
     {"name": "Zambia", "dial_code": "+260", "code": "ZM"},
     {"name": "Zimbabwe", "dial_code": "+263", "code": "ZW"}
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    getCountry();
+  }
+
+  void getCountry() async {
+    final country = await getCountryUseCase.call();
+    print(country.data!.length);
+  }
 
   @override
   Widget build(BuildContext context) {
