@@ -1,15 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mytradeasia/features/domain/usecases/country_usecases/get_country_usecase.dart';
+import 'package:mytradeasia/features/domain/entities/country_entities/country_entity.dart';
 import 'package:mytradeasia/features/presentation/state_management/countries_bloc/countries_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/countries_bloc/countries_event.dart';
-import 'package:mytradeasia/helper/injections_container.dart';
 import '../../../../../config/themes/theme.dart';
 import '../../../state_management/countries_bloc/countries_state.dart';
 
 class LanguagesScreen extends StatefulWidget {
-  const LanguagesScreen({super.key});
+  final ValueNotifier<CountryEntity> country;
+  final ValueChanged<CountryEntity>? onChanged;
+  const LanguagesScreen({super.key, required this.country, this.onChanged});
 
   @override
   State<LanguagesScreen> createState() => _LanguagesScreenState();
@@ -347,244 +348,282 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
         ),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                  left: size20px,
-                  right: size20px,
-                  top: size20px / 2,
-                  bottom: size20px),
-
-              /** Searchbar */
-              child: TextFormField(
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  enabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: greyColor3),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(size20px / 2),
-                    ),
-                  ),
-                  focusedBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: greyColor3),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(size20px / 2),
-                    ),
-                  ),
-                  filled: true,
-                  fillColor: whiteColor,
-                  prefixIcon: Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 15.0),
-                    child: Image.asset(
-                      "assets/images/icon_search.png",
-                      width: 24.0,
-                      height: 24.0,
-                    ),
-                  ),
-                  hintText: "Search",
-                  hintStyle: body1Regular.copyWith(color: greyColor),
-                ),
-              ),
-            ),
-
-            /** Popular Country */
-            Column(
+        child: ValueListenableBuilder<CountryEntity>(
+          valueListenable: widget.country,
+          builder: (context, value, child) {
+            return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                   padding: const EdgeInsets.only(
-                      left: size20px, bottom: size20px / 2),
-                  child: Text(
-                    "Popular Countries/Region",
-                    style: body1Regular.copyWith(color: greyColor2),
-                  ),
-                ),
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: 5,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      height: size20px + 30.0,
-                      width: MediaQuery.of(context).size.width,
-                      color: whiteColor,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: size20px + 8, vertical: size20px / 4.0),
-                        child: Row(
-                          children: [
-                            Image.asset(
-                              "assets/images/logo_indonesia.png",
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.only(
-                                  left: size20px + 3.0, right: size20px / 5),
-                              child: Text("Indonesia", style: body1Regular),
-                            ),
-                            Text("(+62)",
-                                style:
-                                    body1Regular.copyWith(color: greyColor2)),
-                          ],
+                      left: size20px,
+                      right: size20px,
+                      top: size20px / 2,
+                      bottom: size20px),
+
+                  /** Searchbar */
+                  child: TextFormField(
+                    // onChanged: (value) {
+
+                    // },
+                    // onSaved: (newValue) {
+                    //   BlocProvider.of<CountriesBloc>(context)
+                    //       .add(SearchCountriesEvent(newValue ?? ""));
+                    //   print(newValue);
+                    // },
+                    onFieldSubmitted: (value) {
+                      BlocProvider.of<CountriesBloc>(context)
+                          .add(SearchCountriesEvent(value));
+                      print(value);
+                    },
+                    textInputAction: TextInputAction.search,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      enabledBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: greyColor3),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(size20px / 2),
                         ),
                       ),
-                    );
-                  },
-                ),
-              ],
-            ),
-
-            /* List  */
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: size20px, bottom: size20px / 2),
-                  child: Text(
-                    "Country",
-                    style: body1Regular.copyWith(color: greyColor2),
+                      focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: greyColor3),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(size20px / 2),
+                        ),
+                      ),
+                      filled: true,
+                      fillColor: whiteColor,
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.only(left: 20, right: 15.0),
+                        child: Image.asset(
+                          "assets/images/icon_search.png",
+                          width: 24.0,
+                          height: 24.0,
+                        ),
+                      ),
+                      hintText: "Search",
+                      hintStyle: body1Regular.copyWith(color: greyColor),
+                    ),
                   ),
                 ),
-                BlocBuilder<CountriesBloc, CountriesState>(
-                  builder: (context, state) {
-                    if (state is CountriesInit) {
-                      return const Center(
-                        child: CircularProgressIndicator.adaptive(),
-                      );
-                    } else if (state is CountriesLoaded) {
-                      return state.products != null
-                          ? ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: state.products!.length,
-                              itemBuilder: (context, index) {
-                                return Material(
-                                  color: Colors.white,
-                                  type: MaterialType.button,
-                                  child: InkWell(
-                                    onTap: () {},
-                                    // splashColor: Colors.black,
-                                    child: Container(
-                                      height: size20px + 30.0,
-                                      width: MediaQuery.of(context).size.width,
-                                      // color: whiteColor,
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: size20px + 8,
-                                            vertical: size20px / 4.0),
-                                        child: Row(
-                                          children: [
-                                            Container(
-                                              clipBehavior:
-                                                  Clip.antiAliasWithSaveLayer,
-                                              width: 60,
-                                              decoration: BoxDecoration(
-                                                  shape: BoxShape.circle),
-                                              child: CachedNetworkImage(
-                                                // fit: BoxFit.fill,
-                                                imageUrl: state
-                                                    .products![index].flagUrl!,
-                                                width: 60,
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: size20px + 3.0,
-                                                    right: size20px / 5),
-                                                child: RichText(
-                                                  text: TextSpan(
-                                                    children: [
-                                                      TextSpan(
-                                                          text: state
-                                                              .products![index]
-                                                              .name,
-                                                          style: body1Regular),
-                                                      const TextSpan(
-                                                          text: "   ",
-                                                          style: body1Regular),
-                                                      TextSpan(
-                                                          text: state
-                                                              .products![index]
-                                                              .phoneCode,
-                                                          style: body1Regular
-                                                              .copyWith(
-                                                                  color:
-                                                                      greyColor2)),
-                                                    ],
+
+                /** Popular Country */
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: size20px, bottom: size20px / 2),
+                      child: Text(
+                        "Popular Countries/Region",
+                        style: body1Regular.copyWith(color: greyColor2),
+                      ),
+                    ),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: 5,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          height: size20px + 30.0,
+                          width: MediaQuery.of(context).size.width,
+                          color: whiteColor,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: size20px + 8,
+                                vertical: size20px / 4.0),
+                            child: Row(
+                              children: [
+                                Image.asset(
+                                  "assets/images/logo_indonesia.png",
+                                ),
+                                const Padding(
+                                  padding: EdgeInsets.only(
+                                      left: size20px + 3.0,
+                                      right: size20px / 5),
+                                  child: Text("Indonesia", style: body1Regular),
+                                ),
+                                Text("(+62)",
+                                    style: body1Regular.copyWith(
+                                        color: greyColor2)),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+
+                /* List  */
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: size20px, bottom: size20px / 2),
+                      child: Text(
+                        "Country",
+                        style: body1Regular.copyWith(color: greyColor2),
+                      ),
+                    ),
+                    BlocBuilder<CountriesBloc, CountriesState>(
+                      builder: (context, state) {
+                        if (state is CountriesInit) {
+                          return const Center(
+                            child: CircularProgressIndicator.adaptive(),
+                          );
+                        } else if (state is CountriesLoaded) {
+                          return state.products != null
+                              ? ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: state.products!.length,
+                                  itemBuilder: (context, index) {
+                                    return Material(
+                                      color: Colors.white,
+                                      type: MaterialType.button,
+                                      child: InkWell(
+                                        onTap: () {
+                                          widget.country.value =
+                                              state.products![index];
+                                          if (widget.onChanged != null) {
+                                            widget.onChanged!(
+                                                state.products![index]);
+                                          }
+                                          Navigator.of(context).pop();
+                                        },
+                                        // splashColor: Colors.black,
+                                        child: Container(
+                                          height: size20px + 30.0,
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          // color: whiteColor,
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: size20px + 8,
+                                                vertical: size20px / 4.0),
+                                            child: Row(
+                                              children: [
+                                                Container(
+                                                  clipBehavior: Clip
+                                                      .antiAliasWithSaveLayer,
+                                                  width: 60,
+                                                  decoration: BoxDecoration(
+                                                      shape: BoxShape.circle),
+                                                  child: CachedNetworkImage(
+                                                    // fit: BoxFit.fill,
+                                                    imageUrl: state
+                                                        .products![index]
+                                                        .flagUrl!,
+                                                    width: 60,
                                                   ),
                                                 ),
-                                              ),
+                                                Expanded(
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left:
+                                                                size20px + 3.0,
+                                                            right:
+                                                                size20px / 5),
+                                                    child: RichText(
+                                                      text: TextSpan(
+                                                        children: [
+                                                          TextSpan(
+                                                              text: state
+                                                                  .products![
+                                                                      index]
+                                                                  .name,
+                                                              style:
+                                                                  body1Regular),
+                                                          const TextSpan(
+                                                              text: "   ",
+                                                              style:
+                                                                  body1Regular),
+                                                          TextSpan(
+                                                              text: state
+                                                                  .products![
+                                                                      index]
+                                                                  .phoneCode,
+                                                              style: body1Regular
+                                                                  .copyWith(
+                                                                      color:
+                                                                          greyColor2)),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ),
+                                    );
+                                  },
+                                )
+                              : const Center(
+                                  child: Text("empty"),
                                 );
-                              },
-                            )
-                          : const Center(
-                              child: Text("empty"),
-                            );
-                    } else {
-                      return const Center(
-                        child: Text("error occured"),
-                      );
-                    }
-                  },
+                        } else {
+                          return const Center(
+                            child: Text("error occured"),
+                          );
+                        }
+                      },
+                    ),
+                  ],
                 ),
-              ],
-            ),
 
-            // B
-            // Column(
-            //   crossAxisAlignment: CrossAxisAlignment.start,
-            //   children: [
-            //     Padding(
-            //       padding: const EdgeInsets.only(
-            //           left: size20px, bottom: size20px / 2),
-            //       child: Text(
-            //         "B",
-            //         style: body1Regular.copyWith(color: greyColor2),
-            //       ),
-            //     ),
-            //     ListView.builder(
-            //       shrinkWrap: true,
-            //       physics: const NeverScrollableScrollPhysics(),
-            //       itemCount: 5,
-            //       itemBuilder: (context, index) {
-            //         return Container(
-            //           height: size20px + 30.0,
-            //           width: MediaQuery.of(context).size.width,
-            //           color: whiteColor,
-            //           child: Padding(
-            //             padding: const EdgeInsets.symmetric(
-            //                 horizontal: size20px + 8, vertical: size20px / 4.0),
-            //             child: Row(
-            //               children: [
-            //                 Image.asset(
-            //                   "assets/images/logo_indonesia.png",
-            //                 ),
-            //                 const Padding(
-            //                   padding: EdgeInsets.only(
-            //                       left: size20px + 3.0, right: size20px / 5),
-            //                   child: Text("Indonesia", style: body1Regular),
-            //                 ),
-            //                 Text("(+62)",
-            //                     style:
-            //                         body1Regular.copyWith(color: greyColor2)),
-            //               ],
-            //             ),
-            //           ),
-            //         );
-            //       },
-            //     ),
-            //   ],
-            // ),
-          ],
+                // B
+                // Column(
+                //   crossAxisAlignment: CrossAxisAlignment.start,
+                //   children: [
+                //     Padding(
+                //       padding: const EdgeInsets.only(
+                //           left: size20px, bottom: size20px / 2),
+                //       child: Text(
+                //         "B",
+                //         style: body1Regular.copyWith(color: greyColor2),
+                //       ),
+                //     ),
+                //     ListView.builder(
+                //       shrinkWrap: true,
+                //       physics: const NeverScrollableScrollPhysics(),
+                //       itemCount: 5,
+                //       itemBuilder: (context, index) {
+                //         return Container(
+                //           height: size20px + 30.0,
+                //           width: MediaQuery.of(context).size.width,
+                //           color: whiteColor,
+                //           child: Padding(
+                //             padding: const EdgeInsets.symmetric(
+                //                 horizontal: size20px + 8, vertical: size20px / 4.0),
+                //             child: Row(
+                //               children: [
+                //                 Image.asset(
+                //                   "assets/images/logo_indonesia.png",
+                //                 ),
+                //                 const Padding(
+                //                   padding: EdgeInsets.only(
+                //                       left: size20px + 3.0, right: size20px / 5),
+                //                   child: Text("Indonesia", style: body1Regular),
+                //                 ),
+                //                 Text("(+62)",
+                //                     style:
+                //                         body1Regular.copyWith(color: greyColor2)),
+                //               ],
+                //             ),
+                //           ),
+                //         );
+                //       },
+                //     ),
+                //   ],
+                // ),
+              ],
+            );
+          },
         ),
       ),
     );

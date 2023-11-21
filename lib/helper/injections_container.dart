@@ -49,6 +49,7 @@ import 'package:mytradeasia/features/domain/usecases/cart_usecases/delete_cart_i
 import 'package:mytradeasia/features/domain/usecases/cart_usecases/get_cart.dart';
 import 'package:mytradeasia/features/domain/usecases/cart_usecases/update_cart.dart';
 import 'package:mytradeasia/features/domain/usecases/country_usecases/get_country_usecase.dart';
+import 'package:mytradeasia/features/domain/usecases/country_usecases/search_country_usecase.dart';
 import 'package:mytradeasia/features/domain/usecases/detail_product_usecases/get_detail_product.dart';
 import 'package:mytradeasia/features/domain/usecases/dhl_shipment_usecases/get_dhl_shipment.dart';
 import 'package:mytradeasia/features/domain/usecases/faq_usecases/get_faq_data.dart';
@@ -200,6 +201,8 @@ Future<void> initializeDependencies() async {
       .registerSingleton<DeleteRecentlySeen>(DeleteRecentlySeen(injections()));
   injections
       .registerSingleton<GetCountryUsecase>(GetCountryUsecase(injections()));
+  injections.registerSingleton<SearchCountryUsecase>(
+      SearchCountryUsecase(injections()));
 
   //Bloc
   injections
@@ -233,5 +236,6 @@ Future<void> initializeDependencies() async {
       .registerFactory<SearatesBLBloc>(() => SearatesBLBloc(injections()));
   injections.registerFactory<RecentlySeenBloc>(
       () => RecentlySeenBloc(injections(), injections(), injections()));
-  injections.registerFactory<CountriesBloc>(() => CountriesBloc(injections()));
+  injections.registerFactory<CountriesBloc>(
+      () => CountriesBloc(injections(), injections()));
 }

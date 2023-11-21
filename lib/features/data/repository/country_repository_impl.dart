@@ -14,9 +14,29 @@ class CountryRepoImpl implements CountryRepository {
   CountryRepoImpl(this._countryService);
 
   @override
-  Future<DataState<List<CountryEntity>>> getCountryRepo() async {
+  Future<DataState<List<CountryEntity>>> getCountry() async {
     try {
       final response = await _countryService.getListCountries();
+
+      if (response.statusCode == HttpStatus.ok) {
+        return DataSuccess(response.data!);
+      } else {
+        return DataFailed(DioException(
+          error: response.statusMessage,
+          response: response,
+          type: DioExceptionType.badResponse,
+          requestOptions: response.requestOptions,
+        ));
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState<List<CountryEntity>>> searchCountry(String query) async {
+    try {
+      final response = await _countryService.searchCountries(query);
 
       if (response.statusCode == HttpStatus.ok) {
         return DataSuccess(response.data!);
