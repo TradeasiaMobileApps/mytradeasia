@@ -66,12 +66,12 @@ class _CountryPickerState extends State<CountryPicker> {
                       ),
                       border: Border.all(color: greyColor3)),
                   child: Padding(
-                    padding: const EdgeInsets.all(size20px / 2),
+                    padding: const EdgeInsets.all(8.0),
                     child: Container(
-                        clipBehavior: Clip.hardEdge,
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
                         decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: greyColor3)),
+                          shape: BoxShape.circle,
+                        ),
                         child: CachedNetworkImage(
                           imageUrl: country.value.flagUrl!,
                           fit: BoxFit.cover,
