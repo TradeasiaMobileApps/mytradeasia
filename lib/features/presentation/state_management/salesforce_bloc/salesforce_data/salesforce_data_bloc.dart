@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mytradeasia/core/resources/data_state.dart';
 import 'package:mytradeasia/features/domain/usecases/sales_force_data_usecases/create_sales_force_account.dart';
@@ -20,6 +23,7 @@ class SalesforceDataBloc
     on<GetCPSalesforce>(onCPSalesforce);
     on<CreateSFAccount>(onCreateSFAccount);
     on<CreateSFOpportunity>(onCreateSFOpportunity);
+    on<CloseDialogEvent>(onCloseDialogWidget);
   }
 
   void onDataSalesforce(
@@ -63,14 +67,27 @@ class SalesforceDataBloc
 
   void onCreateSFOpportunity(
       CreateSFOpportunity event, Emitter<SalesforceDataState> emit) async {
+    emit(const SalesforceCreateOpportunityLoading());
+
     final dataState = await _createSalesForceOpportunity(
         param: event.salesforceCreateOpportunityForm);
+
     if (dataState is DataSuccess) {
-      emit(SalesforceCreateOpportunityDone(dataState.data!));
+      if (dataState.data!.success!) {
+        emit(SalesforceCreateOpportunityDone(dataState.data!));
+      } else {
+        emit(SalesforceDataError(
+            DioException(requestOptions: RequestOptions())));
+      }
     }
 
     if (dataState is DataFailed) {
       emit(SalesforceDataError(dataState.error!));
     }
+  }
+
+  void onCloseDialogWidget(
+      CloseDialogEvent event, Emitter<SalesforceDataState> emit) async {
+    emit(const SalesforceDataLoading());
   }
 }

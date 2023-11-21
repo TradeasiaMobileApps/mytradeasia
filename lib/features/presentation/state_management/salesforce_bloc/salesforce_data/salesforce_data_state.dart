@@ -49,6 +49,10 @@ class SalesforceCreateOpportunityDone extends SalesforceDataState {
       : super(createOpportunityEntity: createOpportunityEntity);
 }
 
+class SalesforceCreateOpportunityLoading extends SalesforceDataState {
+  const SalesforceCreateOpportunityLoading();
+}
+
 class SalesforceDataError extends SalesforceDataState {
   const SalesforceDataError(DioException error) : super(error: error);
 }

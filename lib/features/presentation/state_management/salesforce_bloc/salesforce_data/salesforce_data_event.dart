@@ -28,3 +28,7 @@ class CreateSFOpportunity extends SalesforceDataEvent {
 
   CreateSFOpportunity(this.salesforceCreateOpportunityForm);
 }
+
+class CloseDialogEvent extends SalesforceDataEvent {
+  CloseDialogEvent();
+}

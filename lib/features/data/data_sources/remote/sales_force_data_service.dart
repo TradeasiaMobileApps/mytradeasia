@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:intl/intl.dart';
 import 'package:mytradeasia/core/constants/constants.dart';
 import 'package:mytradeasia/features/data/model/sales_force_data_models/sales_force_cp_model.dart';
 import 'package:mytradeasia/features/data/model/sales_force_data_models/sales_force_create_account_model.dart';
@@ -97,6 +98,9 @@ class SalesforceDataService {
       SalesforceCreateOpportunityForm formData) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final tokenSF = prefs.getString("tokenSF") ?? "";
+    DateTime now = DateTime.now();
+    // Format date
+    String formattedDate = DateFormat('yyyy-MM-dd').format(now);
 
     final response = await dio.post(
         "https://tradeasia--newmind.sandbox.my.salesforce.com/services/data/v58.0/sobjects/Opportunity",
@@ -113,7 +117,7 @@ class SalesforceDataService {
           "Product_Name__c": "01tj0000002wbhDAAQ",
           "StageName": "Quotation",
           "ForecastCategoryName": "Best Case",
-          "CloseDate": "2021-10-14",
+          "CloseDate": formattedDate,
           "Worked_by__c": "Test",
           "Origin__c": "Test",
           "Quantity__c": formData.quantity,
@@ -124,8 +128,6 @@ class SalesforceDataService {
           "Container_Size__c": "20' FCL",
           "Port_of_Discharge__c": "a028G00000147yLQAQ"
         });
-
-    log("OPP DATA : ${response.data}");
 
     final data = SalesforceCreateOpportunityModel.fromJson(response.data);
 

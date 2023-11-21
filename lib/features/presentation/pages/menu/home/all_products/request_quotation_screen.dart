@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +16,8 @@ import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_data
 import 'package:mytradeasia/features/presentation/pages/menu/other/languages_screen.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_data/salesforce_data_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_data/salesforce_data_event.dart';
+import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_data/salesforce_data_state.dart';
+import 'package:mytradeasia/features/presentation/widgets/dialog_sheet_widget.dart';
 import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -893,54 +897,91 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
             horizontal: size20px, vertical: size20px - 7.0),
         child: SizedBox(
           height: size20px * 2.5,
-          child: ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all<Color>(primaryColor1),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(7.0),
-                  ),
-                ),
-              ),
-              onPressed: () async {
-                /* With go_router */
-                DataState<dynamic> response;
-
-                response = await _submitRfq.call(
-                  param: RfqEntity(
-                    firstname: _firstNameController.text,
-                    lastname: _lastNameController.text,
-                    company: _companyNameController.text,
-                    country: _countryController.text,
-                    phone: _phoneNumberController.text,
-                    products: widget.products
-                        .map((e) => RfqProduct(
-                              productName: e.productName,
-                              quantity: e.quantity,
-                              unit: e.unit,
-                            ))
-                        .toList(),
-                    message: _messagesController.text,
-                    portOfDestination: _portOfDetinationController.text,
-                    incoterm: _selectedValueIncoterm ?? "",
-                  ),
+          child: BlocBuilder<SalesforceDataBloc, SalesforceDataState>(
+            builder: (context, state) {
+              log("CURRENT STATE : ${state.toString()}");
+              if (state is SalesforceCreateOpportunityLoading) {
+                return const Center(
+                  child: CircularProgressIndicator(),
                 );
-                // print(response.data);
+              }
+              if (state is SalesforceCreateOpportunityDone) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return DialogWidget(
+                          urlIcon: "assets/images/logo_email_change.png",
+                          title: "Quotation created",
+                          subtitle:
+                              "Lorem ipsum dolor sit amet consectetur. Egestas porttitor risus enim cursus rutrum molestie tortor",
+                          textForButton: "Back to My Tradeasia",
+                          navigatorFunction: () {
+                            BlocProvider.of<SalesforceDataBloc>(context)
+                                .add(CloseDialogEvent());
+                            /* With go_route */
+                            context.go("/home");
+                            context.pop();
+                          });
+                    },
+                  );
+                });
+                return Container();
+              }
+              return ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(primaryColor1),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(7.0),
+                      ),
+                    ),
+                  ),
+                  onPressed: () async {
+                    /* With go_router */
+                    DataState<dynamic> response;
 
-                BlocProvider.of<SalesforceDataBloc>(context).add(
-                    CreateSFOpportunity(SalesforceCreateOpportunityForm(
-                        userId: "001j0000019LT4SAAW",
-                        companyName: _companyNameController.text,
-                        quantity: 10,
-                        hsCode: "Test")));
+                    response = await _submitRfq.call(
+                      param: RfqEntity(
+                        firstname: _firstNameController.text,
+                        lastname: _lastNameController.text,
+                        company: _companyNameController.text,
+                        country: _countryController.text,
+                        phone: _phoneNumberController.text,
+                        products: widget.products
+                            .map((e) => RfqProduct(
+                                  productName: e.productName,
+                                  quantity: e.quantity,
+                                  unit: e.unit,
+                                ))
+                            .toList(),
+                        message: _messagesController.text,
+                        portOfDestination: _portOfDetinationController.text,
+                        incoterm: _selectedValueIncoterm ?? "",
+                      ),
+                    );
 
-                // context.goNamed("submitted_rfq");
-              },
-              child: Text(
-                "Send",
-                style: text16.copyWith(color: whiteColor),
-              )),
+                    String salesforceUID = await getSalesforceId();
+                    log("SF ID : $salesforceUID");
+                    log("WIDGET PRODUCT LENGTH: ${widget.products.length}");
+                    log("WIDGET PRODUCT NAME: ${widget.products[0].productName}");
+
+                    for (var e in widget.products) {
+                      BlocProvider.of<SalesforceDataBloc>(context).add(
+                          CreateSFOpportunity(SalesforceCreateOpportunityForm(
+                              userId: salesforceUID,
+                              companyName: _companyNameController.text,
+                              quantity: e.quantity ?? 0,
+                              hsCode: e.hsCode)));
+                    }
+                  },
+                  child: Text(
+                    "Send",
+                    style: text16.copyWith(color: whiteColor),
+                  ));
+            },
+          ),
         ),
       ),
     );
