@@ -34,7 +34,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await AutoLocalization.init(appLanguage: 'en', userLanguage: 'ru');
+  await AutoLocalization.init(appLanguage: 'en', userLanguage: 'en');
   SendbirdChat.init(appId: 'DCD5F067-8067-49BF-954E-CEB3631B555F');
 
   await initializeDependencies();

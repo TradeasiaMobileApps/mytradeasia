@@ -88,12 +88,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   const SizedBox(height: 50.48),
-                  AutoLocalBuilder(
-                    text: const ["Sign Up Here"],
-                    builder: (TranslationWorker tw) {
-                      return Text(tw.get("Sign Up Here"));
-                    },
-                  ),
+                  // AutoLocalBuilder(
+                  //   text: const ["Sign Up Here"],
+                  //   builder: (TranslationWorker tw) {
+                  //     return Text(tw.get("Sign Up Here"));
+                  //   },
+                  // ),
                   const Text("Sign Up Here", style: heading1),
                   const SizedBox(
                     height: 5.0,
@@ -631,8 +631,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           /* With go_route */
                           context.go("/auth/login");
                           // AutoLocalization.clearCache();
-                          AutoLocalization.setAppLanguage = "en";
-                          AutoLocalization.setUserLanguage = "id";
+                          // AutoLocalization.setAppLanguage = "en";
+                          // AutoLocalization.setUserLanguage = "id";
 
                           // setState(() {});
                         },
