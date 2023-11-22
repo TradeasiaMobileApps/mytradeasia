@@ -1,27 +1,30 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/config/routes/parameters.dart';
+import 'package:mytradeasia/features/domain/entities/product_entities/product_entity.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_to_rfq_entity.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/add_recently_seen.dart';
-import 'package:mytradeasia/features/domain/usecases/user_usecases/get_recently_seen.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_snapshot.dart';
 import 'package:mytradeasia/features/presentation/pages/menu/history/tracking_document/tracking_document_screen.dart';
 import 'package:mytradeasia/features/presentation/state_management/cart_bloc/cart_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/cart_bloc/cart_event.dart';
+import 'package:mytradeasia/features/presentation/state_management/recently_seen_bloc/recently_seen_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/recently_seen_bloc/recently_seen_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_login/salesforce_login_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_login/salesforce_login_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_login/salesforce_login_state.dart';
 import 'package:mytradeasia/features/presentation/state_management/top_products_bloc/top_products_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/top_products_bloc/top_products_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/top_products_bloc/top_products_state.dart';
-import 'package:mytradeasia/features/presentation/widgets/add_to_cart_button.dart';
 import 'package:mytradeasia/features/presentation/widgets/cart_button.dart';
+import 'package:mytradeasia/features/presentation/widgets/product_card.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
 import 'package:mytradeasia/utils/sales_force_screen.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
 import 'package:shimmer/shimmer.dart';
+
+import '../../../state_management/recently_seen_bloc/recently_seen_state.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -33,15 +36,15 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final GetUserSnapshot _getUserSnapshot = injections<GetUserSnapshot>();
   final AddRecentlySeen _addRecentlySeen = injections<AddRecentlySeen>();
-  final GetRecentlySeen _getRecentlySeen = injections<GetRecentlySeen>();
+  // final GetRecentlySeen _getRecentlySeen = injections<GetRecentlySeen>();
   final String url = "https://chemtradea.chemtradeasia.com/";
   final bool showAll = false;
-  List _recentlySeen = [];
+  int recentSeenLimit = 4;
+  // List _recentlySeen = [];
 
   @override
   void initState() {
     super.initState();
-    getRecentlyseen();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       BlocProvider.of<TopProductBloc>(context).add(const GetTopProduct());
 
@@ -49,11 +52,22 @@ class _HomeScreenState extends State<HomeScreen> {
           .add(const LoginSalesforce());
 
       BlocProvider.of<CartBloc>(context).add(const GetCartItems());
+      BlocProvider.of<RecentlySeenBloc>(context)
+          .add(const GetRecentlySeenEvent());
     });
   }
 
-  void getRecentlyseen() async {
-    _recentlySeen = await _getRecentlySeen();
+  void increaseRecentSeenLimit(int num) {
+    int divnum = num - recentSeenLimit;
+    int dovnum = num % 4;
+
+    if (recentSeenLimit % 4 == 0 && divnum > 4) {
+      recentSeenLimit = recentSeenLimit + 4;
+    } else {
+      recentSeenLimit = recentSeenLimit + dovnum;
+    }
+
+    setState(() {});
   }
 
   @override
@@ -447,9 +461,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                             itemBuilder: (context, index) {
                                               return InkWell(
                                                 onTap: () async {
-                                                  // print(state
-                                                  //     .topProductData![index]
-                                                  //     .seoUrl);
                                                   context.pushNamed("product",
                                                       pathParameters: {
                                                         'url': state
@@ -479,226 +490,91 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   await _addRecentlySeen(
                                                       param: data);
                                                 },
-                                                child: Card(
-                                                  shadowColor: blackColor,
-                                                  elevation: 3.0,
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                left: size24px /
-                                                                    4,
-                                                                right:
-                                                                    size24px /
-                                                                        4,
-                                                                top: size24px /
-                                                                    4),
-                                                        child: ClipRRect(
-                                                          borderRadius:
-                                                              const BorderRadius
-                                                                  .all(
-                                                            Radius.circular(
-                                                                size20px / 2),
-                                                          ),
-                                                          child: SizedBox(
-                                                            height:
-                                                                size20px * 5.5,
-                                                            width:
-                                                                MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width,
-                                                            child:
-                                                                CachedNetworkImage(
-                                                              imageUrl:
-                                                                  "$url${state.topProductData![index].productimage}",
-                                                              fit: BoxFit.fill,
-                                                              placeholder: (context,
-                                                                      url) =>
-                                                                  const Center(
-                                                                child: CircularProgressIndicator
-                                                                    .adaptive(),
-                                                              ),
-                                                              errorWidget: (context,
-                                                                      url,
-                                                                      error) =>
-                                                                  const Icon(Icons
-                                                                      .error),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  vertical: 5.0,
-                                                                  horizontal:
-                                                                      10.0),
-                                                          child: Text(
-                                                            state
-                                                                    .topProductData![
-                                                                        index]
-                                                                    .productname ??
-                                                                "",
-                                                            style: text14,
-                                                            maxLines: 2,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                horizontal:
-                                                                    10.0),
-                                                        child: Row(
-                                                          children: [
-                                                            Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                const Text(
-                                                                    "CAS Number :",
-                                                                    style:
-                                                                        text10),
-                                                                Text(
-                                                                    state
-                                                                            .topProductData![
-                                                                                index]
-                                                                            .casNumber ??
-                                                                        "",
-                                                                    style: text10
-                                                                        .copyWith(
-                                                                            color:
-                                                                                greyColor2)),
-                                                              ],
-                                                            ),
-                                                            const Spacer(),
-                                                            Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                const Text(
-                                                                    "HS Code :",
-                                                                    style:
-                                                                        text10),
-                                                                Text(
-                                                                    state
-                                                                            .topProductData![
-                                                                                index]
-                                                                            .hsCode ??
-                                                                        "",
-                                                                    style: text10
-                                                                        .copyWith(
-                                                                            color:
-                                                                                greyColor2)),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(10.0),
-                                                        child: Row(
-                                                          children: [
-                                                            Expanded(
-                                                              child: SizedBox(
-                                                                height: 30,
-                                                                width: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width,
-                                                                child: ElevatedButton(
-                                                                    style: ButtonStyle(
-                                                                        backgroundColor: MaterialStateProperty.all<Color>(primaryColor1),
-                                                                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                                          RoundedRectangleBorder(
-                                                                            borderRadius:
-                                                                                BorderRadius.circular(7.0),
-                                                                          ),
-                                                                        ),
-                                                                        padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.zero)),
-                                                                    onPressed: () {
-                                                                      List<ProductToRfq>
-                                                                          products =
-                                                                          [];
-                                                                      ProductToRfq
-                                                                          product =
-                                                                          ProductToRfq(
-                                                                        productName: state
-                                                                            .topProductData![index]
-                                                                            .productname!,
-                                                                        productImage: state
-                                                                            .topProductData![index]
-                                                                            .productimage!,
-                                                                        hsCode: state
-                                                                            .topProductData![index]
-                                                                            .hsCode!,
-                                                                        casNumber: state
-                                                                            .topProductData![index]
-                                                                            .casNumber!,
-                                                                      );
-                                                                      products.add(
-                                                                          product);
+                                                //product cards
 
-                                                                      RequestQuotationParameter
-                                                                          param =
-                                                                          RequestQuotationParameter(
-                                                                        products:
-                                                                            products,
-                                                                      );
-                                                                      context.go(
-                                                                          "/home/request_quotation",
-                                                                          extra:
-                                                                              param);
-                                                                    },
-                                                                    child: Text(
-                                                                      "Send Inquiry",
-                                                                      style: text12
-                                                                          .copyWith(
-                                                                        color:
-                                                                            whiteColor,
-                                                                      ),
-                                                                    )),
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                                width: 2),
-                                                            Container(
-                                                              height: 30,
-                                                              width: 30,
-                                                              decoration: const BoxDecoration(
-                                                                  color:
-                                                                      secondaryColor1,
-                                                                  borderRadius:
-                                                                      BorderRadius.all(
-                                                                          Radius.circular(
-                                                                              5))),
-                                                              child: AddToCartButton(
-                                                                  listProduct: state
-                                                                      .topProductData!,
-                                                                  index: index),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
+                                                child: streamSnapshot
+                                                            .data['role'] !=
+                                                        "Sales"
+                                                    ? ProductCard(
+                                                        product: ProductEntity(
+                                                            productname: state
+                                                                .topProductData![
+                                                                    index]
+                                                                .productname,
+                                                            productimage: state
+                                                                .topProductData![
+                                                                    index]
+                                                                .productimage!,
+                                                            hsCode: state
+                                                                .topProductData![
+                                                                    index]
+                                                                .hsCode!,
+                                                            casNumber: state
+                                                                .topProductData![
+                                                                    index]
+                                                                .casNumber!,
+                                                            seoUrl: state
+                                                                .topProductData![
+                                                                    index]
+                                                                .seoUrl!),
+                                                        onPressed: () {
+                                                          List<ProductToRfq>
+                                                              products = [];
+                                                          ProductToRfq product =
+                                                              ProductToRfq(
+                                                            productName: state
+                                                                .topProductData![
+                                                                    index]
+                                                                .productname!,
+                                                            productImage: state
+                                                                .topProductData![
+                                                                    index]
+                                                                .productimage!,
+                                                            hsCode: state
+                                                                .topProductData![
+                                                                    index]
+                                                                .hsCode!,
+                                                            casNumber: state
+                                                                .topProductData![
+                                                                    index]
+                                                                .casNumber!,
+                                                          );
+                                                          products.add(product);
+
+                                                          RequestQuotationParameter
+                                                              param =
+                                                              RequestQuotationParameter(
+                                                            products: products,
+                                                          );
+                                                          context.go(
+                                                              "/home/request_quotation",
+                                                              extra: param);
+                                                        })
+                                                    : ProductCard(
+                                                        product: ProductEntity(
+                                                            productname: state
+                                                                .topProductData![
+                                                                    index]
+                                                                .productname,
+                                                            productimage: state
+                                                                .topProductData![
+                                                                    index]
+                                                                .productimage!,
+                                                            hsCode: state
+                                                                .topProductData![
+                                                                    index]
+                                                                .hsCode!,
+                                                            casNumber: state
+                                                                .topProductData![
+                                                                    index]
+                                                                .casNumber!,
+                                                            seoUrl: state
+                                                                .topProductData![
+                                                                    index]
+                                                                .seoUrl!),
+                                                        isNotRecentSeenCard:
+                                                            false,
+                                                      ),
                                               );
                                             },
                                           );
@@ -721,8 +597,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                             vertical: size20px),
                                         child: Text("Industry", style: text18)),
                                     SizedBox(
-                                      height:
-                                          MediaQuery.of(context).size.height *
+                                      height: MediaQuery.of(context)
+                                                  .size
+                                                  .height <
+                                              600
+                                          ? MediaQuery.of(context).size.height *
+                                              0.3
+                                          : MediaQuery.of(context).size.height *
                                               0.24,
                                       width: MediaQuery.of(context).size.width,
                                       child: GridView(
@@ -730,6 +611,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         physics:
                                             const NeverScrollableScrollPhysics(),
                                         shrinkWrap: true,
+                                        clipBehavior: Clip.none,
                                         gridDelegate:
                                             const SliverGridDelegateWithFixedCrossAxisCount(
                                                 crossAxisCount: 4,
@@ -796,10 +678,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                       child: Text("Last Seen Products",
                                           style: text18),
                                     ),
-                                    _recentlySeen.isEmpty
-                                        ? const Center(
-                                            child: Text("Tidak ada product"))
-                                        : Column(
+                                    BlocBuilder<RecentlySeenBloc,
+                                        RecentlySeenState>(
+                                      builder: (context, state) {
+                                        if (state is RecentlySeenInit) {
+                                          return const Center(
+                                              child: CircularProgressIndicator
+                                                  .adaptive());
+                                        } else if (state.products == null ||
+                                            state.products!.isEmpty) {
+                                          return const Center(
+                                              child: Text("Tidak ada product"));
+                                        } else {
+                                          return Column(
                                             children: [
                                               Padding(
                                                 padding: const EdgeInsets.only(
@@ -813,177 +704,87 @@ class _HomeScreenState extends State<HomeScreen> {
                                                           childAspectRatio:
                                                               0.7),
                                                   itemCount:
-                                                      _recentlySeen.length < 4
-                                                          ? _recentlySeen.length
-                                                          : 4,
+                                                      state.products!.length < 4
+                                                          ? state
+                                                              .products!.length
+                                                          : recentSeenLimit,
                                                   shrinkWrap: true,
                                                   padding: EdgeInsets.zero,
                                                   physics:
                                                       const NeverScrollableScrollPhysics(),
                                                   itemBuilder:
                                                       (context, index) {
-                                                    return Card(
-                                                      shadowColor: blackColor,
-                                                      elevation: 3.0,
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Padding(
-                                                            padding: const EdgeInsets.only(
-                                                                left: size24px /
-                                                                    4,
-                                                                right:
-                                                                    size24px /
-                                                                        4,
-                                                                top: size24px /
-                                                                    4),
-                                                            child: ClipRRect(
-                                                              borderRadius: const BorderRadius
-                                                                      .all(
-                                                                  Radius.circular(
-                                                                      size20px /
-                                                                          2)),
-                                                              child: SizedBox(
-                                                                height:
-                                                                    size20px *
-                                                                        5.5,
-                                                                width: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width,
-                                                                child:
-                                                                    CachedNetworkImage(
-                                                                  imageUrl:
-                                                                      "$url${_recentlySeen[index]["productImage"]}",
-                                                                  fit: BoxFit
-                                                                      .fill,
-                                                                  placeholder: (context,
-                                                                          url) =>
-                                                                      const Center(
-                                                                    child: CircularProgressIndicator
-                                                                        .adaptive(),
-                                                                  ),
-                                                                  errorWidget: (context,
-                                                                          url,
-                                                                          error) =>
-                                                                      const Icon(
-                                                                          Icons
-                                                                              .error),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Expanded(
-                                                            child: Padding(
-                                                              padding: const EdgeInsets
-                                                                      .symmetric(
-                                                                  vertical: 5.0,
-                                                                  horizontal:
-                                                                      10.0),
-                                                              child: Text(
-                                                                _recentlySeen[
-                                                                        index][
-                                                                    "productName"],
-                                                                style: text14,
-                                                                maxLines: 2,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Padding(
-                                                            padding: const EdgeInsets
-                                                                    .symmetric(
-                                                                horizontal:
-                                                                    10.0,
-                                                                vertical:
-                                                                    size20px /
-                                                                        4),
-                                                            child: Row(
-                                                              children: [
-                                                                Column(
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    const Text(
-                                                                        "CAS Number :",
-                                                                        style:
-                                                                            text10),
-                                                                    Text(
-                                                                        _recentlySeen[index]
-                                                                            [
-                                                                            "casNumber"],
-                                                                        // "",
-                                                                        style: text10.copyWith(
-                                                                            color:
-                                                                                greyColor2)),
-                                                                  ],
-                                                                ),
-                                                                const Spacer(),
-                                                                Column(
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    const Text(
-                                                                        "HS Code :",
-                                                                        style:
-                                                                            text10),
-                                                                    Text(
-                                                                        _recentlySeen[index]
-                                                                            [
-                                                                            "hsCode"],
-                                                                        // "",
-                                                                        style: text10.copyWith(
-                                                                            color:
-                                                                                greyColor2)),
-                                                                  ],
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ],
+                                                    return ProductCard(
+                                                      product: ProductEntity(
+                                                        productname: state
+                                                            .products![index]
+                                                            .productname,
+                                                        productimage: state
+                                                            .products![index]
+                                                            .productimage,
+                                                        casNumber: state
+                                                            .products![index]
+                                                            .casNumber,
+                                                        hsCode: state
+                                                            .products![index]
+                                                            .hsCode,
                                                       ),
+                                                      isNotRecentSeenCard:
+                                                          false,
                                                     );
                                                   },
                                                 ),
                                               ),
                                               /* Button See More */
-                                              Center(
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    color: secondaryColor5,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            size20px * 5),
-                                                  ),
-                                                  child: InkWell(
-                                                    onTap: () {},
-                                                    child: Padding(
-                                                      padding: const EdgeInsets
-                                                              .symmetric(
-                                                          horizontal:
-                                                              size20px / 2,
-                                                          vertical:
-                                                              size20px / 5),
-                                                      child: Text(
-                                                        "Load More",
-                                                        style: text12.copyWith(
-                                                            color:
-                                                                secondaryColor1),
+                                              state.products!.length > 4 &&
+                                                      recentSeenLimit <
+                                                          state.products!.length
+                                                  ? Center(
+                                                      child: Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color:
+                                                              secondaryColor5,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      size20px *
+                                                                          5),
+                                                        ),
+                                                        child: InkWell(
+                                                          onTap: () {
+                                                            increaseRecentSeenLimit(
+                                                                state.products!
+                                                                    .length);
+                                                          },
+                                                          child: Padding(
+                                                            padding: const EdgeInsets
+                                                                    .symmetric(
+                                                                horizontal:
+                                                                    size20px /
+                                                                        2,
+                                                                vertical:
+                                                                    size20px /
+                                                                        5),
+                                                            child: Text(
+                                                              "Load More",
+                                                              style: text12
+                                                                  .copyWith(
+                                                                      color:
+                                                                          secondaryColor1),
+                                                            ),
+                                                          ),
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
+                                                    )
+                                                  : const SizedBox(),
                                               /* End Button See More */
                                             ],
-                                          ),
-                                    /* End Lastseen Section */
+                                          );
+                                        }
+                                        /* End Lastseen Section */
+                                      },
+                                    )
                                   ],
                                 ),
                               )

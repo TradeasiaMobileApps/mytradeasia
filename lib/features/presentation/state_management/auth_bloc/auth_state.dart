@@ -6,8 +6,9 @@ import 'package:sendbird_chat_sdk/sendbird_chat_sdk.dart';
 abstract class AuthState extends Equatable {
   final UserCredentialEntity? user;
   final User? sendbirdUser;
+  final String? role;
 
-  const AuthState({this.user, this.sendbirdUser});
+  const AuthState({this.user, this.sendbirdUser, this.role});
 
   @override
   List<Object> get props => [user!, sendbirdUser!];
@@ -27,6 +28,7 @@ class AuthLoadingState extends AuthState {
 // }
 
 class AuthLoggedInState extends AuthState {
-  const AuthLoggedInState(UserCredentialEntity? user, User sendbirdUser)
-      : super(user: user, sendbirdUser: sendbirdUser);
+  const AuthLoggedInState(
+      UserCredentialEntity? user, User sendbirdUser, String? role)
+      : super(user: user, sendbirdUser: sendbirdUser, role: role);
 }

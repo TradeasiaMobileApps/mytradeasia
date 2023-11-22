@@ -76,6 +76,7 @@ Future<bool> isSSOAuth() async {
   if (userSignInMethods.isEmpty) {
     return true;
   }
+  log("isSSO : ${userSignInMethods.first != "password"}");
   return userSignInMethods.first != "password";
 }
 

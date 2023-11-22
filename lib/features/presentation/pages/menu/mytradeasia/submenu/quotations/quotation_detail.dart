@@ -88,7 +88,8 @@ class QuotationDetailScreen extends StatelessWidget {
                   : Container(),
         ],
       ),
-      body: Padding(
+      body: SingleChildScrollView(
+        // physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.symmetric(horizontal: size20px),
         child: Column(
           children: [
@@ -163,17 +164,23 @@ class QuotationDetailScreen extends StatelessWidget {
                 : Container(),
 
             // main content quotations
-            ListView.builder(
-              itemCount: quotationData.length,
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.only(top: size20px / 2),
-                  child: dataRow(index),
-                );
-              },
-            ),
+            // ListView.builder(
+            //   itemCount: quotationData.length,
+            //   physics: const NeverScrollableScrollPhysics(),
+            //   shrinkWrap: true,
+            //   itemBuilder: (context, index) {
+            //     return Padding(
+            //       padding: const EdgeInsets.only(top: size20px / 2),
+            //       child: dataRow(index),
+            //     );
+            //   },
+            // ),
+
+            for (int i = 0; i < quotationData.length; i++)
+              Padding(
+                padding: const EdgeInsets.only(top: size20px / 2),
+                child: dataRow(i),
+              ),
 
             // quotations
             status == "submitted"

@@ -1,13 +1,15 @@
 import 'package:mytradeasia/core/usecase/usecase.dart';
 import 'package:mytradeasia/features/domain/repository/user_repository.dart';
 
-class GetRecentlySeen implements UseCase<List<dynamic>, void> {
+import '../../entities/product_entities/all_product_entity.dart';
+
+class GetRecentlySeen implements UseCase<List<AllProductEntities>, void> {
   final UserRepository _userRepository;
 
   GetRecentlySeen(this._userRepository);
 
   @override
-  Future<List> call({void param}) {
+  Future<List<AllProductEntities>> call({void param}) {
     return _userRepository.getRecentlySeen();
   }
 }

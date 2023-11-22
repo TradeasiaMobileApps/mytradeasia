@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mytradeasia/features/data/model/all_product_models/all_product_model.dart';
 import 'package:mytradeasia/features/data/model/user_credential_models/user_credential_model.dart';
 import 'package:mytradeasia/features/data/model/user_models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -208,7 +209,7 @@ class AuthUserFirebase {
     });
   }
 
-  Future<List> getRecentlySeen() async {
+  Future<List<AllProductModel>> getRecentlySeen() async {
     final Map<String, dynamic> firestoreData = await FirebaseFirestore.instance
         .collection('biodata')
         .doc(getCurrentUId())
@@ -222,7 +223,17 @@ class AuthUserFirebase {
       recentlySeenData = firestoreData['recentlySeen'];
     }
 
-    return recentlySeenData;
+    return recentlySeenData.map((e) {
+      return AllProductModel.fromFirebase(e);
+    }).toList();
+  }
+
+  void deleteRecentlySeen() async {
+    // String docsId = _auth.currentUser!.uid.toString();
+    await FirebaseFirestore.instance
+        .collection('biodata')
+        .doc(getCurrentUId())
+        .update({"recentlySeen": FieldValue.delete()});
   }
 
   void sendResetPassword(String email) async {

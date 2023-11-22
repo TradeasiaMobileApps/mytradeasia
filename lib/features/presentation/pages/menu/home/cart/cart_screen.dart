@@ -422,7 +422,7 @@ class _CartScreenState extends State<CartScreen> {
                         onTap: () => editCartItemBottomSheet(
                             cart: state.cartItems!, product: item),
                         child: SizedBox(
-                          height: size20px * 5.5,
+                          height: size20px * 7,
                           width: MediaQuery.of(context).size.width,
                           child: Row(
                             children: [
@@ -447,60 +447,72 @@ class _CartScreenState extends State<CartScreen> {
                                   ),
                                 ),
                               ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        bottom: size20px - 15.0),
-                                    child: Text(
-                                        item.productName!.length > 26
-                                            ? "${item.productName!.substring(0, 25)}. . ."
-                                            : item.productName!,
-                                        style: heading3),
-                                  ),
-                                  Row(
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const Text("HS Code :",
-                                              style: body2Medium),
-                                          Text(item.hsCode ?? "",
-                                              style: body2Medium.copyWith(
-                                                  color: greyColor2)),
-                                        ],
-                                      ),
-                                      const SizedBox(width: size20px + 10.0),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const Text("CAS Number :",
-                                              style: body2Medium),
-                                          Text(item.casNumber ?? "",
-                                              style: body2Medium.copyWith(
-                                                  color: greyColor2)),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Column(
+                              Flexible(
+                                flex: 1,
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.only(bottom: 1, top: 5),
+                                  child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      const Text("Quantity :",
-                                          style: body2Medium),
-                                      Text(
-                                          "${parseDoubleToIntegerIfNecessary(item.quantity!)} ${item.unit}",
-                                          style: body2Medium.copyWith(
-                                              color: greyColor2)),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            bottom: size20px - 15.0),
+                                        child: Text(
+                                            item.productName!.length > 26
+                                                ? "${item.productName!.substring(0, 25)}. . ."
+                                                : item.productName!,
+                                            style: heading3),
+                                      ),
+                                      Row(
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              const Text("HS Code :",
+                                                  style: body2Medium),
+                                              Text(item.hsCode ?? "",
+                                                  style: body2Medium.copyWith(
+                                                      color: greyColor2)),
+                                            ],
+                                          ),
+                                          const SizedBox(
+                                              width: size20px + 10.0),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              const Text("CAS Number :",
+                                                  style: body2Medium),
+                                              Text(item.casNumber ?? "",
+                                                  style: body2Medium.copyWith(
+                                                      color: greyColor2)),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Flexible(
+                                        flex: 1,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Text("Quantity :",
+                                                style: body2Medium),
+                                            Text(
+                                                "${parseDoubleToIntegerIfNecessary(item.quantity!)} ${item.unit}",
+                                                style: body2Medium.copyWith(
+                                                    color: greyColor2)),
+                                          ],
+                                        ),
+                                      ),
                                     ],
                                   ),
-                                ],
+                                ),
                               )
                             ],
                           ),

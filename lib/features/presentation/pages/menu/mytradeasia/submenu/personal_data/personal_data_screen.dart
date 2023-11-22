@@ -452,11 +452,13 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
                                                                   _phoneNumberController,
                                                               decoration:
                                                                   InputDecoration(
-                                                                      hintText: streamSnapshot.data[
-                                                                              "phone"]
-                                                                          .toString()
-                                                                          .substring(
-                                                                              2),
+                                                                      hintText: streamSnapshot.data["phone"] !=
+                                                                              ""
+                                                                          ? streamSnapshot.data["phone"]
+                                                                              .toString()
+                                                                              .substring(
+                                                                                  2)
+                                                                          : "",
                                                                       hintStyle: body1Regular.copyWith(
                                                                           color:
                                                                               greyColor),

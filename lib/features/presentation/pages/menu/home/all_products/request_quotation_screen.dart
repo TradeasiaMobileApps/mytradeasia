@@ -9,12 +9,11 @@ import 'package:mytradeasia/features/domain/entities/product_entities/product_to
 import 'package:mytradeasia/features/domain/entities/rfq_entities/rfq_entity.dart';
 import 'package:mytradeasia/features/domain/usecases/rfq_usecases/submit_rfq.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_data.dart';
-import 'package:mytradeasia/features/presentation/pages/menu/other/languages_screen.dart';
 import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
-// import 'package:mytradeasia/old_file_tobedeleted/view/menu/other/languages_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+import '../../../../widgets/country_picker.dart';
 import '../../../../widgets/text_editing_widget.dart';
 
 class RequestQuotationScreen extends StatefulWidget {
@@ -225,38 +224,43 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                                           ),
                                           Row(
                                             children: [
-                                              Expanded(
-                                                flex: 1,
-                                                child: InkWell(
-                                                  onTap: () {
-                                                    Navigator.push(context,
-                                                        MaterialPageRoute(
-                                                      builder: (context) {
-                                                        return const LanguagesScreen();
-                                                      },
-                                                    ));
-                                                  },
-                                                  child: Container(
-                                                    height: 48,
-                                                    width: size20px * 3,
-                                                    decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            const BorderRadius
-                                                                .all(
-                                                          Radius.circular(7),
-                                                        ),
-                                                        border: Border.all(
-                                                            color: greyColor3)),
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              size20px / 2),
-                                                      child: Image.asset(
-                                                          "assets/images/logo_indonesia.png"),
-                                                    ),
-                                                  ),
-                                                ),
+                                              CountryPicker(
+                                                onChanged: (value) {
+                                                  print(value);
+                                                },
                                               ),
+                                              // Expanded(
+                                              //   flex: 1,
+                                              //   child: InkWell(
+                                              //     onTap: () {
+                                              //       Navigator.push(context,
+                                              //           MaterialPageRoute(
+                                              //         builder: (context) {
+                                              //           return const LanguagesScreen();
+                                              //         },
+                                              //       ));
+                                              //     },
+                                              //     child: Container(
+                                              //       height: 48,
+                                              //       width: size20px * 3,
+                                              //       decoration: BoxDecoration(
+                                              //           borderRadius:
+                                              //               const BorderRadius
+                                              //                   .all(
+                                              //             Radius.circular(7),
+                                              //           ),
+                                              //           border: Border.all(
+                                              //               color: greyColor3)),
+                                              //       child: Padding(
+                                              //         padding:
+                                              //             const EdgeInsets.all(
+                                              //                 size20px / 2),
+                                              //         child: Image.asset(
+                                              //             "assets/images/logo_indonesia.png"),
+                                              //       ),
+                                              //     ),
+                                              //   ),
+                                              // ),
                                               const SizedBox(
                                                 width: 15.0,
                                               ),
@@ -306,12 +310,12 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                                                   "assets/images/icon_forward.png",
                                               // navigationPage: const ChangeEmailScreen(),
                                               navigationPage: () {
-                                                Navigator.push(context,
-                                                    MaterialPageRoute(
-                                                  builder: (context) {
-                                                    return const LanguagesScreen();
-                                                  },
-                                                ));
+                                                // Navigator.push(context,
+                                                //     MaterialPageRoute(
+                                                //   builder: (context) {
+                                                //     return const LanguagesScreen();
+                                                //   },
+                                                // ));
                                               },
                                             ),
                                           ),
@@ -462,86 +466,87 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                                                                 ),
                                                               ),
                                                             ),
-                                                            Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
-                                                              children: [
-                                                                Padding(
-                                                                  padding: const EdgeInsets
-                                                                          .only(
-                                                                      bottom: size20px -
-                                                                          15.0),
-                                                                  child: Text(
-                                                                    widget.products[index].productName.length >
-                                                                            31
-                                                                        ? "${widget.products[index].productName.substring(0, 31)}..."
-                                                                        : widget
-                                                                            .products[index]
-                                                                            .productName,
-                                                                    style:
-                                                                        heading3,
+                                                            Flexible(
+                                                              child: Column(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                children: [
+                                                                  Padding(
+                                                                    padding: const EdgeInsets
+                                                                            .only(
+                                                                        bottom: size20px -
+                                                                            15.0),
+                                                                    child: Text(
+                                                                      widget.products[index].productName.length >
+                                                                              31
+                                                                          ? "${widget.products[index].productName.substring(0, 31)}..."
+                                                                          : widget
+                                                                              .products[index]
+                                                                              .productName,
+                                                                      style:
+                                                                          heading3,
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                    ),
                                                                   ),
-                                                                ),
-                                                                Row(
-                                                                  children: [
-                                                                    Column(
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .start,
-                                                                      children: [
-                                                                        const Text(
-                                                                            "HS Code :",
-                                                                            style:
-                                                                                body2Medium),
-                                                                        Text(
-                                                                            widget.products[index].hsCode,
-                                                                            style: body2Medium.copyWith(color: greyColor2)),
-                                                                      ],
-                                                                    ),
-                                                                    const SizedBox(
-                                                                        width: size20px +
-                                                                            10.0),
-                                                                    Column(
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .start,
-                                                                      children: [
-                                                                        const Text(
-                                                                            "CAS Number :",
-                                                                            style:
-                                                                                body2Medium),
-                                                                        Text(
-                                                                            widget.products[index].hsCode,
-                                                                            style: body2Medium.copyWith(color: greyColor2)),
-                                                                      ],
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                const SizedBox(
-                                                                    height: 2),
-                                                                Column(
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    const Text(
-                                                                        "Quantity :",
-                                                                        style:
-                                                                            body2Medium),
-                                                                    Text(
-                                                                        widget.products[index].quantity == null || widget.products[index].unit == null
-                                                                            ? "Not yet added"
-                                                                            : "${parseDoubleToIntegerIfNecessary(widget.products[index].quantity!)} ${widget.products[index].unit}",
-                                                                        style: body2Medium.copyWith(
-                                                                            color:
-                                                                                greyColor2)),
-                                                                  ],
-                                                                ),
-                                                              ],
+                                                                  Row(
+                                                                    children: [
+                                                                      Column(
+                                                                        crossAxisAlignment:
+                                                                            CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          const Text(
+                                                                              "HS Code :",
+                                                                              style: body2Medium),
+                                                                          Text(
+                                                                              widget.products[index].hsCode,
+                                                                              style: body2Medium.copyWith(color: greyColor2)),
+                                                                        ],
+                                                                      ),
+                                                                      const SizedBox(
+                                                                          width:
+                                                                              size20px + 10.0),
+                                                                      Column(
+                                                                        crossAxisAlignment:
+                                                                            CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          const Text(
+                                                                              "CAS Number :",
+                                                                              style: body2Medium),
+                                                                          Text(
+                                                                              widget.products[index].hsCode,
+                                                                              style: body2Medium.copyWith(color: greyColor2)),
+                                                                        ],
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  const SizedBox(
+                                                                      height:
+                                                                          2),
+                                                                  Column(
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      const Text(
+                                                                          "Quantity :",
+                                                                          style:
+                                                                              body2Medium),
+                                                                      Text(
+                                                                          widget.products[index].quantity == null || widget.products[index].unit == null
+                                                                              ? "Not yet added"
+                                                                              : "${parseDoubleToIntegerIfNecessary(widget.products[index].quantity!)} ${widget.products[index].unit}",
+                                                                          style:
+                                                                              body2Medium.copyWith(color: greyColor2)),
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              ),
                                                             )
                                                           ],
                                                         ),
@@ -901,6 +906,7 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
               ),
               onPressed: () async {
                 /* With go_router */
+                //TODO:implement submit rfq
                 DataState<dynamic> response;
 
                 response = await _submitRfq.call(

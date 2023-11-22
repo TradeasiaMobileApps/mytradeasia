@@ -52,7 +52,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             user = await SendbirdChat.connect("sales");
           }
           await prefs.setString("userId", response.uid!);
-          emit(AuthLoggedInState(response, user));
+          emit(AuthLoggedInState(response, user, userData["role"]));
           context.go("/home");
         } catch (e) {
           log("failed to login with error: $e");
@@ -147,7 +147,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       } else {
         user = await SendbirdChat.connect("sales");
       }
-      emit(AuthLoggedInState(await _getUserCredentials.call(), user));
+      emit(AuthLoggedInState(await _getUserCredentials.call(), user, role));
     });
 
     on<LogOut>((event, emit) async {

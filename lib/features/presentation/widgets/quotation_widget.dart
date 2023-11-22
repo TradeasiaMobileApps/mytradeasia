@@ -22,7 +22,7 @@ class QuotationsWidget extends StatelessWidget {
     return InkWell(
       onTap: navigationPage,
       child: Container(
-        height: size20px * 8,
+        height: size20px * 9,
         margin: const EdgeInsets.only(top: size20px),
         child: Card(
           elevation: 3,

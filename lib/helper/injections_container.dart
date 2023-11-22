@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:mytradeasia/features/data/data_sources/firebase/auth_user_firebase.dart';
 import 'package:mytradeasia/features/data/data_sources/firebase/cart_firebase.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/all_industry_service.dart';
+import 'package:mytradeasia/features/data/data_sources/remote/country_service.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/detail_product_service.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/dhl_shipment_service.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/faq_service.dart';
@@ -14,6 +15,7 @@ import 'package:mytradeasia/features/data/data_sources/remote/searates_service.d
 import 'package:mytradeasia/features/data/data_sources/remote/search_product_service.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/top_products_service.dart';
 import 'package:mytradeasia/features/data/repository/cart_repository_impl.dart';
+import 'package:mytradeasia/features/data/repository/country_repository_impl.dart';
 import 'package:mytradeasia/features/data/repository/detail_product_repository.dart';
 import 'package:mytradeasia/features/data/repository/dhl_shipment_repository.dart';
 import 'package:mytradeasia/features/data/repository/faq_repository.dart';
@@ -28,6 +30,7 @@ import 'package:mytradeasia/features/data/repository/search_product_repository.d
 import 'package:mytradeasia/features/data/repository/top_product_repository.dart';
 import 'package:mytradeasia/features/data/repository/user_repository_impl.dart';
 import 'package:mytradeasia/features/domain/repository/cart_repository.dart';
+import 'package:mytradeasia/features/domain/repository/country_repository.dart';
 import 'package:mytradeasia/features/domain/repository/detail_product_repository.dart';
 import 'package:mytradeasia/features/domain/repository/dhl_shipment_repository.dart';
 import 'package:mytradeasia/features/domain/repository/faq_repository.dart';
@@ -45,10 +48,13 @@ import 'package:mytradeasia/features/domain/usecases/cart_usecases/add_cart.dart
 import 'package:mytradeasia/features/domain/usecases/cart_usecases/delete_cart_item.dart';
 import 'package:mytradeasia/features/domain/usecases/cart_usecases/get_cart.dart';
 import 'package:mytradeasia/features/domain/usecases/cart_usecases/update_cart.dart';
+import 'package:mytradeasia/features/domain/usecases/country_usecases/get_country_usecase.dart';
+import 'package:mytradeasia/features/domain/usecases/country_usecases/search_country_usecase.dart';
 import 'package:mytradeasia/features/domain/usecases/detail_product_usecases/get_detail_product.dart';
 import 'package:mytradeasia/features/domain/usecases/dhl_shipment_usecases/get_dhl_shipment.dart';
 import 'package:mytradeasia/features/domain/usecases/faq_usecases/get_faq_data.dart';
 import 'package:mytradeasia/features/domain/usecases/industry_usecases/get_industry.dart';
+import 'package:mytradeasia/features/domain/usecases/sales_force_data_usecases/get_sales_force_cp.dart';
 import 'package:mytradeasia/features/domain/usecases/searates_usecases/get_searates_route.dart';
 import 'package:mytradeasia/features/domain/usecases/searates_usecases/track_by_bl.dart';
 import 'package:mytradeasia/features/domain/usecases/list_product_usecases/get_list_product.dart';
@@ -60,6 +66,7 @@ import 'package:mytradeasia/features/domain/usecases/search_product_usecases/get
 import 'package:mytradeasia/features/domain/usecases/top_product_usecases/get_top_product.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/add_recently_seen.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/delete_account.dart';
+import 'package:mytradeasia/features/domain/usecases/user_usecases/delete_recently_seen.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_current_userid.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_recently_seen.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_credentials.dart';
@@ -76,12 +83,14 @@ import 'package:mytradeasia/features/domain/usecases/user_usecases/update_profil
 import 'package:mytradeasia/features/domain/usecases/user_usecases/verify_otp.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/cart_bloc/cart_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/countries_bloc/countries_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/dhl_shipment_bloc/dhl_shipment_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/industry_bloc/industry_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/faq_bloc/faq_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/detail_product_bloc/detail_product_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/list_product/list_product_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/search_product/search_product_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/recently_seen_bloc/recently_seen_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_data/salesforce_data_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_detail/salesforce_detail_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_login/salesforce_login_bloc.dart';
@@ -109,6 +118,7 @@ Future<void> initializeDependencies() async {
   injections.registerSingleton<RfqService>(RfqService());
   injections.registerSingleton<CartFirebase>(CartFirebase());
   injections.registerSingleton<SearatesService>(SearatesService());
+  injections.registerSingleton<CountryService>(CountryService());
 
   //Repositories Dependencies
   injections.registerSingleton<DetailProductRepository>(
@@ -137,6 +147,8 @@ Future<void> initializeDependencies() async {
       .registerSingleton<CartRepository>(CartRepositoryImpl(injections()));
   injections.registerSingleton<SearatesRepository>(
       SearatesRepositoryImpl(injections()));
+  injections
+      .registerSingleton<CountryRepository>(CountryRepoImpl(injections()));
 
   //UseCases Dependencies
   injections
@@ -147,6 +159,7 @@ Future<void> initializeDependencies() async {
   injections.registerSingleton<GetListProduct>(GetListProduct(injections()));
   injections
       .registerSingleton<GetSalesForceData>(GetSalesForceData(injections()));
+  injections.registerSingleton<GetSalesForceCP>(GetSalesForceCP(injections()));
   injections.registerSingleton<GetSalesforceDetail>(
       GetSalesforceDetail(injections()));
   injections
@@ -184,6 +197,12 @@ Future<void> initializeDependencies() async {
   injections.registerSingleton<SendResetPass>(SendResetPass(injections()));
   injections.registerSingleton<DeleteAccount>(DeleteAccount(injections()));
   injections.registerSingleton<UpdateEmail>(UpdateEmail(injections()));
+  injections
+      .registerSingleton<DeleteRecentlySeen>(DeleteRecentlySeen(injections()));
+  injections
+      .registerSingleton<GetCountryUsecase>(GetCountryUsecase(injections()));
+  injections.registerSingleton<SearchCountryUsecase>(
+      SearchCountryUsecase(injections()));
 
   //Bloc
   injections
@@ -202,7 +221,7 @@ Future<void> initializeDependencies() async {
   injections.registerFactory<SalesforceLoginBloc>(
       () => SalesforceLoginBloc(injections()));
   injections.registerFactory<SalesforceDataBloc>(
-      () => SalesforceDataBloc(injections()));
+      () => SalesforceDataBloc(injections(), injections()));
   injections.registerFactory<SalesforceDetailBloc>(
       () => SalesforceDetailBloc(injections()));
   injections.registerFactory<AuthBloc>(() => AuthBloc(
@@ -215,4 +234,8 @@ Future<void> initializeDependencies() async {
       () => SearatesRouteBloc(injections()));
   injections
       .registerFactory<SearatesBLBloc>(() => SearatesBLBloc(injections()));
+  injections.registerFactory<RecentlySeenBloc>(
+      () => RecentlySeenBloc(injections(), injections(), injections()));
+  injections.registerFactory<CountriesBloc>(
+      () => CountriesBloc(injections(), injections()));
 }

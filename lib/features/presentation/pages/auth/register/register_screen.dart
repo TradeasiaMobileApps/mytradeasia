@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:country_code_picker/country_code_picker.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:auto_localization/auto_localization.dart';
@@ -8,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:linkedin_login/linkedin_login.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/phone_authentication.dart';
+import 'package:mytradeasia/features/presentation/widgets/country_picker.dart';
 import 'package:mytradeasia/features/presentation/widgets/loading_overlay_widget.dart';
 import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
@@ -29,6 +29,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
+  //DON`T DELETE THIS UNDER ANY CIRCUMSTANCES
   final PhoneAuthentication _phoneAuthentication =
       injections<PhoneAuthentication>();
 
@@ -163,47 +164,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     Radius.circular(10),
                                   ),
                                 ),
-                                child: CountryCodePicker(
-                                  onChanged: (element) =>
-                                      countryNum = element.dialCode.toString(),
-                                  // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
-                                  initialSelection: 'ID',
-                                  favorite: const ['ID', 'UK'],
-                                  // optional. Shows only country name and flag
-                                  showCountryOnly: false,
-                                  showFlag: true,
-                                  hideMainText: true,
-                                  // optional. Shows only country name and flag when popup is closed.
-                                  showOnlyCountryWhenClosed: false,
-                                  // optional. aligns the flag and the Text left
-                                  // alignLeft: false,
-                                  padding: EdgeInsets.only(left: 5),
+                                child: CountryPicker(
+                                  onChanged: (value) {
+                                    countryNum = value.phoneCode!;
+                                    print(countryNum);
+                                  },
                                 ),
+                                // child: CountryCodePicker(
+                                //   onChanged: (element) {
+                                //     countryNum = element.dialCode.toString();
+                                //   },
+
+                                //   // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
+                                //   initialSelection: 'ID',
+                                //   favorite: const ['ID', 'UK'],
+                                //   // optional. Shows only country name and flag
+                                //   showCountryOnly: false,
+                                //   showFlag: true,
+                                //   hideMainText: true,
+                                //   // optional. Shows only country name and flag when popup is closed.
+                                //   showOnlyCountryWhenClosed: false,
+                                //   // optional. aligns the flag and the Text left
+                                //   // alignLeft: false,
+                                //   padding: EdgeInsets.only(left: 5),
+                                // ),
                               ),
-                              // InkWell(
-                              //   onTap: () => Navigator.push(
-                              //       context,
-                              //       MaterialPageRoute(
-                              //         builder: (context) =>
-                              //             const LanguagesScreen(),
-                              //       )),
-                              //   child: Container(
-                              //     decoration: BoxDecoration(
-                              //       border: Border.all(color: greyColor3),
-                              //       borderRadius: const BorderRadius.all(
-                              //         Radius.circular(7.0),
-                              //       ),
-                              //     ),
-                              //     width: 60,
-                              //     height: 50,
-                              //     child: Padding(
-                              //       padding: const EdgeInsets.all(size20px / 2),
-                              //       child: Image.asset(
-                              //         "assets/images/logo_indonesia.png",
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
                             ),
                             const SizedBox(
                               width: size20px / 2,
@@ -245,8 +230,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       Expanded(
                         flex: 1,
                         child: Checkbox(
-                          checkColor: primaryColor1,
-                          activeColor: Colors.transparent,
+                          // checkColor: primaryColor1,
+                          activeColor: primaryColor1,
+
                           side: const BorderSide(
                               color: primaryColor1, width: 2.0),
                           value: isChecked,
@@ -322,6 +308,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   ));
                                 }
                               } else {
+                                //DON`T DELETE THIS UNDER ANY CIRCUMSTANCES
                                 OtpVerificationParameter param =
                                     OtpVerificationParameter(
                                         phone:
@@ -333,12 +320,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         "$countryNum${_phoneNumberController.text}");
                                 //TODO: captcha OTP
                                 // ignore: use_build_context_synchronously
-                                showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return const LoadingOverlay();
-                                  },
-                                );
+                                // showDialog(
+                                //   context: context,
+                                //   builder: (context) {
+                                //     return const LoadingOverlay();
+                                //   },
+                                // );
 
                                 context.go("/auth/register/biodata",
                                     extra: param2);

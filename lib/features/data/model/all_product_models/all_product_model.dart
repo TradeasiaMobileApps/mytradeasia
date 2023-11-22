@@ -23,4 +23,13 @@ class AllProductModel extends AllProductEntities {
         casNumber: json["cas_number"],
         seoUrl: json["seo_url"] ?? " ",
       );
+
+  factory AllProductModel.fromFirebase(Map<String, dynamic> json) =>
+      AllProductModel(
+        productname: json["productName"],
+        productimage: json["productImage"],
+        hsCode: json["hsCode"],
+        casNumber: json["casNumber"],
+        seoUrl: json["seo_url"] ?? " ",
+      );
 }

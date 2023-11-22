@@ -69,6 +69,7 @@ dependencies:
   firebase_storage: ^11.4.0
   auto_localization: ^2.0.2
 
+  auto_size_text: ^3.0.0
   
 
 dev_dependencies:
