@@ -358,51 +358,54 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
                   padding: const EdgeInsets.only(
                       left: size20px,
                       right: size20px,
-                      top: size20px / 2,
+                      top: size20px,
                       bottom: size20px),
 
                   /** Searchbar */
-                  child: TextFormField(
-                    // onChanged: (value) {
+                  child: Container(
+                    height: 50,
+                    child: TextFormField(
+                      // onChanged: (value) {
 
-                    // },
-                    // onSaved: (newValue) {
-                    //   BlocProvider.of<CountriesBloc>(context)
-                    //       .add(SearchCountriesEvent(newValue ?? ""));
-                    //   print(newValue);
-                    // },
-                    onFieldSubmitted: (value) {
-                      BlocProvider.of<CountriesBloc>(context)
-                          .add(SearchCountriesEvent(value));
-                      print(value);
-                    },
-                    textInputAction: TextInputAction.search,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      enabledBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: greyColor3),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(size20px / 2),
+                      // },
+                      // onSaved: (newValue) {
+                      //   BlocProvider.of<CountriesBloc>(context)
+                      //       .add(SearchCountriesEvent(newValue ?? ""));
+                      //   print(newValue);
+                      // },
+                      onFieldSubmitted: (value) {
+                        BlocProvider.of<CountriesBloc>(context)
+                            .add(SearchCountriesEvent(value));
+                        print(value);
+                      },
+                      textInputAction: TextInputAction.search,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: greyColor3),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(size20px / 2),
+                          ),
                         ),
-                      ),
-                      focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: greyColor3),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(size20px / 2),
+                        focusedBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: greyColor3),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(size20px / 2),
+                          ),
                         ),
-                      ),
-                      filled: true,
-                      fillColor: whiteColor,
-                      prefixIcon: Padding(
-                        padding: const EdgeInsets.only(left: 20, right: 15.0),
-                        child: Image.asset(
-                          "assets/images/icon_search.png",
-                          width: 24.0,
-                          height: 24.0,
+                        filled: true,
+                        fillColor: whiteColor,
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.only(left: 20, right: 15.0),
+                          child: Image.asset(
+                            "assets/images/icon_search.png",
+                            width: 24.0,
+                            height: 24.0,
+                          ),
                         ),
+                        hintText: "Search",
+                        hintStyle: body1Regular.copyWith(color: greyColor),
                       ),
-                      hintText: "Search",
-                      hintStyle: body1Regular.copyWith(color: greyColor),
                     ),
                   ),
                 ),

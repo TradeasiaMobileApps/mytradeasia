@@ -367,6 +367,9 @@ class _CartScreenState extends State<CartScreen> {
                       Checkbox(
                         value:
                             state.cartItems!.every((item) => item.isChecked!),
+                        activeColor: primaryColor1,
+                        side:
+                            const BorderSide(color: primaryColor1, width: 2.0),
                         onChanged: (dynamic value) {
                           setState(() {
                             for (var item in state.cartItems!) {
@@ -428,6 +431,9 @@ class _CartScreenState extends State<CartScreen> {
                             children: [
                               Checkbox(
                                 value: item.isChecked,
+                                activeColor: primaryColor1,
+                                side: const BorderSide(
+                                    color: primaryColor1, width: 2.0),
                                 onChanged: (bool? value) {
                                   setState(() {
                                     state.cartItems![index].isChecked = value;
