@@ -7,7 +7,7 @@ class RfqModel extends RfqEntity {
       String? phone,
       String? country,
       String? company,
-      List<RfqProductModel>? products,
+      RfqProductModel? products,
       String? incoterm,
       String? portOfDestination,
       String? message})

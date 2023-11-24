@@ -444,7 +444,7 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                                                           children: [
                                                             Padding(
                                                               padding: const EdgeInsets
-                                                                  .only(
+                                                                      .only(
                                                                   right:
                                                                       size20px +
                                                                           5.0),
@@ -480,7 +480,7 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                                                                 children: [
                                                                   Padding(
                                                                     padding: const EdgeInsets
-                                                                        .only(
+                                                                            .only(
                                                                         bottom: size20px -
                                                                             15.0),
                                                                     child: Text(
@@ -732,7 +732,7 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                                                   ),
                                                   Padding(
                                                     padding: const EdgeInsets
-                                                        .symmetric(
+                                                            .symmetric(
                                                         vertical:
                                                             size20px / 2.0),
                                                     child: Text(
@@ -788,7 +788,7 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                                                   // Button 2
                                                   Padding(
                                                     padding: const EdgeInsets
-                                                        .symmetric(
+                                                            .symmetric(
                                                         vertical: 5.0),
                                                     child: SizedBox(
                                                       height: size20px * 1.5,
@@ -942,32 +942,28 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                     /* With go_router */
                     DataState<dynamic> response;
 
-                    response = await _submitRfq.call(
-                      param: RfqEntity(
-                        firstname: _firstNameController.text,
-                        lastname: _lastNameController.text,
-                        company: _companyNameController.text,
-                        country: _countryController.text,
-                        phone: _phoneNumberController.text,
-                        products: widget.products
-                            .map((e) => RfqProduct(
-                                  productName: e.productName,
-                                  quantity: e.quantity,
-                                  unit: e.unit,
-                                ))
-                            .toList(),
-                        message: _messagesController.text,
-                        portOfDestination: _portOfDetinationController.text,
-                        incoterm: _selectedValueIncoterm ?? "",
-                      ),
-                    );
-
                     String salesforceUID = await getSalesforceId();
                     log("SF ID : $salesforceUID");
                     log("WIDGET PRODUCT LENGTH: ${widget.products.length}");
                     log("WIDGET PRODUCT NAME: ${widget.products[0].productName}");
 
                     for (var e in widget.products) {
+                      response = await _submitRfq.call(
+                        param: RfqEntity(
+                          firstname: _firstNameController.text,
+                          lastname: _lastNameController.text,
+                          company: _companyNameController.text,
+                          country: _countryController.text,
+                          phone: _phoneNumberController.text,
+                          products: RfqProduct(
+                              productName: e.productName,
+                              quantity: e.quantity,
+                              unit: e.unit),
+                          message: _messagesController.text,
+                          portOfDestination: _portOfDetinationController.text,
+                          incoterm: _selectedValueIncoterm ?? "",
+                        ),
+                      );
                       BlocProvider.of<SalesforceDataBloc>(context).add(
                           CreateSFOpportunity(SalesforceCreateOpportunityForm(
                               userId: salesforceUID,

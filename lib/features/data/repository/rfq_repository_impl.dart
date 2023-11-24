@@ -22,13 +22,11 @@ class RfqRepositoryImpl implements RfqRepository {
           country: s.country,
           incoterm: s.incoterm,
           phone: s.phone,
-          products: s.products!
-              .map((e) => RfqProductModel(
-                    productName: e.productName,
-                    quantity: e.quantity,
-                    unit: e.unit,
-                  ))
-              .toList(),
+          products: RfqProductModel(
+            productName: s.products!.productName,
+            quantity: s.products!.quantity,
+            unit: s.products!.unit,
+          ),
           message: s.message,
           portOfDestination: s.portOfDestination));
 
