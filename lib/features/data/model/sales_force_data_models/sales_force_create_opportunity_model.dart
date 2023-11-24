@@ -2,25 +2,28 @@ import 'package:mytradeasia/features/domain/entities/sales_force_data_entities/s
 
 class SalesforceCreateOpportunityModel
     extends SalesforceCreateOpportunityEntity {
-  String? id;
-  bool? success;
-  List<dynamic>? errors;
+  const SalesforceCreateOpportunityModel({
+    String? id,
+    bool? success,
+    List<dynamic>? errors,
+  }) : super(id: id, success: success, errors: errors);
 
-  SalesforceCreateOpportunityModel({this.id, this.success, this.errors});
-
-  SalesforceCreateOpportunityModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    success = json['success'];
+  factory SalesforceCreateOpportunityModel.fromJson(Map<String, dynamic> json) {
+    var errors;
     if (json['errors'] != null) {
       errors = <dynamic>[];
       json['errors'].forEach((v) {
         errors!.add((v));
       });
     }
+    return SalesforceCreateOpportunityModel(
+        id: json['id'], success: json['success'], errors: errors);
   }
+  // id = json['id'];
+  // success = json['success'];
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['success'] = this.success;
     if (this.errors != null) {
@@ -30,15 +33,17 @@ class SalesforceCreateOpportunityModel
   }
 }
 
-class SalesforceCreateOpportunityForm {
-  String userId;
-  String companyName;
-  double quantity;
-  String hsCode;
-
-  SalesforceCreateOpportunityForm(
-      {required this.userId,
-      required this.companyName,
-      required this.quantity,
-      required this.hsCode});
+class SalesforceCreateOpportunityForm
+    extends SalesforceCreateOpportunityFormEntity {
+  const SalesforceCreateOpportunityForm({
+    String? userId,
+    String? companyName,
+    double? quantity,
+    String? hsCode,
+  }) : super(
+          userId: userId,
+          companyName: companyName,
+          quantity: quantity,
+          hsCode: hsCode,
+        );
 }
