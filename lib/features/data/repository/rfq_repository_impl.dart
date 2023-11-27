@@ -22,25 +22,20 @@ class RfqRepositoryImpl implements RfqRepository {
           country: s.country,
           incoterm: s.incoterm,
           phone: s.phone,
-          products: RfqProductModel(
-            productName: s.products!.productName,
-            quantity: s.products!.quantity,
-            unit: s.products!.unit,
-          ),
+          products: s.products,
           message: s.message,
           portOfDestination: s.portOfDestination));
 
-      return DataSuccess({});
-      // if (response!.statusCode == HttpStatus.ok) {
-      //   return DataSuccess(response.data!);
-      // } else {
-      //   return DataFailed(DioException(
-      //     error: response.statusMessage,
-      //     response: response,
-      //     type: DioExceptionType.badResponse,
-      //     requestOptions: response.requestOptions,
-      //   ));
-      // }
+      if (response!.statusCode == HttpStatus.ok) {
+        return DataSuccess(response.data!);
+      } else {
+        return DataFailed(DioException(
+          error: response.statusMessage,
+          response: response,
+          type: DioExceptionType.badResponse,
+          requestOptions: response.requestOptions,
+        ));
+      }
     } on DioException catch (e) {
       return DataFailed(e);
     }

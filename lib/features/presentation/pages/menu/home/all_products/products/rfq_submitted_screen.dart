@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
 
+import '../../../../../../../config/routes/parameters.dart';
+
 class SubmittedRFQScreen extends StatelessWidget {
   const SubmittedRFQScreen({super.key});
 
@@ -24,7 +26,7 @@ class SubmittedRFQScreen extends StatelessWidget {
             width: size20px + 4.0,
             height: size20px + 4.0,
           ),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.pop(),
         ),
       ),
       body: Padding(
@@ -69,7 +71,10 @@ class SubmittedRFQScreen extends StatelessWidget {
                   ),
                   onPressed: () {
                     /* With go_router */
-                    context.go('/home/request_quotation');
+                    RequestQuotationParameter param = RequestQuotationParameter(
+                      products: [],
+                    );
+                    context.go('/home/request_quotation', extra: param);
                     // Navigator.pushReplacement(
                     //     context,
                     //     MaterialPageRoute(

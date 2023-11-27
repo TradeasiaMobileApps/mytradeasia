@@ -6,7 +6,7 @@ class RfqEntity extends Equatable {
   final String? phone;
   final String? country;
   final String? company;
-  final RfqProduct? products;
+  final String? products;
   final String? incoterm;
   final String? portOfDestination;
   final String? message;

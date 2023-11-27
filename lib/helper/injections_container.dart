@@ -91,6 +91,7 @@ import 'package:mytradeasia/features/presentation/state_management/product_bloc/
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/list_product/list_product_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/search_product/search_product_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/recently_seen_bloc/recently_seen_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/rfq_bloc/rfq_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_data/salesforce_data_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_detail/salesforce_detail_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_login/salesforce_login_bloc.dart';
@@ -238,4 +239,5 @@ Future<void> initializeDependencies() async {
       .registerFactory<SearatesBLBloc>(() => SearatesBLBloc(injections()));
   injections.registerFactory<RecentlySeenBloc>(
       () => RecentlySeenBloc(injections(), injections(), injections()));
+  injections.registerFactory<RfqBloc>(() => RfqBloc(injections()));
 }
