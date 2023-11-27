@@ -11,18 +11,18 @@ class RfqService {
 
     print(rfqData);
 
-    // const String url = "$tradeasiaApi/storequote";
-    // final response = await dio.post(
-    //   url,
-    //   data: rfqData,
-    // );
+    const String url = "$tradeasiaApi/storequote";
+    final response = await dio.post(
+      url,
+      data: rfqData,
+    );
 
-    // return Response<dynamic>(
-    //   statusCode: response.statusCode,
-    //   requestOptions: response.requestOptions,
-    //   data: response.statusMessage,
-    // );
+    return Response<dynamic>(
+      statusCode: response.statusCode,
+      requestOptions: response.requestOptions,
+      data: response.statusMessage,
+    );
 
-    return Response(requestOptions: RequestOptions());
+    // return Response(requestOptions: RequestOptions());
   }
 }

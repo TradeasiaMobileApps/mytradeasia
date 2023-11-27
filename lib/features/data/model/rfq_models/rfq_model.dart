@@ -7,7 +7,7 @@ class RfqModel extends RfqEntity {
       String? phone,
       String? country,
       String? company,
-      List<RfqProductModel>? products,
+      String? products,
       String? incoterm,
       String? portOfDestination,
       String? message})
@@ -30,7 +30,7 @@ class RfqModel extends RfqEntity {
     json['phone'] = phone;
     json['country'] = country;
     json['company'] = company;
-    json['products'] = products;
+    json['product_name'] = products;
     json['incoterm'] = incoterm;
     json['port_of_destination'] = portOfDestination;
     json['message'] = message;

@@ -1,25 +1,36 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
 import 'package:mytradeasia/core/constants/constants.dart';
 import 'package:mytradeasia/core/resources/data_state.dart';
+import 'package:mytradeasia/features/data/model/sales_force_data_models/sales_force_create_opportunity_model.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_to_rfq_entity.dart';
 import 'package:mytradeasia/features/domain/entities/rfq_entities/rfq_entity.dart';
 import 'package:mytradeasia/features/domain/usecases/rfq_usecases/submit_rfq.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_data.dart';
+import 'package:mytradeasia/features/presentation/widgets/dialog_sheet_widget.dart';
 import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../../widgets/country_picker.dart';
+import '../../../../state_management/rfq_bloc/rfq_bloc.dart';
+import '../../../../state_management/rfq_bloc/rfq_event.dart';
+import '../../../../state_management/rfq_bloc/rfq_state.dart';
 import '../../../../widgets/text_editing_widget.dart';
 
 class RequestQuotationScreen extends StatefulWidget {
-  const RequestQuotationScreen({super.key, required this.products});
-
   final List<ProductToRfq> products;
+
+  const RequestQuotationScreen({
+    super.key,
+    this.products = const [],
+  });
 
   @override
   State<RequestQuotationScreen> createState() => _RequestQuotationScreenState();
@@ -38,7 +49,7 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
       TextEditingController();
   final TextEditingController _messagesController =
       TextEditingController(text: "Hi, I'm interested in this product.");
-  final SubmitRfqUseCase _submitRfq = injections<SubmitRfqUseCase>();
+  // final SubmitRfqUseCase _submitRfq = injections<SubmitRfqUseCase>();
   final GetUserData _geUserData = injections<GetUserData>();
   final _formKey = GlobalKey<FormState>();
 
@@ -894,48 +905,80 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
             horizontal: size20px, vertical: size20px - 7.0),
         child: SizedBox(
           height: size20px * 2.5,
-          child: ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all<Color>(primaryColor1),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(7.0),
-                  ),
-                ),
-              ),
-              onPressed: () async {
-                /* With go_router */
-                //TODO:implement submit rfq
-                DataState<dynamic> response;
-
-                response = await _submitRfq.call(
-                  param: RfqEntity(
-                    firstname: _firstNameController.text,
-                    lastname: _lastNameController.text,
-                    company: _companyNameController.text,
-                    country: _countryController.text,
-                    phone: _phoneNumberController.text,
-                    products: widget.products
-                        .map((e) => RfqProduct(
-                              productName: e.productName,
-                              quantity: e.quantity,
-                              unit: e.unit,
-                            ))
-                        .toList(),
-                    message: _messagesController.text,
-                    portOfDestination: _portOfDetinationController.text,
-                    incoterm: _selectedValueIncoterm ?? "",
-                  ),
+          child: BlocBuilder<RfqBloc, RfqState>(
+            builder: (context, state) {
+              if (state is RfqLoading) {
+                return const Center(
+                  child: CircularProgressIndicator(),
                 );
-                // print(response.data);
+              }
 
-                // context.goNamed("submitted_rfq");
-              },
-              child: Text(
-                "Send",
-                style: text16.copyWith(color: whiteColor),
-              )),
+              if (state is RfqError) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return DialogWidget(
+                          urlIcon: "assets/images/logo_email_change.png",
+                          title: "Submit Request Error",
+                          subtitle: "${state.error!.message}",
+                          textForButton: "Close",
+                          navigatorFunction: () {
+                            context.pop();
+                          });
+                    },
+                  );
+                });
+              }
+              return ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(primaryColor1),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(7.0),
+                      ),
+                    ),
+                  ),
+                  onPressed: () async {
+                    /* With go_router */
+
+                    // String salesforceUID = await getSalesforceId();
+                    // log("SF ID : $salesforceUID");
+                    // log("WIDGET PRODUCT LENGTH: ${widget.products.length}");
+                    // log("WIDGET PRODUCT NAME: ${widget.products[0].productName}");
+
+                    for (var e in widget.products) {
+                      BlocProvider.of<RfqBloc>(context).add(SubmitRfqEvent(
+                        RfqEntity(
+                          firstname: _firstNameController.text,
+                          lastname: _lastNameController.text,
+                          company: _companyNameController.text,
+                          country: _countryController.text,
+                          phone: _phoneNumberController.text,
+                          products: e.productName,
+                          message: _messagesController.text,
+                          portOfDestination: _portOfDetinationController.text,
+                          incoterm: _selectedValueIncoterm ?? "",
+                        ),
+                      ));
+                      // BlocProvider.of<SalesforceDataBloc>(context).add(
+                      //     CreateSFOpportunity(SalesforceCreateOpportunityForm(
+                      //         userId: salesforceUID,
+                      //         companyName: _companyNameController.text,
+                      //         quantity: e.quantity ?? 0,
+                      //         hsCode: e.hsCode)));
+                    }
+                    if (state is RfqSuccess) {
+                      context.pushNamed("submitted_rfq");
+                    }
+                  },
+                  child: Text(
+                    "Send",
+                    style: text16.copyWith(color: whiteColor),
+                  ));
+            },
+          ),
         ),
       ),
     );

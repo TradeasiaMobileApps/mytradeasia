@@ -68,6 +68,18 @@ Future<bool> checkIfUserExists(String userId) async {
   return documentSnapshot.exists;
 }
 
+Future<String> getSalesforceId() async {
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  final Map<String, dynamic> firestoreData = await FirebaseFirestore.instance
+      .collection('biodata')
+      .doc(_auth.currentUser?.uid.toString())
+      .get()
+      .then((DocumentSnapshot doc) {
+    return doc.data() as Map<String, dynamic>;
+  });
+  return firestoreData['idSF'];
+}
+
 Future<bool> isSSOAuth() async {
   FirebaseAuth _auth = FirebaseAuth.instance;
   List<String> userSignInMethods =

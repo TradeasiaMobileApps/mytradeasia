@@ -2,10 +2,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mytradeasia/features/data/model/sales_force_data_models/sales_force_create_account_model.dart';
 import 'package:mytradeasia/features/domain/entities/user_entities/user_entity.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_event.dart';
 import 'package:mytradeasia/features/presentation/widgets/country_picker.dart';
+import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_data/salesforce_data_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_data/salesforce_data_event.dart';
+import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_login/salesforce_login_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_login/salesforce_login_event.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../config/themes/theme.dart';
 import '../../../widgets/dialog_sheet_widget.dart';
@@ -37,6 +42,8 @@ class _BiodataScreenState extends State<BiodataScreen> {
   @override
   void initState() {
     _passwordVisible = false;
+    var salesforceLoginBloc = BlocProvider.of<SalesforceLoginBloc>(context);
+    salesforceLoginBloc.add(const LoginSalesforce());
     super.initState();
   }
 
@@ -69,6 +76,8 @@ class _BiodataScreenState extends State<BiodataScreen> {
   @override
   Widget build(BuildContext context) {
     var authBloc = BlocProvider.of<AuthBloc>(context);
+    var salesforceBloc = BlocProvider.of<SalesforceDataBloc>(context);
+
     return Scaffold(
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 20),
@@ -91,6 +100,7 @@ class _BiodataScreenState extends State<BiodataScreen> {
                     final SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     final role = prefs.getString("role") ?? "";
+                    final tokenSF = prefs.getString("tokenSF") ?? "";
                     if (_formKey.currentState!.validate()) {
                       authBloc.add(RegisterWithEmail(
                         UserEntity(
@@ -106,6 +116,16 @@ class _BiodataScreenState extends State<BiodataScreen> {
                         ),
                         context,
                       ));
+
+                      salesforceBloc.add(CreateSFAccount(
+                          token: tokenSF,
+                          salesforceCreateAccountForm: SalesforceCreateAccountForm(
+                              name:
+                                  "${_firstNameController.text} ${_lastNameController.text}",
+                              phone: widget.phone,
+                              role: role,
+                              company: _companyNameController.text)));
+
                       await showDialog(
                         barrierDismissible: false,
                         context: context,

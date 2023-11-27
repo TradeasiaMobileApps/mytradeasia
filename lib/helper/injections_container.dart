@@ -54,6 +54,8 @@ import 'package:mytradeasia/features/domain/usecases/detail_product_usecases/get
 import 'package:mytradeasia/features/domain/usecases/dhl_shipment_usecases/get_dhl_shipment.dart';
 import 'package:mytradeasia/features/domain/usecases/faq_usecases/get_faq_data.dart';
 import 'package:mytradeasia/features/domain/usecases/industry_usecases/get_industry.dart';
+import 'package:mytradeasia/features/domain/usecases/sales_force_data_usecases/create_sales_force_account.dart';
+import 'package:mytradeasia/features/domain/usecases/sales_force_data_usecases/create_sales_force_opportunity.dart';
 import 'package:mytradeasia/features/domain/usecases/sales_force_data_usecases/get_sales_force_cp.dart';
 import 'package:mytradeasia/features/domain/usecases/searates_usecases/get_searates_route.dart';
 import 'package:mytradeasia/features/domain/usecases/searates_usecases/track_by_bl.dart';
@@ -91,6 +93,7 @@ import 'package:mytradeasia/features/presentation/state_management/product_bloc/
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/list_product/list_product_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/search_product/search_product_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/recently_seen_bloc/recently_seen_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/rfq_bloc/rfq_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_data/salesforce_data_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_detail/salesforce_detail_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_login/salesforce_login_bloc.dart';
@@ -199,6 +202,10 @@ Future<void> initializeDependencies() async {
   injections.registerSingleton<UpdateEmail>(UpdateEmail(injections()));
   injections
       .registerSingleton<DeleteRecentlySeen>(DeleteRecentlySeen(injections()));
+  injections.registerSingleton<CreateSalesForceAccount>(
+      CreateSalesForceAccount(injections()));
+  injections.registerSingleton<CreateSalesForceOpportunity>(
+      CreateSalesForceOpportunity(injections()));
   injections
       .registerSingleton<GetCountryUsecase>(GetCountryUsecase(injections()));
   injections.registerSingleton<SearchCountryUsecase>(
@@ -220,8 +227,8 @@ Future<void> initializeDependencies() async {
       () => DetailProductBloc(injections()));
   injections.registerFactory<SalesforceLoginBloc>(
       () => SalesforceLoginBloc(injections()));
-  injections.registerFactory<SalesforceDataBloc>(
-      () => SalesforceDataBloc(injections(), injections()));
+  injections.registerFactory<SalesforceDataBloc>(() => SalesforceDataBloc(
+      injections(), injections(), injections(), injections()));
   injections.registerFactory<SalesforceDetailBloc>(
       () => SalesforceDetailBloc(injections()));
   injections.registerFactory<AuthBloc>(() => AuthBloc(
@@ -238,4 +245,5 @@ Future<void> initializeDependencies() async {
       () => RecentlySeenBloc(injections(), injections(), injections()));
   injections.registerFactory<CountriesBloc>(
       () => CountriesBloc(injections(), injections()));
+  injections.registerFactory<RfqBloc>(() => RfqBloc(injections()));
 }

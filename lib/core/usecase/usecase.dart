@@ -16,6 +16,19 @@ abstract class UseCase<Type, Params> {
   Future<Type> call({required Params param});
 }
 
+/// An abstract base class for use cases with two parameters.
+///
+/// This class extends `UseCase` and provides a specific interface for use cases that require two parameters.
+///
+/// @param Type The type of the output of the use case.
+/// @param A The type of the first parameter required by the use case.
+/// @param B The type of the second parameter required by the use case.
+
+abstract class UseCaseTwoParams<Type, A, B> {
+  /// Performs the use case operation with the given parameters and returns a `Future` of type `Type`, which represents the output of the use case.
+  Future<Type> call({required A paramsOne, required B paramsTwo});
+}
+
 /// An abstract base class for use cases with three parameters.
 ///
 /// This class extends `UseCase` and provides a specific interface for use cases that require three parameters.
