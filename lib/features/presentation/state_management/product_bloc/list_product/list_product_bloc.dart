@@ -9,6 +9,7 @@ class ListProductBloc extends Bloc<ListProductEvent, ListProductState> {
 
   ListProductBloc(this._getListProduct) : super(const ListProductLoading()) {
     on<GetProducts>(onGetProducts);
+    on<DisposeProducts>(onDisposeProducts);
   }
 
   void onGetProducts(GetProducts event, Emitter<ListProductState> emit) async {
@@ -21,5 +22,10 @@ class ListProductBloc extends Bloc<ListProductEvent, ListProductState> {
     if (dataState is DataFailed) {
       emit(ListProductError(dataState.error!));
     }
+  }
+
+  void onDisposeProducts(
+      DisposeProducts event, Emitter<ListProductState> emit) {
+    emit(const ListProductLoading());
   }
 }

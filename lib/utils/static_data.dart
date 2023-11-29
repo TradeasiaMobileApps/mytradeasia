@@ -22,6 +22,26 @@ List<List<dynamic>> allIndustries = [
     "assets/images/icon_water.png",
   ],
 ];
+Map<String, String> industries = {
+  "pinederivatives": "assets/images/icon_pine_deriv.png",
+  "palmderivatives": "assets/images/icon_palm_deriv.png",
+  "foodandbeverages": "assets/images/icon_food.png",
+  "textilechemicals": "assets/images/icon_textile.png",
+  "animalfeeds": "assets/images/icon_animal.png",
+  "leatherchemicals": "assets/images/icon_leather.png",
+  "soapanddetergent": "assets/images/icon_soap.png",
+  "plasticandpolymers": "assets/images/icon_plastic.png",
+  "pulpsandpapers": "assets/images/icon_pulp.png",
+  "paintinkandcoating": "assets/images/icon_paint.png",
+  "surpluschemicals": "assets/images/icon_surplus.png",
+  "watertreatment": "assets/images/icon_water.png",
+  "agriculture": "assets/images/icon_agri.png",
+  "beautyandpersonalcare": "assets/images/icon_beauty.png",
+  "glassandceramic": "assets/images/icon_glass.png",
+  "metalandsteels": "assets/images/icon_metal.png",
+  "pharmaceutical": "assets/images/icon_pharmacy.png",
+  "rubbers": "assets/images/icon_rubber.png",
+};
 
 // detail products item
 // List<List<String>> detailProductsItem = [

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/config/routes/parameters.dart';
 import 'package:mytradeasia/features/presentation/pages/auth/biodata/sso_biodata_screen.dart';
 import 'package:mytradeasia/features/presentation/pages/auth/register/register_otp_screen.dart';
+import 'package:mytradeasia/features/presentation/pages/menu/home/all_products/products/products_by_industry_screen.dart';
 import '../../features/presentation/pages/auth/biodata/biodata_screen.dart';
 import '../../features/presentation/pages/auth/choose_role/role_user_screen.dart';
 import '../../features/presentation/pages/auth/login/forgot_password/forgot_password_screen.dart';
@@ -106,7 +107,17 @@ class Routes {
                 ),
                 GoRoute(
                     path: "all_industry",
-                    builder: (context, state) => const AllIndustryScreen()),
+                    builder: (context, state) => const AllIndustryScreen(),
+                    routes: [
+                      GoRoute(
+                          path: "products_industry",
+                          builder: (context, state) {
+                            ProductsIndustryParameter parameter =
+                                state.extra as ProductsIndustryParameter;
+                            return ProductByIndustryScreen(
+                                industryType: parameter.industry);
+                          })
+                    ]),
               ]),
           GoRoute(
               path: "/messages",

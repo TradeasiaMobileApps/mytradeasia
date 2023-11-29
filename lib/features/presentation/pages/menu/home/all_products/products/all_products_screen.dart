@@ -44,6 +44,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
 
   @override
   void initState() {
+    BlocProvider.of<ListProductBloc>(context).add(const DisposeProducts());
     BlocProvider.of<ListProductBloc>(context).add(const GetProducts());
     BlocProvider.of<CartBloc>(context).add(const GetCartItems());
     super.initState();
