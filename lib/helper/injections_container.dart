@@ -49,6 +49,7 @@ import 'package:mytradeasia/features/domain/usecases/cart_usecases/delete_cart_i
 import 'package:mytradeasia/features/domain/usecases/cart_usecases/get_cart.dart';
 import 'package:mytradeasia/features/domain/usecases/cart_usecases/update_cart.dart';
 import 'package:mytradeasia/features/domain/usecases/country_usecases/get_country_usecase.dart';
+import 'package:mytradeasia/features/domain/usecases/country_usecases/search_country_usecase.dart';
 import 'package:mytradeasia/features/domain/usecases/detail_product_usecases/get_detail_product.dart';
 import 'package:mytradeasia/features/domain/usecases/dhl_shipment_usecases/get_dhl_shipment.dart';
 import 'package:mytradeasia/features/domain/usecases/faq_usecases/get_faq_data.dart';
@@ -85,6 +86,7 @@ import 'package:mytradeasia/features/domain/usecases/user_usecases/update_profil
 import 'package:mytradeasia/features/domain/usecases/user_usecases/verify_otp.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/cart_bloc/cart_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/countries_bloc/countries_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/dhl_shipment_bloc/dhl_shipment_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/industry_bloc/industry_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/faq_bloc/faq_bloc.dart';
@@ -209,6 +211,8 @@ Future<void> initializeDependencies() async {
       .registerSingleton<GetCountryUsecase>(GetCountryUsecase(injections()));
   injections.registerSingleton<GetSalesForceOpportunity>(
       GetSalesForceOpportunity(injections()));
+  injections.registerSingleton<SearchCountryUsecase>(
+      SearchCountryUsecase(injections()));
 
   //Bloc
   injections
@@ -242,5 +246,7 @@ Future<void> initializeDependencies() async {
       .registerFactory<SearatesBLBloc>(() => SearatesBLBloc(injections()));
   injections.registerFactory<RecentlySeenBloc>(
       () => RecentlySeenBloc(injections(), injections(), injections()));
+  injections.registerFactory<CountriesBloc>(
+      () => CountriesBloc(injections(), injections()));
   injections.registerFactory<RfqBloc>(() => RfqBloc(injections()));
 }

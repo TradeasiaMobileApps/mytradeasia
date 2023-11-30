@@ -12,6 +12,6 @@ class GetCountryUsecase
 
   @override
   Future<DataState<List<CountryEntity>>> call({void param}) {
-    return _countryRepository.getCountryRepo();
+    return _countryRepository.getCountry();
   }
 }

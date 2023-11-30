@@ -6,6 +6,7 @@ import 'package:mytradeasia/features/data/model/sales_force_data_models/sales_fo
 import 'package:mytradeasia/features/domain/entities/user_entities/user_entity.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_event.dart';
+import 'package:mytradeasia/features/presentation/widgets/country_picker.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_data/salesforce_data_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_data/salesforce_data_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_login/salesforce_login_bloc.dart';
@@ -304,49 +305,12 @@ class _BiodataScreenState extends State<BiodataScreen> {
                           focusedBorder: const OutlineInputBorder(
                             borderSide: BorderSide(color: secondaryColor1),
                           ),
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              showCountryPicker(
-                                context: context,
-                                //Optional.  Can be used to exclude(remove) one ore more country from the countries list (optional).
-                                favorite: <String>['ID'],
-                                //Optional. Shows phone code before the country name.
-                                showPhoneCode: false,
-                                onSelect: (Country country) {
-                                  // countryName = country.displayName;
-                                  print(country.countryCode);
-                                  countryCode = country.countryCode;
-                                  _countryController.text = country.name;
-                                },
-                                // Optional. Sets the theme for the country list picker.
-                                countryListTheme: CountryListThemeData(
-                                  // Optional. Sets the border radius for the bottomsheet.
-                                  borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(40.0),
-                                    topRight: Radius.circular(40.0),
-                                  ),
-                                  // Optional. Styles the search field.
-                                  inputDecoration: InputDecoration(
-                                    labelText: 'Search',
-                                    hintText: 'Start typing to search',
-                                    prefixIcon: const Icon(Icons.search),
-                                    border: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: const Color(0xFF8C98A8)
-                                            .withOpacity(0.2),
-                                      ),
-                                    ),
-                                  ),
-                                  // Optional. Styles the text in the search field
-                                  searchTextStyle: const TextStyle(
-                                    color: Colors.blue,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                              );
+                          suffixIcon: CountryPicker(
+                            suffixIconMode: true,
+                            onChanged: (value) {
+                              countryCode = value.codeCountry!;
+                              _countryController.text = value.name!;
                             },
-                            icon: Image.asset("assets/images/icon_forward.png",
-                                width: 24.0, height: 24.0),
                           ),
                         ),
                       ),

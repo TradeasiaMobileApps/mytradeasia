@@ -13,12 +13,12 @@ import 'package:mytradeasia/features/domain/entities/product_entities/product_to
 import 'package:mytradeasia/features/domain/entities/rfq_entities/rfq_entity.dart';
 import 'package:mytradeasia/features/domain/usecases/rfq_usecases/submit_rfq.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_data.dart';
-import 'package:mytradeasia/features/presentation/pages/menu/other/languages_screen.dart';
 import 'package:mytradeasia/features/presentation/widgets/dialog_sheet_widget.dart';
 import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+import '../../../../widgets/country_picker.dart';
 import '../../../../state_management/rfq_bloc/rfq_bloc.dart';
 import '../../../../state_management/rfq_bloc/rfq_event.dart';
 import '../../../../state_management/rfq_bloc/rfq_state.dart';
@@ -235,38 +235,43 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                                           ),
                                           Row(
                                             children: [
-                                              Expanded(
-                                                flex: 1,
-                                                child: InkWell(
-                                                  onTap: () {
-                                                    Navigator.push(context,
-                                                        MaterialPageRoute(
-                                                      builder: (context) {
-                                                        return const LanguagesScreen();
-                                                      },
-                                                    ));
-                                                  },
-                                                  child: Container(
-                                                    height: 48,
-                                                    width: size20px * 3,
-                                                    decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            const BorderRadius
-                                                                .all(
-                                                          Radius.circular(7),
-                                                        ),
-                                                        border: Border.all(
-                                                            color: greyColor3)),
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              size20px / 2),
-                                                      child: Image.asset(
-                                                          "assets/images/logo_indonesia.png"),
-                                                    ),
-                                                  ),
-                                                ),
+                                              CountryPicker(
+                                                onChanged: (value) {
+                                                  print(value);
+                                                },
                                               ),
+                                              // Expanded(
+                                              //   flex: 1,
+                                              //   child: InkWell(
+                                              //     onTap: () {
+                                              //       Navigator.push(context,
+                                              //           MaterialPageRoute(
+                                              //         builder: (context) {
+                                              //           return const LanguagesScreen();
+                                              //         },
+                                              //       ));
+                                              //     },
+                                              //     child: Container(
+                                              //       height: 48,
+                                              //       width: size20px * 3,
+                                              //       decoration: BoxDecoration(
+                                              //           borderRadius:
+                                              //               const BorderRadius
+                                              //                   .all(
+                                              //             Radius.circular(7),
+                                              //           ),
+                                              //           border: Border.all(
+                                              //               color: greyColor3)),
+                                              //       child: Padding(
+                                              //         padding:
+                                              //             const EdgeInsets.all(
+                                              //                 size20px / 2),
+                                              //         child: Image.asset(
+                                              //             "assets/images/logo_indonesia.png"),
+                                              //       ),
+                                              //     ),
+                                              //   ),
+                                              // ),
                                               const SizedBox(
                                                 width: 15.0,
                                               ),
@@ -316,12 +321,12 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                                                   "assets/images/icon_forward.png",
                                               // navigationPage: const ChangeEmailScreen(),
                                               navigationPage: () {
-                                                Navigator.push(context,
-                                                    MaterialPageRoute(
-                                                  builder: (context) {
-                                                    return const LanguagesScreen();
-                                                  },
-                                                ));
+                                                // Navigator.push(context,
+                                                //     MaterialPageRoute(
+                                                //   builder: (context) {
+                                                //     return const LanguagesScreen();
+                                                //   },
+                                                // ));
                                               },
                                             ),
                                           ),
