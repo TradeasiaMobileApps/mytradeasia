@@ -73,50 +73,105 @@ class _QuotationsScreenState extends State<QuotationsScreen> {
             BlocBuilder<SalesforceDataBloc, SalesforceDataState>(
                 builder: (context, state) {
               if (state is SalesforceOpportunityDone) {
-                return Expanded(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: state.opportunityEntity!.records!.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                left: size20px, right: size20px),
-                            child: QuotationsWidget(
-                                opportunityData:
-                                    state.opportunityEntity!.records![index],
-                                status: "Submitted",
-                                fontStatusColor: yellowColor,
-                                backgroundStatusColor: yellowColor2,
-                                navigationPage: () {
-                                  /* With go_router */
-                                  QuotationDetailParameter param =
-                                      QuotationDetailParameter(
-                                          status: 'submitted',
-                                          opportunity: state.opportunityEntity!
-                                              .records![index]);
+                if (state.opportunityEntity!.records!.isEmpty) {
+                  return Center(
+                    child: Text(
+                      "No quotations yet",
+                      style: text15,
+                    ),
+                  );
+                } else {
+                  return Expanded(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: state.opportunityEntity!.records!.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: size20px, right: size20px),
+                              child: QuotationsWidget(
+                                  opportunityData:
+                                      state.opportunityEntity!.records![index],
+                                  status: "Submitted",
+                                  fontStatusColor: yellowColor,
+                                  backgroundStatusColor: yellowColor2,
+                                  navigationPage: () {
+                                    /* With go_router */
+                                    QuotationDetailParameter param =
+                                        QuotationDetailParameter(
+                                            status: 'submitted',
+                                            opportunity: state
+                                                .opportunityEntity!
+                                                .records![index]);
 
-                                  context.push(
-                                      "/mytradeasia/quotations/detail_quotation",
-                                      extra: param);
+                                    context.push(
+                                        "/mytradeasia/quotations/detail_quotation",
+                                        extra: param);
 
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //     builder: (context) => const QuotationDetailScreen(
-                                  //       status: "submitted",
-                                  //     ),
-                                  //   ),
-                                  // )
-                                }),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                );
+                                    // Navigator.push(
+                                    //   context,
+                                    //   MaterialPageRoute(
+                                    //     builder: (context) => const QuotationDetailScreen(
+                                    //       status: "submitted",
+                                    //     ),
+                                    //   ),
+                                    // )
+                                  }),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  );
+                  return Expanded(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: state.opportunityEntity!.records!.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: size20px, right: size20px),
+                              child: QuotationsWidget(
+                                  opportunityData:
+                                      state.opportunityEntity!.records![index],
+                                  status: "Submitted",
+                                  fontStatusColor: yellowColor,
+                                  backgroundStatusColor: yellowColor2,
+                                  navigationPage: () {
+                                    /* With go_router */
+                                    QuotationDetailParameter param =
+                                        QuotationDetailParameter(
+                                            status: 'submitted',
+                                            opportunity: state
+                                                .opportunityEntity!
+                                                .records![index]);
+
+                                    context.push(
+                                        "/mytradeasia/quotations/detail_quotation",
+                                        extra: param);
+
+                                    // Navigator.push(
+                                    //   context,
+                                    //   MaterialPageRoute(
+                                    //     builder: (context) => const QuotationDetailScreen(
+                                    //       status: "submitted",
+                                    //     ),
+                                    //   ),
+                                    // )
+                                  }),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  );
+                }
               } else if (state is SalesforceDataLoading) {
                 return const Center(
                   child: CircularProgressIndicator(),
