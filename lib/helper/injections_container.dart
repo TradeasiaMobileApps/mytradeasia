@@ -56,6 +56,7 @@ import 'package:mytradeasia/features/domain/usecases/industry_usecases/get_indus
 import 'package:mytradeasia/features/domain/usecases/sales_force_data_usecases/create_sales_force_account.dart';
 import 'package:mytradeasia/features/domain/usecases/sales_force_data_usecases/create_sales_force_opportunity.dart';
 import 'package:mytradeasia/features/domain/usecases/sales_force_data_usecases/get_sales_force_cp.dart';
+import 'package:mytradeasia/features/domain/usecases/sales_force_data_usecases/get_sales_force_opportunity.dart';
 import 'package:mytradeasia/features/domain/usecases/searates_usecases/get_searates_route.dart';
 import 'package:mytradeasia/features/domain/usecases/searates_usecases/track_by_bl.dart';
 import 'package:mytradeasia/features/domain/usecases/list_product_usecases/get_list_product.dart';
@@ -206,6 +207,8 @@ Future<void> initializeDependencies() async {
       CreateSalesForceOpportunity(injections()));
   injections
       .registerSingleton<GetCountryUsecase>(GetCountryUsecase(injections()));
+  injections.registerSingleton<GetSalesForceOpportunity>(
+      GetSalesForceOpportunity(injections()));
 
   //Bloc
   injections
@@ -224,7 +227,7 @@ Future<void> initializeDependencies() async {
   injections.registerFactory<SalesforceLoginBloc>(
       () => SalesforceLoginBloc(injections()));
   injections.registerFactory<SalesforceDataBloc>(() => SalesforceDataBloc(
-      injections(), injections(), injections(), injections()));
+      injections(), injections(), injections(), injections(), injections()));
   injections.registerFactory<SalesforceDetailBloc>(
       () => SalesforceDetailBloc(injections()));
   injections.registerFactory<AuthBloc>(() => AuthBloc(

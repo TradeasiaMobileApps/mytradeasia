@@ -229,6 +229,7 @@ class Routes {
                             return QuotationDetailScreen(
                               status: param.status,
                               isSales: param.isSales,
+                              opportunity: param.opportunity,
                             );
                           }),
                     ]),

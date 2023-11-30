@@ -1,4 +1,5 @@
 import 'package:mytradeasia/features/domain/entities/product_entities/product_to_rfq_entity.dart';
+import 'package:mytradeasia/features/domain/entities/sales_force_data_entities/sales_force_opportunity_entity.dart';
 import 'package:mytradeasia/features/domain/entities/searates_entities/searates_bl_entity.dart';
 
 class TrackingDocumentParameter {
@@ -16,8 +17,10 @@ class TrackingShipmentParameter {
 
 class QuotationDetailParameter {
   String status;
+  Opportunity? opportunity;
   bool? isSales;
-  QuotationDetailParameter({required this.status, this.isSales});
+  QuotationDetailParameter(
+      {required this.status, this.isSales, this.opportunity});
 }
 
 class MessageDetailParameter {

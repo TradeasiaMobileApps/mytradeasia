@@ -1,13 +1,29 @@
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/config/routes/parameters.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
+import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_data/salesforce_data_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_data/salesforce_data_event.dart';
+import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_data/salesforce_data_state.dart';
 
 import '../../../../../widgets/quotation_widget.dart';
 
-class QuotationsScreen extends StatelessWidget {
+class QuotationsScreen extends StatefulWidget {
   const QuotationsScreen({super.key});
+
+  @override
+  State<QuotationsScreen> createState() => _QuotationsScreenState();
+}
+
+class _QuotationsScreenState extends State<QuotationsScreen> {
+  @override
+  void initState() {
+    BlocProvider.of<SalesforceDataBloc>(context)
+        .add(GetOpportunitySalesforce('0018G00000XtspzQAB'));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,82 +70,63 @@ class QuotationsScreen extends StatelessWidget {
         body: TabBarView(
           children: [
             // All Quotation
-            Padding(
-              padding: const EdgeInsets.only(left: size20px, right: size20px),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: ListView(
-                      children: [
-                        QuotationsWidget(
-                            status: "Submitted",
-                            fontStatusColor: yellowColor,
-                            backgroundStatusColor: yellowColor2,
-                            navigationPage: () {
-                              /* With go_router */
-                              QuotationDetailParameter param =
-                                  QuotationDetailParameter(status: 'submitted');
+            BlocBuilder<SalesforceDataBloc, SalesforceDataState>(
+                builder: (context, state) {
+              if (state is SalesforceOpportunityDone) {
+                return Expanded(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: state.opportunityEntity!.records!.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: size20px, right: size20px),
+                            child: QuotationsWidget(
+                                opportunityData:
+                                    state.opportunityEntity!.records![index],
+                                status: "Submitted",
+                                fontStatusColor: yellowColor,
+                                backgroundStatusColor: yellowColor2,
+                                navigationPage: () {
+                                  /* With go_router */
+                                  QuotationDetailParameter param =
+                                      QuotationDetailParameter(
+                                          status: 'submitted',
+                                          opportunity: state.opportunityEntity!
+                                              .records![index]);
 
-                              context.push(
-                                  "/mytradeasia/quotations/detail_quotation",
-                                  extra: param);
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (context) => const QuotationDetailScreen(
-                              //       status: "submitted",
-                              //     ),
-                              //   ),
-                              // )
-                            }),
-                        QuotationsWidget(
-                            status: "Approved",
-                            fontStatusColor: greenColor1,
-                            backgroundStatusColor: greenColor2,
-                            navigationPage: () {
-                              /* With go_router */
-                              QuotationDetailParameter param =
-                                  QuotationDetailParameter(status: 'approved');
+                                  context.push(
+                                      "/mytradeasia/quotations/detail_quotation",
+                                      extra: param);
 
-                              context.push(
-                                  "/mytradeasia/quotations/detail_quotation",
-                                  extra: param);
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (context) => const QuotationDetailScreen(
-                              //       status: "approved",
-                              //     ),
-                              //   ),
-                              // )
-                            }),
-                        QuotationsWidget(
-                            status: "Rejected",
-                            fontStatusColor: redColor1,
-                            backgroundStatusColor: redColor2,
-                            navigationPage: () {
-                              /* With go_router */
-                              QuotationDetailParameter param =
-                                  QuotationDetailParameter(status: 'rejected');
-
-                              context.push(
-                                  "/mytradeasia/quotations/detail_quotation",
-                                  extra: param);
-                              //   Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (context) => const QuotationDetailScreen(
-                              //       status: "rejected",
-                              //     ),
-                              //   ),
-                              // )
-                            }),
-                      ],
-                    ),
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //     builder: (context) => const QuotationDetailScreen(
+                                  //       status: "submitted",
+                                  //     ),
+                                  //   ),
+                                  // )
+                                }),
+                          ),
+                        ],
+                      );
+                    },
                   ),
-                ],
-              ),
-            ),
+                );
+              } else if (state is SalesforceDataLoading) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else {
+                return Center(
+                  child: Text(state.error!.message!),
+                );
+              }
+            }),
 
             // Submitted Quotations
             Padding(

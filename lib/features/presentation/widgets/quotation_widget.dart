@@ -1,5 +1,6 @@
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
+import 'package:mytradeasia/features/domain/entities/sales_force_data_entities/sales_force_opportunity_entity.dart';
 
 import '../../../config/themes/theme.dart';
 
@@ -9,12 +10,14 @@ class QuotationsWidget extends StatelessWidget {
       required this.status,
       required this.fontStatusColor,
       required this.backgroundStatusColor,
-      required this.navigationPage})
+      required this.navigationPage,
+      required this.opportunityData})
       : super(key: key);
 
   final String status;
   final Color fontStatusColor;
   final Color backgroundStatusColor;
+  final Opportunity opportunityData;
   final Function() navigationPage;
 
   @override
@@ -41,7 +44,7 @@ class QuotationsWidget extends StatelessWidget {
                     Expanded(
                       flex: 3,
                       child: Text(
-                        "Dimas Pradipta putraaaaaa",
+                        opportunityData.account?.name ?? '',
                         style: heading3.copyWith(color: secondaryColor1),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -80,10 +83,10 @@ class QuotationsWidget extends StatelessWidget {
                     dashLength: 5.0,
                   ),
                 ),
-                const Padding(
+                Padding(
                   padding: EdgeInsets.only(bottom: size20px / 2),
                   child: Text(
-                    "Dipentene",
+                    opportunityData.productNameR?.name ?? "",
                     style: text15,
                   ),
                 ),
@@ -92,7 +95,9 @@ class QuotationsWidget extends StatelessWidget {
                   children: [
                     Text("Quantity/Unit",
                         style: body2Medium.copyWith(color: greyColor2)),
-                    const Text("800 Tone/Tones", style: body1Medium),
+                    Text(
+                        "${opportunityData.quantityC != null ? opportunityData.quantityC.toString() : ""} ${opportunityData.uOMC ?? ""}",
+                        style: body1Medium),
                   ],
                 ),
                 Padding(
@@ -112,7 +117,7 @@ class QuotationsWidget extends StatelessWidget {
                   children: [
                     Text("Port of Destination",
                         style: body2Medium.copyWith(color: greyColor2)),
-                    const Text("Any port in Vietnam", style: body1Medium),
+                    Text("TBD", style: body1Medium),
                   ],
                 ),
               ],

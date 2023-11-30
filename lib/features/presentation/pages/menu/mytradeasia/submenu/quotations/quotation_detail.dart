@@ -1,52 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:mytradeasia/features/domain/entities/sales_force_data_entities/sales_force_opportunity_entity.dart';
 import 'package:mytradeasia/features/presentation/widgets/dialog_sheet_widget.dart';
 
 import '../../../../../../../config/themes/theme.dart';
 
 class QuotationDetailScreen extends StatelessWidget {
-  const QuotationDetailScreen({super.key, required this.status, this.isSales});
+  const QuotationDetailScreen(
+      {super.key, required this.status, this.isSales, this.opportunity});
 
   final String status;
   final bool? isSales;
-
-  static const quotationData = {
-    "First Name": "Dimas",
-    "Last Name": "Pradipta",
-    "Phone Number": "(+62) 885691410815",
-    "Country": "Bangladesh",
-    "Company Name": "Tradeasia International",
-    "Product Name": "DIpentene",
-    "Quantity": "800",
-    "Unit": "Tone",
-    "Incoterm": "FOB",
-    "Port of Destination": "Any port in Vietnam",
-    "Message": "...",
-  };
-
-  Widget dataRow(int index) {
-    return Row(
-      children: [
-        SizedBox(
-          width: size20px * 4.0,
-          child: Text(quotationData.keys.toList()[index],
-              style: body2Medium.copyWith(color: greyColor2)),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: size20px),
-          child: Text(" : ", style: body2Medium.copyWith(color: greyColor2)),
-        ),
-        Expanded(
-          child: Text(
-            quotationData.values.toList()[index],
-            style: body1Medium,
-          ),
-        ),
-      ],
-    );
-  }
+  final Opportunity? opportunity;
 
   @override
   Widget build(BuildContext context) {
+    var quotationData = {
+      "First Name": opportunity != null ? opportunity!.account?.name ?? '' : "",
+      "Last Name": "",
+      "Phone Number": "(+62) 885691410815",
+      "Country": opportunity != null ? opportunity!.originC ?? '' : "",
+      "Company Name":
+          opportunity != null ? opportunity!.businessEntityC ?? '' : "",
+      "Product Name":
+          opportunity != null ? opportunity!.productNameR?.name ?? '' : "",
+      "Quantity": opportunity != null ? opportunity!.quantityC ?? '' : "",
+      "Unit": opportunity != null ? opportunity!.uOMC ?? '' : "",
+      "Incoterm": "FOB",
+      "Port of Destination": "TBD",
+      "Message": "...",
+    };
+
+    Widget dataRow(int index) {
+      return Row(
+        children: [
+          SizedBox(
+            width: size20px * 4.0,
+            child: Text(quotationData.keys.toList()[index],
+                style: body2Medium.copyWith(color: greyColor2)),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: size20px),
+            child: Text(" : ", style: body2Medium.copyWith(color: greyColor2)),
+          ),
+          Expanded(
+            child: Text(
+              quotationData.values.toList()[index].toString(),
+              style: body1Medium,
+            ),
+          ),
+        ],
+      );
+    }
+
     return Scaffold(
       backgroundColor: whiteColor,
       appBar: AppBar(

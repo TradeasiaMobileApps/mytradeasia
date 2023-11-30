@@ -7,6 +7,8 @@ import 'package:mytradeasia/features/data/model/sales_force_data_models/sales_fo
 import 'package:mytradeasia/features/data/model/sales_force_data_models/sales_force_create_account_model.dart';
 import 'package:mytradeasia/features/data/model/sales_force_data_models/sales_force_create_opportunity_model.dart';
 import 'package:mytradeasia/features/data/model/sales_force_data_models/sales_force_data_model.dart';
+import 'package:mytradeasia/features/data/model/sales_force_data_models/sales_force_opportunity_model.dart';
+import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SalesforceDataService {
@@ -37,6 +39,7 @@ class SalesforceDataService {
   Future<Response<SalesforceCPModel>> getCostPrice(String userId) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final tokenSF = prefs.getString("tokenSF") ?? "";
+
     final response = await dio.get(
       "https://tradeasia--newmind.sandbox.my.salesforce.com/services/data/v58.0/queryAll?q=${salesforceCPQuery(userId)}",
       options: Options(
@@ -135,5 +138,26 @@ class SalesforceDataService {
         statusCode: response.statusCode,
         requestOptions: response.requestOptions,
         data: data);
+  }
+
+  Future<Response<SalesforceOpportunityModel>> getSFOpp(String id) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final tokenSF = prefs.getString("tokenSF") ?? "";
+    id = await getSalesforceId();
+    final response = await dio.get(
+      "https://tradeasia--newmind.sandbox.my.salesforce.com/services/data/v58.0/queryAll?q=${salesforceOpportunityQuery(id)}",
+      options: Options(
+        headers: {
+          "Authorization": "Bearer $tokenSF",
+          "Content-Type": "application/json"
+        },
+      ),
+    );
+    final data = SalesforceOpportunityModel.fromJson(response.data);
+    return Response<SalesforceOpportunityModel>(
+      statusCode: response.statusCode,
+      requestOptions: response.requestOptions,
+      data: data,
+    );
   }
 }

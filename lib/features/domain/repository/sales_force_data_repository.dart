@@ -4,6 +4,7 @@ import 'package:mytradeasia/features/domain/entities/sales_force_data_entities/s
 import 'package:mytradeasia/features/domain/entities/sales_force_data_entities/sales_force_create_account_entity.dart';
 import 'package:mytradeasia/features/domain/entities/sales_force_data_entities/sales_force_create_opportunity_entity.dart';
 import 'package:mytradeasia/features/domain/entities/sales_force_data_entities/sales_force_data_entity.dart';
+import 'package:mytradeasia/features/domain/entities/sales_force_data_entities/sales_force_opportunity_entity.dart';
 
 abstract class SalesForceDataRepository {
   Future<DataState<SalesforceDataEntity>> getSalesForceData(String s);
@@ -19,4 +20,7 @@ abstract class SalesForceDataRepository {
 
   Future<DataState<SalesforceCreateOpportunityEntity>>
       createSalesforceOpportunity(SalesforceCreateOpportunityForm formData);
+
+  Future<DataState<SalesforceOpportunityEntity>> getSalesforceOpportunity(
+      String id);
 }
