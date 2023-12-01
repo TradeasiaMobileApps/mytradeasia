@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -15,6 +13,8 @@ import 'package:shimmer/shimmer.dart';
 
 import '../../../../../../config/routes/parameters.dart';
 import '../../../../../../config/themes/theme.dart';
+import '../../../../../../helper/injections_container.dart';
+import '../../../../../domain/usecases/user_usecases/add_recently_seen.dart';
 import '../../../../state_management/auth_bloc/auth_state.dart';
 import '../../../../widgets/banner_top_products_widget.dart';
 
@@ -25,7 +25,6 @@ class TopProductsScreen extends StatefulWidget {
   State<TopProductsScreen> createState() => _TopProductsScreenState();
 }
 
-final FirebaseAuth _auth = FirebaseAuth.instance;
 const String nameProd = "Dipentene";
 const String url = "https://chemtradea.chemtradeasia.com/";
 
@@ -137,6 +136,7 @@ class AllTopProductsWidget extends StatelessWidget {
   }) : super(key: key);
 
   final String url;
+  static final AddRecentlySeen _addRecentlySeen = injections<AddRecentlySeen>();
 
   @override
   Widget build(BuildContext context) {
@@ -184,7 +184,6 @@ class AllTopProductsWidget extends StatelessWidget {
                             'url': state.topProductData![index].seoUrl!
                           });
 
-                          String docsId = _auth.currentUser!.uid.toString();
                           Map<String, dynamic> data = {
                             "productName":
                                 state.topProductData![index].productname,
@@ -195,12 +194,7 @@ class AllTopProductsWidget extends StatelessWidget {
                                 state.topProductData![index].productimage
                           };
 
-                          await FirebaseFirestore.instance
-                              .collection('biodata')
-                              .doc(docsId)
-                              .update({
-                            "recentlySeen": FieldValue.arrayUnion([data])
-                          });
+                          await _addRecentlySeen.call(param: data);
                         },
                         child: authState.role != "Sales"
                             ? ProductCard(
