@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -7,11 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
 import 'package:mytradeasia/core/constants/constants.dart';
-import 'package:mytradeasia/core/resources/data_state.dart';
-import 'package:mytradeasia/features/data/model/sales_force_data_models/sales_force_create_opportunity_model.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_to_rfq_entity.dart';
 import 'package:mytradeasia/features/domain/entities/rfq_entities/rfq_entity.dart';
-import 'package:mytradeasia/features/domain/usecases/rfq_usecases/submit_rfq.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_data.dart';
 import 'package:mytradeasia/features/presentation/widgets/dialog_sheet_widget.dart';
 import 'package:mytradeasia/helper/helper_functions.dart';
@@ -44,12 +39,10 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
   final TextEditingController _companyNameController = TextEditingController();
   final TextEditingController _productNameController = TextEditingController();
   final TextEditingController _quantityController = TextEditingController();
-  // final TextEditingController _incotermController = TextEditingController();
   final TextEditingController _portOfDetinationController =
       TextEditingController();
   final TextEditingController _messagesController =
       TextEditingController(text: "Hi, I'm interested in this product.");
-  // final SubmitRfqUseCase _submitRfq = injections<SubmitRfqUseCase>();
   final GetUserData _geUserData = injections<GetUserData>();
   final _formKey = GlobalKey<FormState>();
 
@@ -77,11 +70,6 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
   }
 
   getUserData() async {
-    // _data = await _firestore
-    //     .collection('biodata')
-    //     .doc(_auth.currentUser?.uid.toString())
-    //     .get()
-    //     .then((DocumentSnapshot doc) => doc.data() as Map<String, dynamic>);
     _data = await _geUserData();
 
     _firstNameController.text = _data['firstName'] ?? '';
@@ -101,7 +89,6 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
     _companyNameController.dispose();
     _productNameController.dispose();
     _quantityController.dispose();
-    // _incotermController.dispose();
     _portOfDetinationController.dispose();
     _messagesController.dispose();
   }
@@ -240,38 +227,6 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                                                   print(value);
                                                 },
                                               ),
-                                              // Expanded(
-                                              //   flex: 1,
-                                              //   child: InkWell(
-                                              //     onTap: () {
-                                              //       Navigator.push(context,
-                                              //           MaterialPageRoute(
-                                              //         builder: (context) {
-                                              //           return const LanguagesScreen();
-                                              //         },
-                                              //       ));
-                                              //     },
-                                              //     child: Container(
-                                              //       height: 48,
-                                              //       width: size20px * 3,
-                                              //       decoration: BoxDecoration(
-                                              //           borderRadius:
-                                              //               const BorderRadius
-                                              //                   .all(
-                                              //             Radius.circular(7),
-                                              //           ),
-                                              //           border: Border.all(
-                                              //               color: greyColor3)),
-                                              //       child: Padding(
-                                              //         padding:
-                                              //             const EdgeInsets.all(
-                                              //                 size20px / 2),
-                                              //         child: Image.asset(
-                                              //             "assets/images/logo_indonesia.png"),
-                                              //       ),
-                                              //     ),
-                                              //   ),
-                                              // ),
                                               const SizedBox(
                                                 width: 15.0,
                                               ),
@@ -319,7 +274,6 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                                               hintText: "Country",
                                               imageUrl:
                                                   "assets/images/icon_forward.png",
-                                              // navigationPage: const ChangeEmailScreen(),
                                               navigationPage: () {
                                                 // Navigator.push(context,
                                                 //     MaterialPageRoute(
@@ -429,8 +383,6 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                                                       widget.products.length,
                                                   itemBuilder:
                                                       (context, index) {
-                                                    // Map<String, dynamic> item =
-                                                    //     state.cartItems![index];
                                                     return InkWell(
                                                       onTap: () =>
                                                           editCartItemBottomSheet(
@@ -438,10 +390,7 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                                                                   .products,
                                                               product: widget
                                                                       .products[
-                                                                  index]
-                                                              // cart: state.cartItems!,
-                                                              // product: item
-                                                              ),
+                                                                  index]),
                                                       child: SizedBox(
                                                         height: size20px * 5.5,
                                                         width: MediaQuery.of(
@@ -943,11 +892,6 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                   onPressed: () async {
                     /* With go_router */
 
-                    // String salesforceUID = await getSalesforceId();
-                    // log("SF ID : $salesforceUID");
-                    // log("WIDGET PRODUCT LENGTH: ${widget.products.length}");
-                    // log("WIDGET PRODUCT NAME: ${widget.products[0].productName}");
-
                     for (var e in widget.products) {
                       BlocProvider.of<RfqBloc>(context).add(SubmitRfqEvent(
                         RfqEntity(
@@ -962,12 +906,6 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                           incoterm: _selectedValueIncoterm ?? "",
                         ),
                       ));
-                      // BlocProvider.of<SalesforceDataBloc>(context).add(
-                      //     CreateSFOpportunity(SalesforceCreateOpportunityForm(
-                      //         userId: salesforceUID,
-                      //         companyName: _companyNameController.text,
-                      //         quantity: e.quantity ?? 0,
-                      //         hsCode: e.hsCode)));
                     }
                     if (state is RfqSuccess) {
                       context.pushNamed("submitted_rfq");
@@ -987,13 +925,6 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
   void editCartItemBottomSheet(
       {required List<ProductToRfq> products,
       required ProductToRfq product}) async {
-    // setState(() {
-    //   if (product.quantity != null) {
-    //     _quantityController.text =
-    //         parseDoubleToIntegerIfNecessary(product.quantity!).toString();
-    //   }
-    //   _selectedValueUnit = product.unit;
-    // });
     if (product.quantity != null) {
       _quantityController.text =
           parseDoubleToIntegerIfNecessary(product.quantity!).toString();
