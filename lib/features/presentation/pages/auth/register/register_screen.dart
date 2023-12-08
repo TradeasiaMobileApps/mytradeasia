@@ -5,9 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:linkedin_login/linkedin_login.dart';
-import 'package:mytradeasia/features/domain/usecases/user_usecases/phone_authentication.dart';
+import 'package:mytradeasia/core/resources/data_state.dart';
+import 'package:mytradeasia/features/domain/usecases/otp_usecases/send_otp.dart';
 import 'package:mytradeasia/features/presentation/widgets/country_picker.dart';
-import 'package:mytradeasia/features/presentation/widgets/loading_overlay_widget.dart';
 import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,8 +29,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
   //DON`T DELETE THIS UNDER ANY CIRCUMSTANCES
-  final PhoneAuthentication _phoneAuthentication =
-      injections<PhoneAuthentication>();
+  // final PhoneAuthentication _phoneAuthentication =
+  //     injections<PhoneAuthentication>();
 
   final dio = Dio();
 
@@ -38,8 +38,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   final _auth = FirebaseAuth.instance;
 
+  final SendOTP _sendOTP = injections<SendOTP>();
+
   UserObject? user;
   bool logoutUser = false;
+  bool isSendingOTP = false;
 
   Future<UserCredential> signInWithGoogle() async {
     // Trigger the authentication flow
@@ -282,85 +285,144 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 ),
                               ),
                             ),
-                            onPressed: () async {
-                              List<String> userSignInMethods =
-                                  await _auth.fetchSignInMethodsForEmail(
-                                      _emailController.text);
-                              print(userSignInMethods);
-                              if (userSignInMethods.isNotEmpty) {
-                                if (userSignInMethods.first != "password") {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(const SnackBar(
-                                    content: Text(
-                                      "Account already signed up with SSO",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(color: Colors.white),
+                            onPressed: isSendingOTP
+                                ? null
+                                : () async {
+                                    List<String> userSignInMethods =
+                                        await _auth.fetchSignInMethodsForEmail(
+                                            _emailController.text);
+                                    print(userSignInMethods);
+                                    if (userSignInMethods.isNotEmpty) {
+                                      if (userSignInMethods.first !=
+                                          "password") {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                          content: Text(
+                                            "Account already signed up with SSO",
+                                            textAlign: TextAlign.center,
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                          duration:
+                                              Duration(milliseconds: 3000),
+                                          backgroundColor: Colors.redAccent,
+                                        ));
+                                      } else {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                          content: Text(
+                                            "Account already signed up",
+                                            textAlign: TextAlign.center,
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                          duration:
+                                              Duration(milliseconds: 3000),
+                                          backgroundColor: Colors.redAccent,
+                                        ));
+                                      }
+                                    } else {
+                                      // TODO : Call the send OTP function here
+                                      setState(() {
+                                        isSendingOTP = true;
+                                      });
+                                      await _sendOTP
+                                          .call(param: _emailController.text)
+                                          .then((value) => {
+                                                if (value is DataSuccess)
+                                                  {
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(SnackBar(
+                                                      duration: const Duration(
+                                                          seconds: 2,
+                                                          milliseconds: 500),
+                                                      backgroundColor:
+                                                          Colors.green,
+                                                      content: Text(
+                                                        "OTP code sent to : ${_emailController.text}",
+                                                        style: body1Regular
+                                                            .copyWith(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 12,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                      ),
+                                                    ))
+                                                  }
+                                              });
+                                      setState(() {
+                                        isSendingOTP = false;
+                                      });
+
+                                      //DON`T DELETE THIS UNDER ANY CIRCUMSTANCES
+                                      OtpVerificationParameter param =
+                                          OtpVerificationParameter(
+                                              phone:
+                                                  "$countryNum${_phoneNumberController.text}",
+                                              email: _emailController.text);
+                                      BiodataParameter param2 = BiodataParameter(
+                                          email: _emailController.text,
+                                          phone:
+                                              "$countryNum${_phoneNumberController.text}");
+                                      //TODO: captcha OTP
+                                      // ignore: use_build_context_synchronously
+                                      // showDialog(
+                                      //   context: context,
+                                      //   builder: (context) {
+                                      //     return const LoadingOverlay();
+                                      //   },
+                                      // );
+
+                                      context.go("/auth/register/otp-register",
+                                          extra: param);
+                                      //TODO:Uncomment this when used
+
+                                      // DO NOT DELETE THIS
+
+                                      // await _phoneAuthentication
+                                      //     .call(
+                                      //         param:
+                                      //             "$countryNum${_phoneNumberController.text}")
+                                      //     .then((value) {
+                                      //   if (value == "invalid-phone-number") {
+                                      //     ScaffoldMessenger.of(context)
+                                      //         .showSnackBar(const SnackBar(
+                                      //       content: Text("Invalid Phone Number"),
+                                      //       duration: Duration(milliseconds: 3000),
+                                      //     ));
+                                      //   } else if (value ==
+                                      //       "verification-completed") {
+                                      //     print(value);
+                                      //   } else if (value == "code-sent") {
+                                      //     context.go("/auth/register/otp-register",
+                                      //         extra: param);
+                                      //   } else {
+                                      //     ScaffoldMessenger.of(context)
+                                      //         .showSnackBar(const SnackBar(
+                                      //       content:
+                                      //           Text("There seem to be an error"),
+                                      //       duration: Duration(milliseconds: 3000),
+                                      //     ));
+                                      //   }
+                                      // });
+                                      // .whenComplete(() =>
+                                      // context.go("/auth/register/otp-register",
+                                      //     extra: param);
+                                    }
+                                  },
+                            child: isSendingOTP
+                                ? const Center(
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
                                     ),
-                                    duration: Duration(milliseconds: 1500),
-                                    backgroundColor: Colors.redAccent,
-                                  ));
-                                }
-                              } else {
-                                //DON`T DELETE THIS UNDER ANY CIRCUMSTANCES
-                                OtpVerificationParameter param =
-                                    OtpVerificationParameter(
-                                        phone:
-                                            "$countryNum${_phoneNumberController.text}",
-                                        email: _emailController.text);
-                                BiodataParameter param2 = BiodataParameter(
-                                    email: _emailController.text,
-                                    phone:
-                                        "$countryNum${_phoneNumberController.text}");
-                                //TODO: captcha OTP
-                                // ignore: use_build_context_synchronously
-                                // showDialog(
-                                //   context: context,
-                                //   builder: (context) {
-                                //     return const LoadingOverlay();
-                                //   },
-                                // );
-
-                                context.go("/auth/register/biodata",
-                                    extra: param2);
-                                //TODO:Uncomment this when used
-
-                                // DO NOT DELETE THIS
-
-                                // await _phoneAuthentication
-                                //     .call(
-                                //         param:
-                                //             "$countryNum${_phoneNumberController.text}")
-                                //     .then((value) {
-                                //   if (value == "invalid-phone-number") {
-                                //     ScaffoldMessenger.of(context)
-                                //         .showSnackBar(const SnackBar(
-                                //       content: Text("Invalid Phone Number"),
-                                //       duration: Duration(milliseconds: 3000),
-                                //     ));
-                                //   } else if (value ==
-                                //       "verification-completed") {
-                                //     print(value);
-                                //   } else if (value == "code-sent") {
-                                //     context.go("/auth/register/otp-register",
-                                //         extra: param);
-                                //   } else {
-                                //     ScaffoldMessenger.of(context)
-                                //         .showSnackBar(const SnackBar(
-                                //       content:
-                                //           Text("There seem to be an error"),
-                                //       duration: Duration(milliseconds: 3000),
-                                //     ));
-                                //   }
-                                // });
-                                // .whenComplete(() =>
-                                // context.go("/auth/register/otp-register",
-                                //     extra: param);
-                              }
-                            },
-                            child: Text(
-                              "Sign Up",
-                              style: text16.copyWith(color: whiteColor),
-                            ),
+                                  )
+                                : Text(
+                                    "Sign Up",
+                                    style: text16.copyWith(color: whiteColor),
+                                  ),
                           )
                         : ElevatedButton(
                             style: ButtonStyle(
@@ -428,10 +490,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             onPressed: () async {
                               UserCredential userCred =
                                   await signInWithGoogle();
-                              log("User Cred : ${userCred.user!.uid}");
-                              log("User Cred : ${userCred.user!.email}");
-                              log("User Cred : ${userCred.user!.displayName?.split(" ")}");
-                              log("User Cred : ${userCred.user!.toString()}");
+                              // log("User Cred : ${userCred.user!.uid}");
+                              // log("User Cred : ${userCred.user!.email}");
+                              // log("User Cred : ${userCred.user!.displayName?.split(" ")}");
+                              // log("User Cred : ${userCred.user!.toString()}");
 
                               bool userExists =
                                   await checkIfUserExists(userCred.user!.uid);
@@ -538,13 +600,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           options: Options(headers: headers),
                                         );
                                         if (response.statusCode == 200) {
-                                          log("Success : ${response.data}");
+                                          // log("Success : ${response.data}");
                                           final userCredential =
                                               await FirebaseAuth.instance
                                                   .signInWithCustomToken(
                                                       response.data[
                                                           'firebaseToken']);
-                                          log("User Credential : ${userCredential.user.toString()}");
+                                          // log("User Credential : ${userCredential.user.toString()}");
                                           FirebaseAuth.instance
                                               .authStateChanges()
                                               .listen((User? user) async {
@@ -555,7 +617,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                   linkedInUser.user.name!);
                                             }
                                           });
-                                          log("Name : ${FirebaseAuth.instance.currentUser?.displayName}");
+                                          // log("Name : ${FirebaseAuth.instance.currentUser?.displayName}");
                                           bool userExists =
                                               await checkIfUserExists(
                                                   userCredential.user!.uid);
