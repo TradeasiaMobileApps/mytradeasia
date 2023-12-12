@@ -322,7 +322,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         ));
                                       }
                                     } else {
-                                      // TODO : Call the send OTP function here
                                       setState(() {
                                         isSendingOTP = true;
                                       });
