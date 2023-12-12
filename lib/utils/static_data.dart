@@ -22,25 +22,27 @@ List<List<dynamic>> allIndustries = [
     "assets/images/icon_water.png",
   ],
 ];
+
+//TODO:ngubah nama key
 Map<String, String> industries = {
-  "pinederivatives": "assets/images/icon_pine_deriv.png",
-  "palmderivatives": "assets/images/icon_palm_deriv.png",
-  "foodandbeverages": "assets/images/icon_food.png",
-  "textilechemicals": "assets/images/icon_textile.png",
-  "animalfeeds": "assets/images/icon_animal.png",
-  "leatherchemicals": "assets/images/icon_leather.png",
-  "soapanddetergent": "assets/images/icon_soap.png",
-  "plasticandpolymers": "assets/images/icon_plastic.png",
-  "pulpsandpapers": "assets/images/icon_pulp.png",
-  "paintinkandcoating": "assets/images/icon_paint.png",
-  "surpluschemicals": "assets/images/icon_surplus.png",
-  "watertreatment": "assets/images/icon_water.png",
+  "pine-derivative": "assets/images/icon_pine_deriv.png",
+  "palm-derivative": "assets/images/icon_palm_deriv.png",
+  "food-beverage": "assets/images/icon_food.png",
+  "textile": "assets/images/icon_textile.png",
+  "animal-feed": "assets/images/icon_animal.png",
+  "leather": "assets/images/icon_leather.png",
+  "soap-detergent": "assets/images/icon_soap.png",
+  "plastic-polymer": "assets/images/icon_plastic.png",
+  "pulp-paper": "assets/images/icon_pulp.png",
+  "paint-ink-coating": "assets/images/icon_paint.png",
+  "surplus-chemicals": "assets/images/icon_surplus.png",
+  "water-treatment": "assets/images/icon_water.png",
   "agriculture": "assets/images/icon_agri.png",
-  "beautyandpersonalcare": "assets/images/icon_beauty.png",
-  "glassandceramic": "assets/images/icon_glass.png",
-  "metalandsteels": "assets/images/icon_metal.png",
+  "beauty-personal-care": "assets/images/icon_beauty.png",
+  "glass-ceramic": "assets/images/icon_glass.png",
+  "metal-steel": "assets/images/icon_metal.png",
   "pharmaceutical": "assets/images/icon_pharmacy.png",
-  "rubbers": "assets/images/icon_rubber.png",
+  "rubber": "assets/images/icon_rubber.png",
 };
 
 // detail products item

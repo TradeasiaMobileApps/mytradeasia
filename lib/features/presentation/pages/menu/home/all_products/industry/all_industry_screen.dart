@@ -22,6 +22,13 @@ class _AllIndustryScreenState extends State<AllIndustryScreen> {
     super.initState();
   }
 
+  ///function to get industry name
+  String? extractWord(String input) {
+    final RegExp regex = RegExp(r"/en/industry/([^/]+)/?");
+    final Match match = regex.firstMatch(input)!;
+    return match.group(1);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,6 +76,10 @@ class _AllIndustryScreenState extends State<AllIndustryScreen> {
                   return const Center(child: Text("No Data Found"));
                 }
 
+                // state.industry!.detailIndustry!.forEach((e) {
+                //   print(extractWord(e.industryUrl!));
+                // });
+
                 return GridView.builder(
                   shrinkWrap: true,
                   physics: const BouncingScrollPhysics(),
@@ -80,10 +91,8 @@ class _AllIndustryScreenState extends State<AllIndustryScreen> {
                       mainAxisSpacing: 10,
                       childAspectRatio: 0.8),
                   itemBuilder: (context, index) {
-                    var photoItem = industries[state
-                        .industry!.detailIndustry![index].industryName!
-                        .toLowerCase()
-                        .replaceAll(" ", "")];
+                    var photoItem = industries[extractWord(
+                        state.industry!.detailIndustry![index].industryUrl!)];
                     return InkWell(
                       onTap: () {
                         ProductsIndustryParameter param =
