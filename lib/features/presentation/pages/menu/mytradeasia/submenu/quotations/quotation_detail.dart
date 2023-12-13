@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:mytradeasia/features/presentation/widgets/dialog_sheet_widget.dart';
+import 'package:mytradeasia/features/presentation/widgets/quotations_widget/navbar/approved_navbar.dart';
+import 'package:mytradeasia/features/presentation/widgets/quotations_widget/navbar/quoted_navbar.dart';
+import 'package:mytradeasia/features/presentation/widgets/quotations_widget/quotation_detail_banner_widget.dart';
+import 'package:mytradeasia/features/presentation/widgets/quotations_widget/sales_quotation_data_widget.dart';
 
 import '../../../../../../../config/themes/theme.dart';
+import '../../../../../widgets/quotations_widget/navbar/rejected_navbar.dart';
+import '../../../../../widgets/quotations_widget/navbar/sales_navbar.dart';
+import '../../../../../widgets/quotations_widget/navbar/submitted_navbar.dart';
 
 class QuotationDetailScreen extends StatelessWidget {
   const QuotationDetailScreen({super.key, required this.status, this.isSales});
@@ -47,6 +53,90 @@ class QuotationDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget editBtn;
+    Widget salesQuote;
+    Widget detailBanner;
+    Widget bottomNav;
+    switch (status) {
+      case 'rejected':
+        editBtn = IconButton(
+            onPressed: null,
+            icon: Image.asset(
+              "assets/images/icon_edit_inactive.png",
+              width: size20px + 4,
+              color: greyColor2,
+            ));
+        salesQuote = const SalesQuotationData();
+        detailBanner = const QuotationDetailBanner(
+            status: "Rejected",
+            fontColor: redColor1,
+            backgroundColor: redColor2);
+        bottomNav = const RejectedNavbar();
+        break;
+      case 'approved':
+        editBtn = IconButton(
+            onPressed: null,
+            icon: Image.asset(
+              "assets/images/icon_edit_inactive.png",
+              width: size20px + 4,
+              color: greyColor2,
+            ));
+        salesQuote = const SalesQuotationData();
+        detailBanner = const QuotationDetailBanner(
+            status: "Approved",
+            fontColor: greenColor1,
+            backgroundColor: greenColor2);
+        bottomNav = const ApprovedNavbar();
+        break;
+      case 'submitted':
+        editBtn = IconButton(
+          onPressed: () {
+            print("edit");
+          },
+          icon: Image.asset(
+            "assets/images/icon_edit_active.png",
+            width: size20px + 4,
+          ),
+        );
+        salesQuote = const SalesQuotationData();
+        detailBanner = const QuotationDetailBanner(
+            status: "Submitted",
+            fontColor: yellowColor,
+            backgroundColor: yellowColor2);
+        bottomNav = const SubmittedNavbar();
+        break;
+      case 'quoted':
+        editBtn = IconButton(
+          onPressed: () {
+            print("edit");
+          },
+          icon: Image.asset(
+            "assets/images/icon_edit_active.png",
+            width: size20px + 4,
+          ),
+        );
+        detailBanner = const QuotationDetailBanner(
+            status: "Quoted",
+            fontColor: orangeColor1,
+            backgroundColor: orangeColor2);
+        bottomNav = const QuotedNavbar();
+        salesQuote = const SalesQuotationData();
+        break;
+      default:
+        editBtn = IconButton(
+          onPressed: () {
+            print("edit");
+          },
+          icon: Image.asset(
+            "assets/images/icon_edit.png",
+            width: size20px + 4,
+          ),
+        );
+        salesQuote = const SalesQuotationData();
+        detailBanner = Container();
+        bottomNav = const SalesNavbar();
+    }
+
     return Scaffold(
       backgroundColor: whiteColor,
       appBar: AppBar(
@@ -66,362 +156,34 @@ class QuotationDetailScreen extends StatelessWidget {
           ),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        actions: [
-          status == "rejected" || status == "approved"
-              ? IconButton(
-                  onPressed: null,
-                  icon: Image.asset(
-                    "assets/images/icon_edit.png",
-                    width: size20px + 4,
-                    color: greyColor2,
-                  ))
-              : isSales == false
-                  ? IconButton(
-                      onPressed: () {
-                        print("edit");
-                      },
-                      icon: Image.asset(
-                        "assets/images/icon_edit.png",
-                        width: size20px + 4,
-                      ),
-                    )
-                  : Container(),
-        ],
+        actions: [editBtn],
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.symmetric(
+            horizontal: size20px, vertical: size20px - 8.0),
+        child: bottomNav,
       ),
       body: SingleChildScrollView(
         // physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.symmetric(horizontal: size20px),
+        // padding: const EdgeInsets.symmetric(horizontal: size20px),
         child: Column(
           children: [
+            detailBanner,
             // status
-            isSales == false
-                ? Container(
-                    margin: const EdgeInsets.only(top: size20px),
-                    width: MediaQuery.of(context).size.width,
-                    height: size20px * 3.0,
-                    decoration: BoxDecoration(
-                        color: status == "submitted"
-                            ? yellowColor2
-                            : status == "rejected"
-                                ? redColor2
-                                : greenColor2,
-                        borderRadius: BorderRadius.circular(size20px / 2)),
-                    child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: size20px, vertical: size20px - 12.0),
-                        child: status == "submitted"
-                            ? Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "Submitted",
-                                    style: text15.copyWith(color: yellowColor),
-                                  ),
-                                  Text(
-                                    "Lorem ipsum dolor sit amet consectetur.",
-                                    style: body1Medium.copyWith(
-                                        color: yellowColor),
-                                  ),
-                                ],
-                              )
-                            : status == "rejected"
-                                ? Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "Rejected",
-                                        style:
-                                            text15.copyWith(color: redColor1),
-                                      ),
-                                      Text(
-                                        "Lorem ipsum dolor sit amet consectetur.",
-                                        style: body1Medium.copyWith(
-                                            color: redColor1),
-                                      ),
-                                    ],
-                                  )
-                                : Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "approved",
-                                        style:
-                                            text15.copyWith(color: greenColor1),
-                                      ),
-                                      Text(
-                                        "Lorem ipsum dolor sit amet consectetur.",
-                                        style: body1Medium.copyWith(
-                                            color: greenColor1),
-                                      ),
-                                    ],
-                                  )),
-                  )
-                : Container(),
-
-            // main content quotations
-            // ListView.builder(
-            //   itemCount: quotationData.length,
-            //   physics: const NeverScrollableScrollPhysics(),
-            //   shrinkWrap: true,
-            //   itemBuilder: (context, index) {
-            //     return Padding(
-            //       padding: const EdgeInsets.only(top: size20px / 2),
-            //       child: dataRow(index),
-            //     );
-            //   },
-            // ),
-
             for (int i = 0; i < quotationData.length; i++)
               Padding(
-                padding: const EdgeInsets.only(top: size20px / 2),
+                padding: const EdgeInsets.only(
+                    top: size20px / 2, right: size20px, left: size20px),
                 child: dataRow(i),
               ),
-
+            const Divider(thickness: 10),
             // quotations
-            status == "submitted"
-                ? SizedBox(
-                    height: size20px * 5,
-                    width: MediaQuery.of(context).size.width,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          "Quotations",
-                          style: heading2,
-                        ),
-                        const SizedBox(
-                          height: size20px + 2,
-                        ),
-                        Text(
-                          "Not yet available",
-                          style: body2Medium.copyWith(color: greyColor2),
-                        ),
-                      ],
-                    ),
-                  )
-                : Container(),
+            salesQuote,
           ],
         ),
       ),
 
       // bottom navbar
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(
-            horizontal: size20px, vertical: size20px - 8.0),
-        child: status == "submitted"
-            ? const SubmittedNavbar()
-            : status == "rejected"
-                ? const RejectedNavbar()
-                : isSales == true
-                    ? const SalesNavbar()
-                    : Container(),
-      ),
-    );
-  }
-}
-
-class SubmittedNavbar extends StatelessWidget {
-  const SubmittedNavbar({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        SizedBox(
-            width: size20px * 2.75,
-            height: size20px * 2.75,
-            child: ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(whiteColor),
-                elevation: MaterialStateProperty.all<double>(0.0),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(7.0),
-                        side: const BorderSide(color: greyColor))),
-              ),
-              onPressed: null,
-              child: const Icon(
-                Icons.close,
-                color: greyColor,
-              ),
-            )),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: size20px * 0.75),
-          child: SizedBox(
-              width: size20px * 2.75,
-              height: size20px * 2.75,
-              child: ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(whiteColor),
-                  elevation: MaterialStateProperty.all<double>(0.0),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(7.0),
-                          side: const BorderSide(color: greyColor))),
-                ),
-                onPressed: null,
-                child: const Icon(
-                  Icons.check,
-                  color: greyColor,
-                ),
-              )),
-        ),
-        Expanded(
-          child: SizedBox(
-            width: size20px * 9.75,
-            height: size20px * 2.75,
-            child: ElevatedButton(
-              onPressed: null,
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(greyColor),
-                elevation: MaterialStateProperty.all<double>(0.0),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(7.0),
-                )),
-              ),
-              child: Text(
-                "Chat Now",
-                style: text16.copyWith(color: whiteColor),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class RejectedNavbar extends StatelessWidget {
-  const RejectedNavbar({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: size20px * 9.75,
-      height: size20px * 2.75,
-      child: ElevatedButton(
-        onPressed: () {
-          print("rejected");
-        },
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all<Color>(primaryColor1),
-          elevation: MaterialStateProperty.all<double>(0.0),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-              RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(7.0),
-          )),
-        ),
-        child: Text(
-          "Make another RFQ",
-          style: text16.copyWith(color: whiteColor),
-        ),
-      ),
-    );
-  }
-}
-
-class SalesNavbar extends StatelessWidget {
-  const SalesNavbar({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        SizedBox(
-            width: size20px * 2.75,
-            height: size20px * 2.75,
-            child: ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(redColor2),
-                elevation: MaterialStateProperty.all<double>(0.0),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(7.0),
-                        side: const BorderSide(color: redColor1))),
-              ),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => DialogWidgetYesNo(
-                    urlIcon: "assets/images/trashcan_image.png",
-                    title: "Are You Sure?",
-                    subtitle:
-                        "Lorem ipsum dolor sit amet consectetur. Egestas porttitor risus enim cursus rutrum molestie tortor",
-                    textForButtonNo: "No",
-                    textForButtonYes: "Yes",
-                    navigatorFunctionNo: () {
-                      Navigator.pop(context);
-                    },
-                    navigatorFunctionYes: () {},
-                  ),
-                );
-              },
-              child: const Icon(
-                Icons.close,
-                color: redColor1,
-              ),
-            )),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: size20px * 0.75),
-          child: SizedBox(
-              width: size20px * 2.75,
-              height: size20px * 2.75,
-              child: ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(greenColor2),
-                  elevation: MaterialStateProperty.all<double>(0.0),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(7.0),
-                          side: const BorderSide(color: greenColor1))),
-                ),
-                onPressed: () {
-                  print("check");
-                },
-                child: const Icon(
-                  Icons.check,
-                  color: greenColor1,
-                ),
-              )),
-        ),
-        Expanded(
-          child: SizedBox(
-            width: size20px * 9.75,
-            height: size20px * 2.75,
-            child: ElevatedButton(
-              onPressed: () {
-                print("Reply QUot");
-              },
-              style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all<Color>(primaryColor1),
-                elevation: MaterialStateProperty.all<double>(0.0),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(7.0),
-                )),
-              ),
-              child: Text(
-                "Reply Quotation",
-                style: text16.copyWith(color: whiteColor),
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

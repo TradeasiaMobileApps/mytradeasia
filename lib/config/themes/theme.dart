@@ -27,6 +27,13 @@ const Color blueColor = Color(0XFFEFF3FC);
 const Color yellowColor = Color(0XFFCF9A11);
 const Color yellowColor2 = Color(0XFFFEF5DD);
 
+//Orange Color
+const Color orangeColor1 = Color(0XFFE87D00);
+const Color orangeColor2 = Color(0XFFFBEDDB);
+
+//Inactivated button color
+const Color inactivatedBtn = Color(0XFFF6F6F6);
+
 // Primary Color
 const Color primaryColor1 = Color(0XFF123C69);
 const Color primaryColor2 = Color(0XFF416387);

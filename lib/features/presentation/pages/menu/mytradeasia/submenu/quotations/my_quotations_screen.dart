@@ -83,6 +83,27 @@ class QuotationsScreen extends StatelessWidget {
                               // )
                             }),
                         QuotationsWidget(
+                            status: "Rejected",
+                            fontStatusColor: redColor1,
+                            backgroundStatusColor: redColor2,
+                            navigationPage: () {
+                              /* With go_router */
+                              QuotationDetailParameter param =
+                                  QuotationDetailParameter(status: 'rejected');
+
+                              context.push(
+                                  "/mytradeasia/quotations/detail_quotation",
+                                  extra: param);
+                              //   Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (context) => const QuotationDetailScreen(
+                              //       status: "rejected",
+                              //     ),
+                              //   ),
+                              // )
+                            }),
+                        QuotationsWidget(
                             status: "Approved",
                             fontStatusColor: greenColor1,
                             backgroundStatusColor: greenColor2,
@@ -104,22 +125,22 @@ class QuotationsScreen extends StatelessWidget {
                               // )
                             }),
                         QuotationsWidget(
-                            status: "Rejected",
-                            fontStatusColor: redColor1,
-                            backgroundStatusColor: redColor2,
+                            status: "Quoted",
+                            fontStatusColor: orangeColor1,
+                            backgroundStatusColor: orangeColor2,
                             navigationPage: () {
                               /* With go_router */
                               QuotationDetailParameter param =
-                                  QuotationDetailParameter(status: 'rejected');
+                                  QuotationDetailParameter(status: 'quoted');
 
                               context.push(
                                   "/mytradeasia/quotations/detail_quotation",
                                   extra: param);
-                              //   Navigator.push(
+                              // Navigator.push(
                               //   context,
                               //   MaterialPageRoute(
                               //     builder: (context) => const QuotationDetailScreen(
-                              //       status: "rejected",
+                              //       status: "approved",
                               //     ),
                               //   ),
                               // )
