@@ -4,7 +4,9 @@ import 'package:mytradeasia/config/routes/parameters.dart';
 import 'package:mytradeasia/core/resources/data_state.dart';
 import 'package:mytradeasia/features/domain/usecases/otp_usecases/send_otp.dart';
 import 'package:mytradeasia/features/domain/usecases/otp_usecases/verify_otp.dart';
+import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
+import 'package:timer_count_down/timer_count_down.dart';
 
 import '../../../../../../../config/themes/theme.dart';
 import '../../../widgets/dialog_sheet_widget.dart';
@@ -38,6 +40,7 @@ class _RegisterOtpScreenState extends State<RegisterOtpScreen> {
   final SendOTP _sendOTP = injections<SendOTP>();
   bool isSendingOTP = false;
   bool isVerifying = false;
+  bool canResend = false;
 
   @override
   void dispose() {
@@ -443,54 +446,77 @@ class _RegisterOtpScreenState extends State<RegisterOtpScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Don't receive the OTP code? "),
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      splashFactory: NoSplash.splashFactory,
-                      padding: EdgeInsets.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      alignment: Alignment.center,
-                    ),
-                    onPressed: isSendingOTP
-                        ? null
-                        : () async {
+                  Text(canResend
+                      ? "Don't receive the OTP code? "
+                      : "Resend code in "),
+                  canResend
+                      ? TextButton(
+                          style: TextButton.styleFrom(
+                            splashFactory: NoSplash.splashFactory,
+                            padding: EdgeInsets.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            alignment: Alignment.center,
+                          ),
+                          onPressed: isSendingOTP
+                              ? null
+                              : () async {
+                                  setState(() {
+                                    isSendingOTP = true;
+                                  });
+                                  await _sendOTP
+                                      .call(param: widget.email)
+                                      .then((value) => {
+                                            if (value is DataSuccess)
+                                              {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(SnackBar(
+                                                  duration: const Duration(
+                                                      seconds: 2,
+                                                      milliseconds: 500),
+                                                  backgroundColor: Colors.green,
+                                                  content: Text(
+                                                    "OTP code sent to : ${widget.email}",
+                                                    style:
+                                                        body1Regular.copyWith(
+                                                            color: Colors.white,
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                  ),
+                                                ))
+                                              }
+                                          });
+                                  setState(() {
+                                    isSendingOTP = false;
+                                    canResend = false;
+                                  });
+                                },
+                          child: isSendingOTP
+                              ? const Center(
+                                  child: SizedBox(
+                                    child: Center(
+                                        child: CircularProgressIndicator()),
+                                    height: 10.0,
+                                    width: 10.0,
+                                  ),
+                                )
+                              : Text("Resend",
+                                  style:
+                                      text14.copyWith(color: secondaryColor1)),
+                        )
+                      : Countdown(
+                          seconds: 60,
+                          build: (BuildContext context, double time) => Text(
+                              parseDoubleToIntegerIfNecessary(time).toString(),
+                              style: text14.copyWith(color: secondaryColor1)),
+                          interval: Duration(milliseconds: 1000),
+                          onFinished: () {
                             setState(() {
-                              isSendingOTP = true;
-                            });
-                            await _sendOTP
-                                .call(param: widget.email)
-                                .then((value) => {
-                                      if (value is DataSuccess)
-                                        {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(SnackBar(
-                                            duration: const Duration(
-                                                seconds: 2, milliseconds: 500),
-                                            backgroundColor: Colors.green,
-                                            content: Text(
-                                              "OTP code sent to : ${widget.email}",
-                                              style: body1Regular.copyWith(
-                                                  color: Colors.white,
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ))
-                                        }
-                                    });
-                            setState(() {
-                              isSendingOTP = false;
+                              canResend = true;
                             });
                           },
-                    child: isSendingOTP
-                        ? const Center(
-                            child: SizedBox(
-                              child: Center(child: CircularProgressIndicator()),
-                              height: 10.0,
-                              width: 10.0,
-                            ),
-                          )
-                        : Text("Resend"),
-                  )
+                        ),
                 ],
               ),
             ],
