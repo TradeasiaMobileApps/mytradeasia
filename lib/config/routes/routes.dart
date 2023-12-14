@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/config/routes/parameters.dart';
 import 'package:mytradeasia/features/presentation/pages/auth/biodata/sso_biodata_screen.dart';
 import 'package:mytradeasia/features/presentation/pages/auth/register/register_otp_screen.dart';
+import 'package:mytradeasia/features/presentation/pages/menu/mytradeasia/submenu/change_password/password_change_otp.dart';
 import '../../features/presentation/pages/auth/biodata/biodata_screen.dart';
 import '../../features/presentation/pages/auth/choose_role/role_user_screen.dart';
 import '../../features/presentation/pages/auth/login/forgot_password/forgot_password_screen.dart';
@@ -203,8 +204,17 @@ class Routes {
                           ])
                     ]),
                 GoRoute(
-                    path: "change_password",
-                    builder: (context, state) => const ChangePasswordScreen()),
+                  path: "change_password",
+                  builder: (context, state) => const ChangePasswordScreen(),
+                ),
+                GoRoute(
+                    path: 'change_password_otp',
+                    builder: (context, state) {
+                      String email = state.extra as String;
+                      return PasswordChangeOtpScreen(
+                        email: email,
+                      );
+                    }),
                 GoRoute(
                     path: "settings",
                     builder: (context, state) => const SettingsScreen(),

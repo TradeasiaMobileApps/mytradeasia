@@ -1,8 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:mytradeasia/config/themes/theme.dart';
+import 'package:mytradeasia/core/resources/data_state.dart';
+import 'package:mytradeasia/features/domain/usecases/otp_usecases/send_otp.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_snapshot.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_event.dart';
@@ -19,12 +22,24 @@ class MyTradeAsiaScreen extends StatefulWidget {
 }
 
 class _MyTradeAsiaScreenState extends State<MyTradeAsiaScreen> {
+  final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
+
   final GetUserSnapshot _getUserSnapshot = injections<GetUserSnapshot>();
+  final SendOTP _sendOTP = injections<SendOTP>();
+  final _auth = FirebaseAuth.instance;
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
     var authBloc = BlocProvider.of<AuthBloc>(context);
     return Scaffold(
+      key: _scaffoldMessengerKey,
       backgroundColor: whiteColor,
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -126,9 +141,74 @@ class _MyTradeAsiaScreenState extends State<MyTradeAsiaScreen> {
                                   return MyTradeAsiaWidget(
                                     nama: "Change Password",
                                     urlIcon: "assets/images/icon_password.png",
-                                    onPressedFunction: () {
-                                      context
-                                          .go("/mytradeasia/change_password");
+                                    onPressedFunction: () async {
+                                      showDialog(
+                                        context: context,
+                                        barrierDismissible:
+                                            false, // Prevents the dialog from closing on tap outside
+                                        builder: (context) => const Center(
+                                            child:
+                                                CircularProgressIndicator()), // Loading indicator
+                                      );
+
+                                      try {
+                                        var result = await _sendOTP.call(
+                                            param: _auth.currentUser!.email!);
+                                        // Navigator.of(context).pop();
+
+                                        if (result is DataSuccess) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              duration: const Duration(
+                                                  seconds: 2,
+                                                  milliseconds: 500),
+                                              backgroundColor: Colors.green,
+                                              content: Text(
+                                                "OTP code sent to : ${_auth.currentUser!.email!}",
+                                                style: body1Regular.copyWith(
+                                                    color: Colors.white,
+                                                    fontSize: 12,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ),
+                                          );
+                                          context.go(
+                                              "/mytradeasia/change_password_otp",
+                                              extra: _auth.currentUser!.email!);
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              duration: const Duration(
+                                                  seconds: 2,
+                                                  milliseconds: 500),
+                                              backgroundColor: Colors.red,
+                                              content: Text(
+                                                "Failed to send OTP. Please try again.",
+                                                style: body1Regular.copyWith(
+                                                    color: Colors.white,
+                                                    fontSize: 12,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      } catch (e) {
+                                        // Navigator.of(context).pop();
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: Text("Error occurred: $e"),
+                                          ),
+                                        );
+                                      } finally {
+                                        Navigator.of(context,
+                                                rootNavigator: true)
+                                            .pop();
+                                      }
                                     },
                                   );
                                 }),
