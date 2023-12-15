@@ -111,24 +111,26 @@ class _MyTradeAsiaScreenState extends State<MyTradeAsiaScreen> {
                             FutureBuilder(
                                 future: isSSOAuth(),
                                 builder: (context, snapshot) {
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return Container();
-                                  }
+                                  // if (snapshot.connectionState ==
+                                  //     ConnectionState.waiting) {
+                                  //   return Container();
+                                  // }
 
-                                  if (snapshot.hasError) {
-                                    return Text('Error: ${snapshot.error}');
-                                  }
+                                  // if (snapshot.hasError) {
+                                  //   return Text('Error: ${snapshot.error}');
+                                  // }
 
-                                  if (snapshot.data == true) {
-                                    return Container();
-                                  }
+                                  // if (snapshot.data == true) {
+                                  //   return Container();
+                                  // }
                                   return MyTradeAsiaWidget(
                                     nama: "Change Password",
                                     urlIcon: "assets/images/icon_password.png",
                                     onPressedFunction: () {
-                                      context
-                                          .go("/mytradeasia/change_password");
+                                      if (snapshot.data == false) {
+                                        context
+                                            .go("/mytradeasia/change_password");
+                                      }
                                     },
                                   );
                                 }),
