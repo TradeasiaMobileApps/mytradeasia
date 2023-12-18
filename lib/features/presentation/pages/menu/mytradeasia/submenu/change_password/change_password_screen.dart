@@ -23,6 +23,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
   final _formKey = GlobalKey<FormState>();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  bool isVerifying = false;
 
   @override
   void dispose() {
@@ -135,124 +136,151 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             height: 55,
             decoration:
                 BoxDecoration(borderRadius: BorderRadius.circular(10.0)),
-            child: ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all<Color>(primaryColor1),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(7.0),
-                  ),
-                ),
-              ),
-              onPressed: () async {
-                if (_oldPasswordController.text.isNotEmpty &&
-                    _newPasswordController.text.isNotEmpty &&
-                    _confirmPasswordController.text.isNotEmpty) {
-                  if (_newPasswordController.text !=
-                      _confirmPasswordController.text) {
-                    showDialog(
-                        context: context,
-                        builder: (context) => DialogWidget(
-                            urlIcon: "assets/images/logo_email_change.png",
-                            title: "Error",
-                            subtitle:
-                                "Confirmation password is not the same with new password",
-                            textForButton: "Back",
-                            navigatorFunction: () {
-                              /* With go_route */
-                              // context.go("/home");
-                              Navigator.pop(context);
+            child: isVerifying
+                ? ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(greyColor),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(7.0),
+                        ),
+                      ),
+                    ),
+                    onPressed: null,
+                    child: const Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                      ),
+                    ),
+                  )
+                : ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(primaryColor1),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(7.0),
+                        ),
+                      ),
+                    ),
+                    onPressed: () async {
+                      setState(() {
+                        isVerifying = true;
+                      });
+                      if (_oldPasswordController.text.isNotEmpty &&
+                          _newPasswordController.text.isNotEmpty &&
+                          _confirmPasswordController.text.isNotEmpty) {
+                        if (_newPasswordController.text !=
+                            _confirmPasswordController.text) {
+                          showDialog(
+                              context: context,
+                              builder: (context) => DialogWidget(
+                                  urlIcon:
+                                      "assets/images/logo_email_change.png",
+                                  title: "Error",
+                                  subtitle:
+                                      "Confirmation password is not the same with new password",
+                                  textForButton: "Back",
+                                  navigatorFunction: () {
+                                    /* With go_route */
+                                    // context.go("/home");
+                                    Navigator.pop(context);
 
-                              // Navigator.pushAndRemoveUntil(context,
-                              //     MaterialPageRoute(
-                              //       builder: (context) {
-                              //         return const NavigationBarWidget();
-                              //       },
-                              //     ), (route) => false);
-                            }));
-                  } else {
-                    log("DONE");
-                    var cred = EmailAuthProvider.credential(
-                        email: _auth.currentUser!.email!,
-                        password: _oldPasswordController.text);
+                                    // Navigator.pushAndRemoveUntil(context,
+                                    //     MaterialPageRoute(
+                                    //       builder: (context) {
+                                    //         return const NavigationBarWidget();
+                                    //       },
+                                    //     ), (route) => false);
+                                  }));
+                        } else {
+                          log("DONE");
+                          var cred = EmailAuthProvider.credential(
+                              email: _auth.currentUser!.email!,
+                              password: _oldPasswordController.text);
 
-                    await _auth.currentUser!
-                        .reauthenticateWithCredential(cred)
-                        .then((value) {
-                      _auth.currentUser!
-                          .updatePassword(_newPasswordController.text);
-                      showDialog(
-                          context: context,
-                          builder: (context) => DialogWidget(
-                              urlIcon: "assets/images/logo_email_change.png",
-                              title: "Password has been Change",
-                              subtitle:
-                                  "Lorem ipsum dolor sit amet consectetur. Egestas porttitor risus enim cursus rutrum molestie tortor",
-                              textForButton: "Back to My Tradeasia",
-                              navigatorFunction: () {
-                                /* With go_route */
-                                context.go("/home");
-                                Navigator.pop(context);
+                          await _auth.currentUser!
+                              .reauthenticateWithCredential(cred)
+                              .then((value) {
+                            _auth.currentUser!
+                                .updatePassword(_newPasswordController.text);
+                            showDialog(
+                                context: context,
+                                builder: (context) => DialogWidget(
+                                    urlIcon:
+                                        "assets/images/logo_email_change.png",
+                                    title: "Password has been Change",
+                                    subtitle:
+                                        "Lorem ipsum dolor sit amet consectetur. Egestas porttitor risus enim cursus rutrum molestie tortor",
+                                    textForButton: "Back to My Tradeasia",
+                                    navigatorFunction: () {
+                                      /* With go_route */
+                                      context.go("/home");
+                                      Navigator.pop(context);
 
-                                // Navigator.pushAndRemoveUntil(context,
-                                //     MaterialPageRoute(
-                                //       builder: (context) {
-                                //         return const NavigationBarWidget();
-                                //       },
-                                //     ), (route) => false);
-                              }));
-                    }).catchError((error) {
-                      log("Error : $error");
-                      showDialog(
-                          context: context,
-                          builder: (context) => DialogWidget(
-                              urlIcon: "assets/images/logo_email_change.png",
-                              title: "Error",
-                              subtitle: error.toString(),
-                              textForButton: "Back",
-                              navigatorFunction: () {
-                                /* With go_route */
-                                // context.go("/home");
-                                Navigator.pop(context);
+                                      // Navigator.pushAndRemoveUntil(context,
+                                      //     MaterialPageRoute(
+                                      //       builder: (context) {
+                                      //         return const NavigationBarWidget();
+                                      //       },
+                                      //     ), (route) => false);
+                                    }));
+                          }).catchError((error) {
+                            log("Error : $error");
+                            showDialog(
+                                context: context,
+                                builder: (context) => DialogWidget(
+                                    urlIcon:
+                                        "assets/images/logo_email_change.png",
+                                    title: "Error",
+                                    subtitle: error.toString(),
+                                    textForButton: "Back",
+                                    navigatorFunction: () {
+                                      /* With go_route */
+                                      // context.go("/home");
+                                      Navigator.pop(context);
 
-                                // Navigator.pushAndRemoveUntil(context,
-                                //     MaterialPageRoute(
-                                //       builder: (context) {
-                                //         return const NavigationBarWidget();
-                                //       },
-                                //     ), (route) => false);
-                              }));
-                    });
-                  }
-                } else {
-                  log("Please fill all the fields");
-                  showDialog(
-                      context: context,
-                      builder: (context) => DialogWidget(
-                          urlIcon: "assets/images/logo_email_change.png",
-                          title: "Error",
-                          subtitle: "Please fill all the fields",
-                          textForButton: "Back",
-                          navigatorFunction: () {
-                            /* With go_route */
-                            // context.go("/home");
-                            Navigator.pop(context);
+                                      // Navigator.pushAndRemoveUntil(context,
+                                      //     MaterialPageRoute(
+                                      //       builder: (context) {
+                                      //         return const NavigationBarWidget();
+                                      //       },
+                                      //     ), (route) => false);
+                                    }));
+                          });
+                        }
+                      } else {
+                        log("Please fill all the fields");
+                        showDialog(
+                            context: context,
+                            builder: (context) => DialogWidget(
+                                urlIcon: "assets/images/logo_email_change.png",
+                                title: "Error",
+                                subtitle: "Please fill all the fields",
+                                textForButton: "Back",
+                                navigatorFunction: () {
+                                  /* With go_route */
+                                  // context.go("/home");
+                                  Navigator.pop(context);
 
-                            // Navigator.pushAndRemoveUntil(context,
-                            //     MaterialPageRoute(
-                            //       builder: (context) {
-                            //         return const NavigationBarWidget();
-                            //       },
-                            //     ), (route) => false);
-                          }));
-                }
-              },
-              child: Text(
-                "Verify",
-                style: text16.copyWith(color: whiteColor),
-              ),
-            )),
+                                  // Navigator.pushAndRemoveUntil(context,
+                                  //     MaterialPageRoute(
+                                  //       builder: (context) {
+                                  //         return const NavigationBarWidget();
+                                  //       },
+                                  //     ), (route) => false);
+                                }));
+                      }
+                      setState(() {
+                        isVerifying = false;
+                      });
+                    },
+                    child: Text(
+                      "Verify",
+                      style: text16.copyWith(color: whiteColor),
+                    ),
+                  )),
       ),
     );
   }
