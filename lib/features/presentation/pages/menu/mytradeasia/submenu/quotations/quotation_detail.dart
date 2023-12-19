@@ -29,6 +29,16 @@ class QuotationDetailScreen extends StatelessWidget {
     "Message": "...",
   };
 
+  static const salesQuotationData = {
+    "Price": "...",
+    "Quantity": "...",
+    "Shipment Date": "...",
+    "Incoterm": "...",
+    "Payment Term": "...",
+    "Validity": "...",
+    "UOM": "..."
+  };
+
   Widget dataRow(int index) {
     return Row(
       children: [
@@ -66,7 +76,9 @@ class QuotationDetailScreen extends StatelessWidget {
               width: size20px + 4,
               color: greyColor2,
             ));
-        salesQuote = const SalesQuotationData();
+        salesQuote = SalesQuotationData(
+          status: status,
+        );
         detailBanner = const QuotationDetailBanner(
             status: "Rejected",
             fontColor: redColor1,
@@ -81,7 +93,9 @@ class QuotationDetailScreen extends StatelessWidget {
               width: size20px + 4,
               color: greyColor2,
             ));
-        salesQuote = const SalesQuotationData();
+        salesQuote = SalesQuotationData(
+          status: status,
+        );
         detailBanner = const QuotationDetailBanner(
             status: "Approved",
             fontColor: greenColor1,
@@ -98,7 +112,9 @@ class QuotationDetailScreen extends StatelessWidget {
             width: size20px + 4,
           ),
         );
-        salesQuote = const SalesQuotationData();
+        salesQuote = SalesQuotationData(
+          status: status,
+        );
         detailBanner = const QuotationDetailBanner(
             status: "Submitted",
             fontColor: yellowColor,
@@ -120,7 +136,9 @@ class QuotationDetailScreen extends StatelessWidget {
             fontColor: orangeColor1,
             backgroundColor: orangeColor2);
         bottomNav = const QuotedNavbar();
-        salesQuote = const SalesQuotationData();
+        salesQuote = SalesQuotationData(
+          status: status,
+        );
         break;
       default:
         editBtn = IconButton(
@@ -132,7 +150,9 @@ class QuotationDetailScreen extends StatelessWidget {
             width: size20px + 4,
           ),
         );
-        salesQuote = const SalesQuotationData();
+        salesQuote = SalesQuotationData(
+          status: status,
+        );
         detailBanner = Container();
         bottomNav = const SalesNavbar();
     }
