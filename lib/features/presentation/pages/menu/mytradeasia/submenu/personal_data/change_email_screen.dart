@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -21,8 +22,11 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
   final TextEditingController _oldEmailController = TextEditingController();
   final TextEditingController _newEmailController = TextEditingController();
   final TextEditingController _confirmEmailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
   final UpdateEmail _updateEmail = injections<UpdateEmail>();
+  final _auth = FirebaseAuth.instance;
 
   @override
   void dispose() {
@@ -30,6 +34,7 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
     _oldEmailController.dispose();
     _newEmailController.dispose();
     _confirmEmailController.dispose();
+    _passwordController.dispose();
   }
 
   @override
@@ -114,7 +119,19 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
                             // key: _formKey,
                             readOnly: false,
                             controller: _confirmEmailController,
-                            hintText: "Enter your new email adress"),
+                            hintText: "Enter your new email address"),
+                      ),
+                    ),
+                    const Text("Password"),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0, bottom: 15.0),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        child: TextEditingWidget(
+                            // key: _formKey,
+                            readOnly: false,
+                            controller: _passwordController,
+                            hintText: "Enter your password"),
                       ),
                     ),
                   ],
@@ -165,63 +182,96 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
                             );
                             if (_newEmailController.text ==
                                 _confirmEmailController.text) {
-                              await _updateEmail
-                                  .call(param: _newEmailController.text)
-                                  .then((res) {
-                                switch (res) {
-                                  case "invalid-email":
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) => DialogWidget(
-                                          urlIcon:
-                                              "assets/images/logo_delete_account.png",
-                                          title: "Email is invalid",
-                                          subtitle:
-                                              "The email you type is invalid",
-                                          textForButton: "Close",
-                                          navigatorFunction: () {
-                                            context.pop();
-                                            context.pop();
-                                          }),
-                                    );
-                                    break;
-                                  case "email-already-in-use":
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) => DialogWidget(
-                                          urlIcon:
-                                              "assets/images/logo_delete_account.png",
-                                          title: "Email already in use",
-                                          subtitle: "The email is already used",
-                                          textForButton: "Close",
-                                          navigatorFunction: () {
-                                            context.pop();
-                                            context.pop();
-                                          }),
-                                    );
-                                    break;
-                                  case "requires-recent-login":
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) => DialogWidget(
-                                          urlIcon:
-                                              "assets/images/logo_delete_account.png",
-                                          title: "Requires recent login",
-                                          subtitle: "You need to re-login",
-                                          textForButton: "Close",
-                                          navigatorFunction: () {
-                                            context.pop();
-                                            context.pop();
-                                          }),
-                                    );
+                              //TODO : FIX THE LOADING STATE ISSUE
+                              //TODO : ADD PASSWORD PARAMETER TO UpdateEmail usecase
 
-                                    break;
-                                  default:
-                                    authBloc.add(const LogOut());
-                                    // context.pop();
-                                    context.go("/");
-                                }
+                              var cred = EmailAuthProvider.credential(
+                                  email: _auth.currentUser!.email!,
+                                  password: _passwordController.text);
+                              await _auth.currentUser!
+                                  .reauthenticateWithCredential(cred)
+                                  .then((value) {
+                                _updateEmail
+                                    .call(param: _newEmailController.text)
+                                    .then((res) {
+                                  switch (res) {
+                                    case "invalid-email":
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => DialogWidget(
+                                            urlIcon:
+                                                "assets/images/logo_delete_account.png",
+                                            title: "Email is invalid",
+                                            subtitle:
+                                                "The email you type is invalid",
+                                            textForButton: "Close",
+                                            navigatorFunction: () {
+                                              context.pop();
+                                              context.pop();
+                                            }),
+                                      );
+                                      break;
+                                    case "email-already-in-use":
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => DialogWidget(
+                                            urlIcon:
+                                                "assets/images/logo_delete_account.png",
+                                            title: "Email already in use",
+                                            subtitle:
+                                                "The email is already used",
+                                            textForButton: "Close",
+                                            navigatorFunction: () {
+                                              context.pop();
+                                              context.pop();
+                                            }),
+                                      );
+                                      break;
+                                    case "requires-recent-login":
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => DialogWidget(
+                                            urlIcon:
+                                                "assets/images/logo_delete_account.png",
+                                            title: "Requires recent login",
+                                            subtitle: "You need to re-login",
+                                            textForButton: "Close",
+                                            navigatorFunction: () {
+                                              context.pop();
+                                              context.pop();
+                                            }),
+                                      );
+
+                                      break;
+                                    default:
+                                      authBloc.add(const LogOut());
+                                      // context.pop();
+                                      context.go("/");
+                                  }
+                                });
+                              }).catchError((error) {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) => DialogWidget(
+                                        urlIcon:
+                                            "assets/images/logo_email_change.png",
+                                        title: "Error",
+                                        subtitle: error.toString(),
+                                        textForButton: "Back",
+                                        navigatorFunction: () {
+                                          /* With go_route */
+                                          // context.go("/home");
+                                          Navigator.pop(context);
+
+                                          // Navigator.pushAndRemoveUntil(context,
+                                          //     MaterialPageRoute(
+                                          //       builder: (context) {
+                                          //         return const NavigationBarWidget();
+                                          //       },
+                                          //     ), (route) => false);
+                                        }));
                               });
+                              ;
                             } else {
                               showDialog(
                                 context: context,
