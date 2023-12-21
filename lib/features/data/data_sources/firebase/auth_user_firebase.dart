@@ -314,6 +314,8 @@ class AuthUserFirebase {
     try {
       final user = FirebaseAuth.instance.currentUser!;
       // await user.sendEmailVerification()
+      log("CREDENTIAL : $_credential");
+      log("METHOD : ${_credential?.signInMethod}");
 
       if (_credential != null) {
         await user.reauthenticateWithCredential(_credential!);

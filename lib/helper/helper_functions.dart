@@ -102,6 +102,7 @@ Future<bool> isSSOAuth() async {
       await _auth.fetchSignInMethodsForEmail(_auth.currentUser!.email!);
   log("Sign In Method : ${userSignInMethods.toString()}");
   if (userSignInMethods.isEmpty) {
+    // Using the Custom Linkedin SSO
     return true;
   }
   log("isSSO : ${userSignInMethods.first != "password"}");
