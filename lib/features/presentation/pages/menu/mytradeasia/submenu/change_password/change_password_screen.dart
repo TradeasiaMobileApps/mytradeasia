@@ -195,7 +195,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                     //     ), (route) => false);
                                   }));
                         } else {
-                          log("DONE");
                           var cred = EmailAuthProvider.credential(
                               email: _auth.currentUser!.email!,
                               password: _oldPasswordController.text);

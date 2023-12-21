@@ -154,7 +154,6 @@ class _MyTradeAsiaScreenState extends State<MyTradeAsiaScreen> {
                                       try {
                                         var result = await _sendOTP.call(
                                             param: _auth.currentUser!.email!);
-                                        // Navigator.of(context).pop();
 
                                         if (result is DataSuccess) {
                                           ScaffoldMessenger.of(context)

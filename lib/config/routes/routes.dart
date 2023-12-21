@@ -193,15 +193,18 @@ class Routes {
                     builder: (context, state) => const PersonalDataScreen(),
                     routes: [
                       GoRoute(
-                          path: "change_email",
-                          builder: (context, state) =>
-                              const ChangeEmailScreen(),
-                          routes: [
-                            GoRoute(
-                                path: "otp_email",
-                                builder: (context, state) =>
-                                    const EmailChangeOtpScreen())
-                          ])
+                        path: "change_email",
+                        builder: (context, state) => const ChangeEmailScreen(),
+                      ),
+                      GoRoute(
+                          path: "change_email_otp",
+                          builder: (context, state) {
+                            String email = state.extra as String;
+
+                            return EmailChangeOtpScreen(
+                              email: email,
+                            );
+                          })
                     ]),
                 GoRoute(
                   path: "change_password",
