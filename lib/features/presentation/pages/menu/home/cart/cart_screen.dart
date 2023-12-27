@@ -534,7 +534,7 @@ class _CartScreenState extends State<CartScreen> {
                     horizontal: size20px, vertical: size20px - 8.0),
                 child: state.cartItems!.any((item) => item.isChecked!)
                     ? ActiveButton(
-                        titleButton: "Send Incquiry",
+                        titleButton: "Send Inquiry",
                         cartData: state.cartItems!,
                       )
                     : const InactiveButton(

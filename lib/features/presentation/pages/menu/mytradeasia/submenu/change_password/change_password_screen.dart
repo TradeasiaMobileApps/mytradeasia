@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/features/presentation/pages/menu/mytradeasia/submenu/change_password/password_change_otp.dart';
 
 import '../../../../../../../config/themes/theme.dart';
@@ -39,6 +40,20 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+            onPressed: () {
+              context.pop();
+            },
+            icon: Image.asset(
+              "assets/images/icon_back.png",
+              width: 24.0,
+              height: 24.0,
+            )),
+        backgroundColor: whiteColor,
+        elevation: 0.0,
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),

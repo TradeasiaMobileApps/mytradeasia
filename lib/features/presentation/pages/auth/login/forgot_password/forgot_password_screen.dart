@@ -25,6 +25,20 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+            onPressed: () {
+              context.pop();
+            },
+            icon: Image.asset(
+              "assets/images/icon_back.png",
+              width: 24.0,
+              height: 24.0,
+            )),
+        backgroundColor: whiteColor,
+        elevation: 0.0,
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
