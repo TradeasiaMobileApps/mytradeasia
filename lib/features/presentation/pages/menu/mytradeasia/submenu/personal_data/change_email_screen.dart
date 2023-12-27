@@ -127,6 +127,7 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width,
                         child: TextFormField(
+                          style: body1Regular,
                           obscureText: !_passwordVisible,
                           keyboardType: TextInputType.visiblePassword,
                           controller: _passwordController,
