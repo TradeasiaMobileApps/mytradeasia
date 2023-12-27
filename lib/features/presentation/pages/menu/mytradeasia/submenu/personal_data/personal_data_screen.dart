@@ -231,13 +231,14 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
                                             ),
                                           )
                                         : Container(
+                                            clipBehavior: Clip.hardEdge,
                                             decoration: BoxDecoration(
                                               border:
                                                   Border.all(color: greyColor3),
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(15)),
                                             ),
-                                            padding: EdgeInsets.all(2),
+                                            margin: EdgeInsets.only(right: 3),
                                             child: CachedNetworkImage(
                                               imageUrl: streamSnapshot
                                                   .data["profilePicUrl"],
@@ -463,7 +464,7 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
                                                                           color:
                                                                               greyColor),
                                                                       contentPadding: const EdgeInsets
-                                                                          .symmetric(
+                                                                              .symmetric(
                                                                           horizontal:
                                                                               20.0),
                                                                       enabledBorder: const OutlineInputBorder(

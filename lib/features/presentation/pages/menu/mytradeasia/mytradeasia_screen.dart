@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -57,13 +58,42 @@ class _MyTradeAsiaScreenState extends State<MyTradeAsiaScreen> {
                               child: Row(
                                 children: [
                                   // Image
-                                  Padding(
-                                      padding: const EdgeInsets.only(
-                                          right: size20px),
-                                      child: Image.asset(
-                                        "assets/images/profile_picture.png",
-                                        width: size20px * 3.6,
-                                      )),
+                                  streamSnapshot.data["profilePicUrl"] == null
+                                      ? Container(
+                                          decoration: BoxDecoration(
+                                            border:
+                                                Border.all(color: greyColor3),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(15)),
+                                          ),
+                                          padding: EdgeInsets.all(2),
+                                          child: Image.asset(
+                                            "assets/images/profile_picture.png",
+                                            width: size20px * 3.6,
+                                          ),
+                                        )
+                                      : Container(
+                                          clipBehavior: Clip.hardEdge,
+                                          decoration: BoxDecoration(
+                                            border:
+                                                Border.all(color: greyColor3),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(15)),
+                                          ),
+                                          margin: EdgeInsets.only(right: 3),
+                                          child: CachedNetworkImage(
+                                            imageUrl: streamSnapshot
+                                                .data["profilePicUrl"],
+                                            width: size20px * 3.6,
+                                            placeholder: (context, url) =>
+                                                const Center(
+                                              child: CircularProgressIndicator
+                                                  .adaptive(),
+                                            ),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    const Icon(Icons.error),
+                                          )),
                                   // First, Last, Company Name
                                   Expanded(
                                     child: Column(
