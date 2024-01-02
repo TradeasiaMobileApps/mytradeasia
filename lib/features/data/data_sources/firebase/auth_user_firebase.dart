@@ -101,7 +101,7 @@ class AuthUserFirebase {
   }
 
   Future<dynamic> linkedinAuth() async {
-    final url = 'https://linkedin-firebase-auth-integrator.vercel.app/token';
+    const url = 'https://linkedin-firebase-auth-integrator.vercel.app/token';
 
     final headers = {
       'Content-Type': 'application/json',

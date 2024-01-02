@@ -1,13 +1,13 @@
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mytradeasia/config/routes/parameters.dart';
-import 'package:mytradeasia/config/themes/theme.dart';
 
+import '../../../../../../../config/routes/parameters.dart';
+import '../../../../../../../config/themes/theme.dart';
 import '../../../../../widgets/quotation_widget.dart';
 
-class QuotationsScreen extends StatelessWidget {
-  const QuotationsScreen({super.key});
+class SalesQuotationsScreen extends StatelessWidget {
+  const SalesQuotationsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +44,7 @@ class QuotationsScreen extends StatelessWidget {
               ),
               Tab(
                 child: Text(
-                  "Submitted",
+                  "New",
                   style: heading2,
                 ),
               ),
@@ -61,90 +61,29 @@ class QuotationsScreen extends StatelessWidget {
                   Expanded(
                     child: ListView(
                       children: [
-                        QuotationsWidget(
-                            status: "Submitted",
-                            fontStatusColor: yellowColor,
-                            backgroundStatusColor: yellowColor2,
+                        SalesQuotationsWidget(
+                            status: "New Request",
+                            fontStatusColor: secondaryColor1,
+                            backgroundStatusColor: thirdColor1,
                             navigationPage: () {
-                              /* With go_router */
                               QuotationDetailParameter param =
-                                  QuotationDetailParameter(status: 'submitted');
-
+                                  QuotationDetailParameter(
+                                      status: 'sales', isSales: true);
                               context.push(
-                                  "/mytradeasia/quotations/detail_quotation",
+                                  "/mytradeasia/sales_quotations/detail_quotation",
                                   extra: param);
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (context) => const QuotationDetailScreen(
-                              //       status: "submitted",
-                              //     ),
-                              //   ),
-                              // )
-                            }),
-                        QuotationsWidget(
-                            status: "Rejected",
-                            fontStatusColor: redColor1,
-                            backgroundStatusColor: redColor2,
-                            navigationPage: () {
-                              /* With go_router */
-                              QuotationDetailParameter param =
-                                  QuotationDetailParameter(status: 'rejected');
+                            }
 
-                              context.push(
-                                  "/mytradeasia/quotations/detail_quotation",
-                                  extra: param);
-                              //   Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (context) => const QuotationDetailScreen(
-                              //       status: "rejected",
-                              //     ),
-                              //   ),
-                              // )
-                            }),
-                        QuotationsWidget(
-                            status: "Approved",
-                            fontStatusColor: greenColor1,
-                            backgroundStatusColor: greenColor2,
-                            navigationPage: () {
-                              /* With go_router */
-                              QuotationDetailParameter param =
-                                  QuotationDetailParameter(status: 'approved');
-
-                              context.push(
-                                  "/mytradeasia/quotations/detail_quotation",
-                                  extra: param);
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (context) => const QuotationDetailScreen(
-                              //       status: "approved",
-                              //     ),
-                              //   ),
-                              // )
-                            }),
-                        QuotationsWidget(
-                            status: "Quoted",
-                            fontStatusColor: orangeColor1,
-                            backgroundStatusColor: orangeColor2,
-                            navigationPage: () {
-                              /* With go_router */
-                              QuotationDetailParameter param =
-                                  QuotationDetailParameter(status: 'quoted');
-
-                              context.push(
-                                  "/mytradeasia/quotations/detail_quotation",
-                                  extra: param);
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (context) => const QuotationDetailScreen(
-                              //       status: "approved",
-                              //     ),
-                              //   ),
-                              // )
-                            }),
+                            // Navigator.push(
+                            //         context,
+                            //         MaterialPageRoute(
+                            //           builder: (context) =>
+                            //               const QuotationDetailScreen(
+                            //             status: "sales",
+                            //             isSales: true,
+                            //           ),
+                            //         ))
+                            )
                       ],
                     ),
                   ),
@@ -152,14 +91,14 @@ class QuotationsScreen extends StatelessWidget {
               ),
             ),
 
-            // Submitted Quotations
+            // New Quotation
             Padding(
               padding: const EdgeInsets.only(left: size20px, right: size20px),
               child: Column(
                 children: [
                   Expanded(
                     child: ListView.builder(
-                      itemCount: 2,
+                      itemCount: 0,
                       itemBuilder: (context, index) {
                         return Container(
                           height: size20px * 8,
@@ -181,7 +120,7 @@ class QuotationsScreen extends StatelessWidget {
                                       Expanded(
                                         flex: 3,
                                         child: Text(
-                                          "Dimas Pradipta putraaaaaa",
+                                          "Dimas Pradipta Putra",
                                           style: heading3.copyWith(
                                               color: secondaryColor1),
                                           overflow: TextOverflow.ellipsis,

@@ -14,7 +14,6 @@ import 'package:mytradeasia/features/presentation/state_management/salesforce_bl
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../config/themes/theme.dart';
 import '../../../widgets/dialog_sheet_widget.dart';
-import 'package:country_picker/country_picker.dart';
 
 class BiodataScreen extends StatefulWidget {
   const BiodataScreen({super.key, required this.email, required this.phone});

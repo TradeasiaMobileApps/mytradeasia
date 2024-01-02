@@ -24,10 +24,10 @@ class SalesforceCreateOpportunityModel
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = this.id;
-    data['success'] = this.success;
-    if (this.errors != null) {
-      data['errors'] = this.errors!.map((v) => v).toList();
+    data['id'] = id;
+    data['success'] = success;
+    if (errors != null) {
+      data['errors'] = errors!.map((v) => v).toList();
     }
     return data;
   }

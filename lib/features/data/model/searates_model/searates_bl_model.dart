@@ -15,8 +15,8 @@ class SearatesBLModel extends SearatesBLEntity {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
-    data['message'] = this.message;
+    data['status'] = status;
+    data['message'] = message;
     if (this.data != null) {
       data['data'] = this.data!.toJson();
     }
@@ -73,23 +73,23 @@ class BLData {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.metadata != null) {
-      data['metadata'] = this.metadata!.toJson();
+    if (metadata != null) {
+      data['metadata'] = metadata!.toJson();
     }
-    if (this.locations != null) {
-      data['locations'] = this.locations!.map((v) => v.toJson()).toList();
+    if (locations != null) {
+      data['locations'] = locations!.map((v) => v.toJson()).toList();
     }
-    if (this.facilities != null) {
-      data['facilities'] = this.facilities!.map((v) => v.toJson()).toList();
+    if (facilities != null) {
+      data['facilities'] = facilities!.map((v) => v.toJson()).toList();
     }
-    if (this.route != null) {
-      data['route'] = this.route!.toJson();
+    if (route != null) {
+      data['route'] = route!.toJson();
     }
-    if (this.vessels != null) {
-      data['vessels'] = this.vessels!.map((v) => v.toJson()).toList();
+    if (vessels != null) {
+      data['vessels'] = vessels!.map((v) => v.toJson()).toList();
     }
-    if (this.containers != null) {
-      data['containers'] = this.containers!.map((v) => v.toJson()).toList();
+    if (containers != null) {
+      data['containers'] = containers!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -132,17 +132,17 @@ class Metadata {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['type'] = this.type;
-    data['number'] = this.number;
-    data['sealine'] = this.sealine;
-    data['sealine_name'] = this.sealineName;
-    data['status'] = this.status;
-    data['updated_at'] = this.updatedAt;
-    if (this.apiCalls != null) {
-      data['api_calls'] = this.apiCalls!.toJson();
+    data['type'] = type;
+    data['number'] = number;
+    data['sealine'] = sealine;
+    data['sealine_name'] = sealineName;
+    data['status'] = status;
+    data['updated_at'] = updatedAt;
+    if (apiCalls != null) {
+      data['api_calls'] = apiCalls!.toJson();
     }
-    if (this.uniqueShipments != null) {
-      data['unique_shipments'] = this.uniqueShipments!.toJson();
+    if (uniqueShipments != null) {
+      data['unique_shipments'] = uniqueShipments!.toJson();
     }
     return data;
   }
@@ -163,9 +163,9 @@ class ApiCalls {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['total'] = this.total;
-    data['used'] = this.used;
-    data['remaining'] = this.remaining;
+    data['total'] = total;
+    data['used'] = used;
+    data['remaining'] = remaining;
     return data;
   }
 }
@@ -206,15 +206,15 @@ class Locations {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['state'] = this.state;
-    data['country'] = this.country;
-    data['country_code'] = this.countryCode;
-    data['locode'] = this.locode;
-    data['lat'] = this.lat;
-    data['lng'] = this.lng;
-    data['timezone'] = this.timezone;
+    data['id'] = id;
+    data['name'] = name;
+    data['state'] = state;
+    data['country'] = country;
+    data['country_code'] = countryCode;
+    data['locode'] = locode;
+    data['lat'] = lat;
+    data['lng'] = lng;
+    data['timezone'] = timezone;
     return data;
   }
 }
@@ -252,14 +252,14 @@ class Facilities {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['country_code'] = this.countryCode;
-    data['locode'] = this.locode;
-    data['bic_code'] = this.bicCode;
-    data['smdg_code'] = this.smdgCode;
-    data['lat'] = this.lat;
-    data['lng'] = this.lng;
+    data['id'] = id;
+    data['name'] = name;
+    data['country_code'] = countryCode;
+    data['locode'] = locode;
+    data['bic_code'] = bicCode;
+    data['smdg_code'] = smdgCode;
+    data['lat'] = lat;
+    data['lng'] = lng;
     return data;
   }
 }
@@ -283,17 +283,17 @@ class Route {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.prepol != null) {
-      data['prepol'] = this.prepol!.toJson();
+    if (prepol != null) {
+      data['prepol'] = prepol!.toJson();
     }
-    if (this.pol != null) {
-      data['pol'] = this.pol!.toJson();
+    if (pol != null) {
+      data['pol'] = pol!.toJson();
     }
-    if (this.pod != null) {
-      data['pod'] = this.pod!.toJson();
+    if (pod != null) {
+      data['pod'] = pod!.toJson();
     }
-    if (this.postpod != null) {
-      data['postpod'] = this.postpod!.toJson();
+    if (postpod != null) {
+      data['postpod'] = postpod!.toJson();
     }
     return data;
   }
@@ -314,9 +314,9 @@ class Prepol {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['location'] = this.location;
-    data['date'] = this.date;
-    data['actual'] = this.actual;
+    data['location'] = location;
+    data['date'] = date;
+    data['actual'] = actual;
     return data;
   }
 }
@@ -336,9 +336,9 @@ class Pol {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['location'] = this.location;
-    data['date'] = this.date;
-    data['actual'] = this.actual;
+    data['location'] = location;
+    data['date'] = date;
+    data['actual'] = actual;
     return data;
   }
 }
@@ -360,10 +360,10 @@ class Pod {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['location'] = this.location;
-    data['date'] = this.date;
-    data['actual'] = this.actual;
-    data['predictive_eta'] = this.predictiveEta;
+    data['location'] = location;
+    data['date'] = date;
+    data['actual'] = actual;
+    data['predictive_eta'] = predictiveEta;
     return data;
   }
 }
@@ -389,12 +389,12 @@ class Vessels {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['imo'] = this.imo;
-    data['call_sign'] = this.callSign;
-    data['mmsi'] = this.mmsi;
-    data['flag'] = this.flag;
+    data['id'] = id;
+    data['name'] = name;
+    data['imo'] = imo;
+    data['call_sign'] = callSign;
+    data['mmsi'] = mmsi;
+    data['flag'] = flag;
     return data;
   }
 }
@@ -424,12 +424,12 @@ class Containers {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['number'] = this.number;
-    data['iso_code'] = this.isoCode;
-    data['size_type'] = this.sizeType;
-    data['status'] = this.status;
-    if (this.events != null) {
-      data['events'] = this.events!.map((v) => v.toJson()).toList();
+    data['number'] = number;
+    data['iso_code'] = isoCode;
+    data['size_type'] = sizeType;
+    data['status'] = status;
+    if (events != null) {
+      data['events'] = events!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -486,20 +486,20 @@ class Events {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['order_id'] = this.orderId;
-    data['location'] = this.location;
-    data['facility'] = this.facility;
-    data['description'] = this.description;
-    data['event_type'] = this.eventType;
-    data['event_code'] = this.eventCode;
-    data['status'] = this.status;
-    data['date'] = this.date;
-    data['actual'] = this.actual;
-    data['is_additional_event'] = this.isAdditionalEvent;
-    data['type'] = this.type;
-    data['transport_type'] = this.transportType;
-    data['vessel'] = this.vessel;
-    data['voyage'] = this.voyage;
+    data['order_id'] = orderId;
+    data['location'] = location;
+    data['facility'] = facility;
+    data['description'] = description;
+    data['event_type'] = eventType;
+    data['event_code'] = eventCode;
+    data['status'] = status;
+    data['date'] = date;
+    data['actual'] = actual;
+    data['is_additional_event'] = isAdditionalEvent;
+    data['type'] = type;
+    data['transport_type'] = transportType;
+    data['vessel'] = vessel;
+    data['voyage'] = voyage;
     return data;
   }
 }

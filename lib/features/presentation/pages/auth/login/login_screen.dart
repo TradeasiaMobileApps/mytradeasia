@@ -404,7 +404,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             linkedInUser.user.picture,
                                       );
 
-                                      final url =
+                                      const url =
                                           'https://linkedin-firebase-auth-integrator.vercel.app/token';
 
                                       final headers = {

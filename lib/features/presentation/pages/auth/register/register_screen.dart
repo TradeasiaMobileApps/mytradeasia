@@ -7,7 +7,6 @@ import 'package:go_router/go_router.dart';
 import 'package:linkedin_login/linkedin_login.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/phone_authentication.dart';
 import 'package:mytradeasia/features/presentation/widgets/country_picker.dart';
-import 'package:mytradeasia/features/presentation/widgets/loading_overlay_widget.dart';
 import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -518,7 +517,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             linkedInUser.user.picture,
                                       );
 
-                                      final url =
+                                      const url =
                                           'https://linkedin-firebase-auth-integrator.vercel.app/token';
 
                                       final headers = {

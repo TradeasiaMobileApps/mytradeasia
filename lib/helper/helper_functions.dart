@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
@@ -104,14 +103,14 @@ void showGoogleSSOSnackbar(BuildContext context) {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
-          child: Image.network(
-              "https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-1024.png",
-              width: 30,
-              height: 30),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(20),
           ),
+          child: Image.network(
+              "https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-1024.png",
+              width: 30,
+              height: 30),
         ),
         SizedBox(
           width: 20,
@@ -138,14 +137,14 @@ void showLinkedinSSOSnackbar(BuildContext context) {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
-          child: Image.network(
-              "https://cdn1.iconfinder.com/data/icons/logotypes/32/circle-linkedin-1024.png",
-              width: 30,
-              height: 30),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(20),
           ),
+          child: Image.network(
+              "https://cdn1.iconfinder.com/data/icons/logotypes/32/circle-linkedin-1024.png",
+              width: 30,
+              height: 30),
         ),
         SizedBox(
           width: 20,

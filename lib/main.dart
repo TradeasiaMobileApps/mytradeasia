@@ -123,6 +123,7 @@ class _MyAppState extends State<MyApp> {
                   backgroundColor: whiteColor),
               scaffoldBackgroundColor: whiteColor,
               fontFamily: "Poppins",
+              useMaterial3: false,
             ),
             routerConfig: Routes().router,
             builder: (context, child) {

@@ -41,6 +41,7 @@ import '../../features/presentation/pages/menu/mytradeasia/submenu/personal_data
 import '../../features/presentation/pages/menu/mytradeasia/submenu/personal_data/personal_data_screen.dart';
 import '../../features/presentation/pages/menu/mytradeasia/submenu/quotations/my_quotations_screen.dart';
 import '../../features/presentation/pages/menu/mytradeasia/submenu/quotations/quotation_detail.dart';
+import '../../features/presentation/pages/menu/mytradeasia/submenu/quotations/sales_quotation_screen.dart';
 import '../../features/presentation/pages/menu/mytradeasia/submenu/settings/notification_screen.dart';
 import '../../features/presentation/pages/menu/mytradeasia/submenu/settings/settings_screen.dart';
 import '../../features/presentation/pages/menu/other/navigation_bar.dart';

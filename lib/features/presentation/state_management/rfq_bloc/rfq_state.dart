@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:equatable/equatable.dart';
 
 abstract class RfqState {
   final String? response;

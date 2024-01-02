@@ -1,4 +1,3 @@
-import 'package:latlong2/latlong.dart';
 import 'package:mytradeasia/features/domain/entities/searates_entities/searates_route_entity.dart';
 
 class SearatesRouteModel extends SearatesRouteEntity {
