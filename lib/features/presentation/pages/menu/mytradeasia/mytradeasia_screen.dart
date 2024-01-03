@@ -58,7 +58,10 @@ class _MyTradeAsiaScreenState extends State<MyTradeAsiaScreen> {
                               child: Row(
                                 children: [
                                   // Image
-                                  streamSnapshot.data["profilePicUrl"] == null
+                                  streamSnapshot.data["profilePicUrl"] == "" ||
+                                          streamSnapshot
+                                                  .data["profilePicUrl"] ==
+                                              null
                                       ? Container(
                                           decoration: BoxDecoration(
                                             border:
