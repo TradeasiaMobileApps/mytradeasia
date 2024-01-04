@@ -141,15 +141,7 @@ class QuotationDetailScreen extends StatelessWidget {
         );
         break;
       default:
-        editBtn = IconButton(
-          onPressed: () {
-            print("edit");
-          },
-          icon: Image.asset(
-            "assets/images/icon_edit.png",
-            width: size20px + 4,
-          ),
-        );
+        editBtn = SizedBox();
         salesQuote = SalesQuotationData(
           status: status,
         );

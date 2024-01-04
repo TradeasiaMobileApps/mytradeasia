@@ -401,7 +401,7 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                                                           children: [
                                                             Padding(
                                                               padding: const EdgeInsets
-                                                                      .only(
+                                                                  .only(
                                                                   right:
                                                                       size20px +
                                                                           5.0),
@@ -437,7 +437,7 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                                                                 children: [
                                                                   Padding(
                                                                     padding: const EdgeInsets
-                                                                            .only(
+                                                                        .only(
                                                                         bottom: size20px -
                                                                             15.0),
                                                                     child: Text(
@@ -689,7 +689,7 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                                                   ),
                                                   Padding(
                                                     padding: const EdgeInsets
-                                                            .symmetric(
+                                                        .symmetric(
                                                         vertical:
                                                             size20px / 2.0),
                                                     child: Text(
@@ -745,7 +745,7 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                                                   // Button 2
                                                   Padding(
                                                     padding: const EdgeInsets
-                                                            .symmetric(
+                                                        .symmetric(
                                                         vertical: 5.0),
                                                     child: SizedBox(
                                                       height: size20px * 1.5,
@@ -895,12 +895,18 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                     for (var e in widget.products) {
                       BlocProvider.of<RfqBloc>(context).add(SubmitRfqEvent(
                         RfqEntity(
+                          rfqId: null,
+                          custId: _data['uid'],
                           firstname: _firstNameController.text,
                           lastname: _lastNameController.text,
                           company: _companyNameController.text,
                           country: _countryController.text,
                           phone: _phoneNumberController.text,
-                          products: e.productName,
+                          products: RfqProduct(
+                            productName: e.productName,
+                            quantity: e.quantity,
+                            unit: e.unit,
+                          ),
                           message: _messagesController.text,
                           portOfDestination: _portOfDetinationController.text,
                           incoterm: _selectedValueIncoterm ?? "",

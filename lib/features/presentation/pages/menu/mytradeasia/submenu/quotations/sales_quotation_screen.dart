@@ -72,18 +72,19 @@ class SalesQuotationsScreen extends StatelessWidget {
                               context.push(
                                   "/mytradeasia/sales_quotations/detail_quotation",
                                   extra: param);
-                            }
-
-                            // Navigator.push(
-                            //         context,
-                            //         MaterialPageRoute(
-                            //           builder: (context) =>
-                            //               const QuotationDetailScreen(
-                            //             status: "sales",
-                            //             isSales: true,
-                            //           ),
-                            //         ))
-                            )
+                            }),
+                        SalesQuotationsWidget(
+                            status: "",
+                            fontStatusColor: Colors.transparent,
+                            backgroundStatusColor: Colors.transparent,
+                            navigationPage: () {
+                              QuotationDetailParameter param =
+                                  QuotationDetailParameter(
+                                      status: 'sales', isSales: true);
+                              context.push(
+                                  "/mytradeasia/sales_quotations/detail_quotation",
+                                  extra: param);
+                            })
                       ],
                     ),
                   ),

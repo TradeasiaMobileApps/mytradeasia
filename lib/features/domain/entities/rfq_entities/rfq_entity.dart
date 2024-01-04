@@ -1,31 +1,41 @@
 import 'package:equatable/equatable.dart';
 
 class RfqEntity extends Equatable {
+  final int? rfqId;
+  final int custId;
+  final int? salesId;
   final String? firstname;
   final String? lastname;
   final String? phone;
   final String? country;
   final String? company;
-  final String? products;
+  final RfqProduct? products;
   final String? incoterm;
   final String? portOfDestination;
   final String? message;
+  final String? quotationStatus;
 
-  const RfqEntity({
-    this.firstname,
-    this.lastname,
-    this.phone,
-    this.country,
-    this.company,
-    this.products,
-    this.incoterm,
-    this.portOfDestination,
-    this.message,
-  });
+  const RfqEntity(
+      {required this.rfqId,
+      required this.custId,
+      this.salesId,
+      this.firstname,
+      this.lastname,
+      this.phone,
+      this.country,
+      this.company,
+      this.products,
+      this.incoterm,
+      this.portOfDestination,
+      this.message,
+      this.quotationStatus});
 
   @override
   List<Object?> get props {
     return [
+      rfqId,
+      custId,
+      salesId,
       firstname,
       lastname,
       phone,
@@ -35,6 +45,7 @@ class RfqEntity extends Equatable {
       incoterm,
       portOfDestination,
       message,
+      quotationStatus
     ];
   }
 }

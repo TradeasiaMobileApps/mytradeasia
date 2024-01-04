@@ -16,13 +16,19 @@ class RfqRepositoryImpl implements RfqRepository {
   Future<DataState> submitRfq(RfqEntity s) async {
     try {
       final response = await _rfqService.submitRfqService(RfqModel(
+          rfqId: null,
+          custId: s.custId,
           firstname: s.firstname,
           lastname: s.lastname,
           company: s.company,
           country: s.country,
           incoterm: s.incoterm,
           phone: s.phone,
-          products: s.products,
+          products: RfqProductModel(
+            productName: s.products!.productName,
+            quantity: s.products!.quantity,
+            unit: s.products!.unit,
+          ),
           message: s.message,
           portOfDestination: s.portOfDestination));
 
