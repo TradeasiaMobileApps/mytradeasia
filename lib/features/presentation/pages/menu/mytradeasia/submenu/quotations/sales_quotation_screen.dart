@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../../../../config/routes/parameters.dart';
 import '../../../../../../../config/themes/theme.dart';
-import '../../../../../widgets/quotation_widget.dart';
+import '../../../../../widgets/quotations_widget/quotation_widget.dart';
 
 class SalesQuotationsScreen extends StatelessWidget {
   const SalesQuotationsScreen({super.key});

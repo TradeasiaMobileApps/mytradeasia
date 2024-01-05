@@ -1,3 +1,5 @@
+import 'package:mytradeasia/features/domain/entities/rfq_entities/rfq_entity.dart';
+
 List<List<dynamic>> allIndustries = [
   [
     "assets/images/icon_agri.png",
@@ -21,6 +23,69 @@ List<List<dynamic>> allIndustries = [
     "assets/images/icon_textile.png",
     "assets/images/icon_water.png",
   ],
+];
+
+List<RfqEntity> rfqEntities = [
+  const RfqEntity(
+    rfqId: 2,
+    custId: 1,
+    company: "Tradeasia",
+    country: "Indonesia",
+    firstname: "M Akmal",
+    incoterm: "FOB",
+    lastname: "Rama",
+    message: "ok",
+    phone: "0811111111",
+    portOfDestination: "Bandung",
+    products: RfqProduct(productName: "Dipentene", quantity: 2, unit: "kg"),
+    quotationStatus: "Quoted",
+    salesId: 1,
+  ),
+  const RfqEntity(
+    rfqId: 1,
+    custId: 1,
+    company: "Tradeasia",
+    country: "Indonesia",
+    firstname: "M Akmal",
+    incoterm: "FOB",
+    lastname: "Rama",
+    message: "ok",
+    phone: "0811111111",
+    portOfDestination: "Bandung",
+    products: RfqProduct(productName: "Dipentene", quantity: 2, unit: "kg"),
+    quotationStatus: "Submitted",
+    salesId: 0,
+  ),
+  const RfqEntity(
+    rfqId: 3,
+    custId: 1,
+    company: "Tradeasia",
+    country: "Indonesia",
+    firstname: "M Akmal",
+    incoterm: "FOB",
+    lastname: "Rama",
+    message: "ok",
+    phone: "0811111111",
+    portOfDestination: "Bandung",
+    products: RfqProduct(productName: "Dipentene", quantity: 2, unit: "kg"),
+    quotationStatus: "Rejected",
+    salesId: 1,
+  ),
+  const RfqEntity(
+    rfqId: 3,
+    custId: 1,
+    company: "Tradeasia",
+    country: "Indonesia",
+    firstname: "M Akmal",
+    incoterm: "FOB",
+    lastname: "Rama",
+    message: "ok",
+    phone: "0811111111",
+    portOfDestination: "Bandung",
+    products: RfqProduct(productName: "Dipentene", quantity: 2, unit: "kg"),
+    quotationStatus: "Approved",
+    salesId: 1,
+  ),
 ];
 
 //TODO:ngubah nama key

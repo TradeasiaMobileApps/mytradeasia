@@ -1,7 +1,8 @@
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
+import 'package:mytradeasia/features/domain/entities/rfq_entities/rfq_entity.dart';
 
-import '../../../config/themes/theme.dart';
+import '../../../../config/themes/theme.dart';
 
 class QuotationsWidget extends StatelessWidget {
   const QuotationsWidget(
@@ -9,9 +10,25 @@ class QuotationsWidget extends StatelessWidget {
       required this.status,
       required this.fontStatusColor,
       required this.backgroundStatusColor,
-      required this.navigationPage})
+      required this.navigationPage,
+      this.rfqEntity = const RfqEntity(
+        rfqId: 0,
+        custId: 0,
+        company: "Tradeasia",
+        country: "Indonesia",
+        firstname: "M Akmal",
+        incoterm: "FOB",
+        lastname: "Rama",
+        message: "ok",
+        phone: "0811111111",
+        portOfDestination: "Bandung",
+        products: RfqProduct(productName: "Dipentene", quantity: 2, unit: "kg"),
+        quotationStatus: "",
+        salesId: 0,
+      )})
       : super(key: key);
 
+  final RfqEntity rfqEntity;
   final String status;
   final Color fontStatusColor;
   final Color backgroundStatusColor;
@@ -41,7 +58,7 @@ class QuotationsWidget extends StatelessWidget {
                     Expanded(
                       flex: 3,
                       child: Text(
-                        "Dimas Pradipta putraaaaaa",
+                        rfqEntity.firstname!,
                         style: heading3.copyWith(color: secondaryColor1),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -80,10 +97,10 @@ class QuotationsWidget extends StatelessWidget {
                     dashLength: 5.0,
                   ),
                 ),
-                const Padding(
+                Padding(
                   padding: EdgeInsets.only(bottom: size20px / 2),
                   child: Text(
-                    "Dipentene",
+                    rfqEntity.products!.productName!,
                     style: text15,
                   ),
                 ),
@@ -92,7 +109,7 @@ class QuotationsWidget extends StatelessWidget {
                   children: [
                     Text("Quantity/Unit",
                         style: body2Medium.copyWith(color: greyColor2)),
-                    const Text("800 Tone/Tones", style: body1Medium),
+                    Text(rfqEntity.products!.unit!, style: body1Medium),
                   ],
                 ),
                 Padding(
@@ -103,7 +120,7 @@ class QuotationsWidget extends StatelessWidget {
                     children: [
                       Text("Incoterm",
                           style: body2Medium.copyWith(color: greyColor2)),
-                      const Text("FOB", style: body1Medium),
+                      Text(rfqEntity.incoterm!, style: body1Medium),
                     ],
                   ),
                 ),
@@ -112,7 +129,7 @@ class QuotationsWidget extends StatelessWidget {
                   children: [
                     Text("Port of Destination",
                         style: body2Medium.copyWith(color: greyColor2)),
-                    const Text("Any port in Vietnam", style: body1Medium),
+                    Text(rfqEntity.portOfDestination!, style: body1Medium),
                   ],
                 ),
               ],
