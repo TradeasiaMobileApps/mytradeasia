@@ -30,6 +30,22 @@ class RfqEntity extends Equatable {
       this.message,
       this.quotationStatus});
 
+  Map<String, String> toRfqMap() {
+    return {
+      "First Name": firstname.toString(),
+      "Last Name": lastname.toString(),
+      "Phone Number": phone.toString(),
+      "Country": country.toString(),
+      "Company Name": company.toString(),
+      "Product Name": products!.productName.toString(),
+      "Quantity": products!.quantity.toString(),
+      "Unit": products!.unit.toString(),
+      "Incoterm": incoterm.toString(),
+      "Port of Destination": portOfDestination.toString(),
+      "Message": message.toString(),
+    };
+  }
+
   @override
   List<Object?> get props {
     return [

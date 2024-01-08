@@ -34,7 +34,8 @@ List<RfqEntity> rfqEntities = [
     firstname: "M Akmal",
     incoterm: "FOB",
     lastname: "Rama",
-    message: "ok",
+    message:
+        "okkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk",
     phone: "0811111111",
     portOfDestination: "Bandung",
     products: RfqProduct(productName: "Dipentene", quantity: 2, unit: "kg"),

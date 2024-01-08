@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mytradeasia/features/domain/entities/rfq_entities/rfq_entity.dart';
 import 'package:mytradeasia/features/presentation/widgets/quotations_widget/navbar/approved_navbar.dart';
 import 'package:mytradeasia/features/presentation/widgets/quotations_widget/navbar/quoted_navbar.dart';
 import 'package:mytradeasia/features/presentation/widgets/quotations_widget/quotation_detail_banner_widget.dart';
@@ -10,9 +11,11 @@ import '../../../../../widgets/quotations_widget/navbar/sales_navbar.dart';
 import '../../../../../widgets/quotations_widget/navbar/submitted_navbar.dart';
 
 class QuotationDetailScreen extends StatelessWidget {
-  const QuotationDetailScreen({super.key, required this.status, this.isSales});
+  const QuotationDetailScreen(
+      {super.key, required this.status, this.isSales, required this.rfqEntity});
 
   final String status;
+  final RfqEntity rfqEntity;
   final bool? isSales;
 
   static const quotationData = {
@@ -44,7 +47,7 @@ class QuotationDetailScreen extends StatelessWidget {
       children: [
         SizedBox(
           width: size20px * 4.0,
-          child: Text(quotationData.keys.toList()[index],
+          child: Text(rfqEntity.toRfqMap().keys.toList()[index],
               style: body2Medium.copyWith(color: greyColor2)),
         ),
         Padding(
@@ -53,7 +56,7 @@ class QuotationDetailScreen extends StatelessWidget {
         ),
         Expanded(
           child: Text(
-            quotationData.values.toList()[index],
+            rfqEntity.toRfqMap().values.toList()[index],
             style: body1Medium,
           ),
         ),

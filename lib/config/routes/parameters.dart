@@ -2,6 +2,8 @@ import 'package:mytradeasia/features/domain/entities/all_industry_entities/all_i
 import 'package:mytradeasia/features/domain/entities/product_entities/product_to_rfq_entity.dart';
 import 'package:mytradeasia/features/domain/entities/searates_entities/searates_bl_entity.dart';
 
+import '../../features/domain/entities/rfq_entities/rfq_entity.dart';
+
 class TrackingDocumentParameter {
   String product;
   int indexProducts;
@@ -18,7 +20,9 @@ class TrackingShipmentParameter {
 class QuotationDetailParameter {
   String status;
   bool? isSales;
-  QuotationDetailParameter({required this.status, this.isSales});
+  RfqEntity? rfqEntity;
+  QuotationDetailParameter(
+      {required this.status, this.isSales, this.rfqEntity});
 }
 
 class MessageDetailParameter {

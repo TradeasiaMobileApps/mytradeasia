@@ -36,7 +36,8 @@ class RfqListWidget extends StatelessWidget {
                           navigationPage: () {
                             /* With go_router */
                             QuotationDetailParameter param =
-                                QuotationDetailParameter(status: 'quoted');
+                                QuotationDetailParameter(
+                                    status: 'quoted', rfqEntity: rfq);
 
                             context.push(
                                 "/mytradeasia/quotations/detail_quotation",
@@ -51,7 +52,8 @@ class RfqListWidget extends StatelessWidget {
                           navigationPage: () {
                             /* With go_router */
                             QuotationDetailParameter param =
-                                QuotationDetailParameter(status: 'submitted');
+                                QuotationDetailParameter(
+                                    status: 'submitted', rfqEntity: rfq);
 
                             context.push(
                                 "/mytradeasia/quotations/detail_quotation",
@@ -67,7 +69,8 @@ class RfqListWidget extends StatelessWidget {
                           navigationPage: () {
                             /* With go_router */
                             QuotationDetailParameter param =
-                                QuotationDetailParameter(status: 'rejected');
+                                QuotationDetailParameter(
+                                    status: 'rejected', rfqEntity: rfq);
 
                             context.push(
                                 "/mytradeasia/quotations/detail_quotation",
@@ -82,7 +85,8 @@ class RfqListWidget extends StatelessWidget {
                           navigationPage: () {
                             /* With go_router */
                             QuotationDetailParameter param =
-                                QuotationDetailParameter(status: 'approved');
+                                QuotationDetailParameter(
+                                    status: 'approved', rfqEntity: rfq);
 
                             context.push(
                                 "/mytradeasia/quotations/detail_quotation",

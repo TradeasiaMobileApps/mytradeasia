@@ -277,6 +277,7 @@ class Routes {
                                 QuotationDetailParameter param =
                                     state.extra as QuotationDetailParameter;
                                 return QuotationDetailScreen(
+                                  rfqEntity: param.rfqEntity!,
                                   status: param.status,
                                   isSales: param.isSales,
                                 );
@@ -295,6 +296,7 @@ class Routes {
                                 QuotationDetailParameter param =
                                     state.extra as QuotationDetailParameter;
                                 return QuotationDetailScreen(
+                                  rfqEntity: param.rfqEntity!,
                                   status: param.status,
                                   isSales: param.isSales,
                                 );
