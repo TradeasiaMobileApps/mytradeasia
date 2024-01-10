@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:mytradeasia/config/themes/theme.dart';
+import 'package:mytradeasia/features/domain/usecases/rfq_usecases/get_rfq_list.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_snapshot.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_event.dart';
@@ -21,6 +22,7 @@ class MyTradeAsiaScreen extends StatefulWidget {
 
 class _MyTradeAsiaScreenState extends State<MyTradeAsiaScreen> {
   final GetUserSnapshot _getUserSnapshot = injections<GetUserSnapshot>();
+  final GetRfqList _getRfqList = injections<GetRfqList>();
 
   @override
   Widget build(BuildContext context) {
@@ -199,6 +201,7 @@ class _MyTradeAsiaScreenState extends State<MyTradeAsiaScreen> {
                                 nama: "Quotations",
                                 urlIcon: "assets/images/icon_quotation.png",
                                 onPressedFunction: () {
+                                  _getRfqList();
                                   if (streamSnapshot.data['role'] == "Sales") {
                                     context.go("/mytradeasia/sales_quotations");
                                   } else {

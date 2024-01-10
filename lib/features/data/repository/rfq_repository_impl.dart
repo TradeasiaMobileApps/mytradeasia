@@ -46,4 +46,9 @@ class RfqRepositoryImpl implements RfqRepository {
       return DataFailed(e);
     }
   }
+
+  @override
+  void getRfqList() {
+    _rfqService.getRfqList();
+  }
 }
