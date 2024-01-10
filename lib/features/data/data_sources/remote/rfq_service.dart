@@ -30,7 +30,7 @@ class RfqService {
 
   void getRfqList() async {
     const String url =
-        "http://mytradeasia-backend.vercel.app/mytradeasia/rfq/createRfq";
+        "https://mytradeasia-backend.vercel.app/mytradeasia/rfq/createRfq";
 
     var data = jsonEncode(
       {
@@ -58,13 +58,10 @@ class RfqService {
 
             // queryParameters: {'user_id': '1'},
             options: Options(
-              contentType: Headers.formUrlEncodedContentType,
-              // extra: {'user_id': '1'},
-
-              followRedirects: false,
               headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
+                HttpHeaders.contentTypeHeader: Headers.jsonContentType,
               },
+              followRedirects: true, // allow redirects
             ),
           )
           .then((value) => print(value));
