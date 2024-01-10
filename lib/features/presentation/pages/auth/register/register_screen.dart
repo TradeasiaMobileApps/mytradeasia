@@ -4,13 +4,14 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:linkedin_login/linkedin_login.dart';
+// import 'package:linkedin_login/linkedin_login.dart';
 import 'package:mytradeasia/core/resources/data_state.dart';
 import 'package:mytradeasia/features/domain/usecases/otp_usecases/send_otp.dart';
 import 'package:mytradeasia/features/presentation/widgets/country_picker.dart';
 import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:signin_with_linkedin/signin_with_linkedin.dart';
 import '../../../../../config/routes/parameters.dart';
 import '../../../../../config/themes/theme.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -43,6 +44,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
   UserObject? user;
   bool logoutUser = false;
   bool isSendingOTP = false;
+
+  final _linkedInConfig = LinkedInConfig(
+    clientId: '77pv0j45iro4cd',
+    clientSecret: 'LQKSW66VfAIrulyQ',
+    redirectUrl: 'http://localhost:8080/callback',
+    scope: ['openid', 'profile', 'email'],
+  );
+  LinkedInUser? linkedInUser;
 
   Future<UserCredential> signInWithGoogle() async {
     // Trigger the authentication flow
@@ -536,129 +545,215 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               width: size20px + 10,
                             ),
                             onPressed: () {
-                              Navigator.push(
+                              SignInWithLinkedIn.signIn(
                                 context,
-                                MaterialPageRoute<void>(
-                                  builder: (final BuildContext context) =>
-                                      LinkedInUserWidget(
-                                    appBar: AppBar(
-                                      title: const Text('OAuth User'),
-                                    ),
-                                    destroySession: logoutUser,
-                                    redirectUrl:
-                                        "http://localhost:8080/callback",
-                                    clientId: "77pv0j45iro4cd",
-                                    clientSecret: "LQKSW66VfAIrulyQ",
-                                    projection: const [
-                                      ProjectionParameters.id,
-                                      ProjectionParameters.localizedFirstName,
-                                      ProjectionParameters.localizedLastName,
-                                      ProjectionParameters.firstName,
-                                      ProjectionParameters.lastName,
-                                      ProjectionParameters.profilePicture,
-                                    ],
-                                    onError: (final UserFailedAction e) {
-                                      print('Error: ${e.toString()}');
-                                      print(
-                                          'Error: ${e.stackTrace.toString()}');
-                                    },
-                                    onGetUserProfile: (final UserSucceededAction
-                                        linkedInUser) async {
-                                      print(
-                                        'Access token ${linkedInUser.token.accessToken?.accessToken}',
-                                      );
+                                config: _linkedInConfig,
+                                onGetUserProfile: (tokenData, user) async {
+                                  log('Auth token data: ${tokenData.toJson()}');
+                                  log('LinkedIn User: ${user.toJson()}');
+                                  setState(() => linkedInUser = user);
+                                  final url =
+                                      'https://linkedin-firebase-auth-integrator.vercel.app/token';
 
-                                      print(
-                                          'User : ${linkedInUser.user.toJson()}');
+                                  final headers = {
+                                    'Content-Type': 'application/json',
+                                  };
 
-                                      user = UserObject(
-                                        firstName: linkedInUser.user.givenName,
-                                        lastName: linkedInUser.user.familyName,
-                                        email: linkedInUser.user.email,
-                                        profileImageUrl:
-                                            linkedInUser.user.picture,
-                                      );
+                                  final body = {
+                                    "accessToken": tokenData.accessToken,
+                                    "uid": linkedInUser?.sub
+                                  };
 
-                                      final url =
-                                          'https://linkedin-firebase-auth-integrator.vercel.app/token';
-
-                                      final headers = {
-                                        'Content-Type': 'application/json',
-                                      };
-
-                                      final body = {
-                                        "accessToken": linkedInUser
-                                            .token.accessToken?.accessToken,
-                                        "uid": linkedInUser.user.sub
-                                      };
-
-                                      try {
-                                        final response = await dio.post(
-                                          url,
-                                          data: body,
-                                          options: Options(headers: headers),
-                                        );
-                                        if (response.statusCode == 200) {
-                                          // log("Success : ${response.data}");
-                                          final userCredential =
-                                              await FirebaseAuth.instance
-                                                  .signInWithCustomToken(
-                                                      response.data[
-                                                          'firebaseToken']);
-                                          // log("User Credential : ${userCredential.user.toString()}");
-                                          FirebaseAuth.instance
-                                              .authStateChanges()
-                                              .listen((User? user) async {
-                                            if (user != null) {
-                                              await user.updateEmail(
-                                                  linkedInUser.user.email!);
-                                              await user.updateDisplayName(
-                                                  linkedInUser.user.name!);
-                                            }
-                                          });
-                                          // log("Name : ${FirebaseAuth.instance.currentUser?.displayName}");
-                                          bool userExists =
-                                              await checkIfUserExists(
-                                                  userCredential.user!.uid);
-                                          if (userExists) {
-                                            final SharedPreferences prefs =
-                                                await SharedPreferences
-                                                    .getInstance();
-                                            await prefs.setString("email",
-                                                userCredential.user!.email!);
-                                            await prefs.setString("userId",
-                                                userCredential.user!.uid);
-                                            await prefs.setBool(
-                                                "isLoggedIn", true);
-                                            showLinkedinSSOSnackbar(context);
-                                            context.go("/home");
-                                          } else {
-                                            context.pushReplacement(
-                                                "/auth/register/sso-biodata");
-                                          }
-                                        } else {
-                                          log("Error ${response.statusCode} : ${response.data}");
+                                  try {
+                                    final response = await dio.post(
+                                      url,
+                                      data: body,
+                                      options: Options(headers: headers),
+                                    );
+                                    if (response.statusCode == 200) {
+                                      log("Success : ${response.data}");
+                                      final userCredential = await FirebaseAuth
+                                          .instance
+                                          .signInWithCustomToken(
+                                              response.data['firebaseToken']);
+                                      log("User Credential : ${userCredential.user.toString()}");
+                                      FirebaseAuth.instance
+                                          .authStateChanges()
+                                          .listen((User? user) async {
+                                        if (user != null) {
+                                          await user.updateEmail(
+                                              linkedInUser!.email!);
+                                          await user.updateDisplayName(
+                                              linkedInUser!.name);
                                         }
-                                      } catch (e) {
-                                        const snackbar = SnackBar(
-                                          content: Text(
-                                              "An error occurred, Please try again"),
-                                          backgroundColor: yellowColor,
-                                        );
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(snackbar);
-                                      }
-
-                                      setState(() {
-                                        logoutUser = false;
                                       });
+                                      log("Name : ${FirebaseAuth.instance.currentUser?.displayName}");
+                                      bool userExists = await checkIfUserExists(
+                                          userCredential.user!.uid);
+                                      if (userExists) {
+                                        final SharedPreferences prefs =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        await prefs.setString("email",
+                                            userCredential.user!.email!);
+                                        await prefs.setString(
+                                            "userId", userCredential.user!.uid);
+                                        await prefs.setBool("isLoggedIn", true);
+                                        showLinkedinSSOSnackbar(context);
+                                        context.go("/home");
+                                      } else {
+                                        context.pushReplacement(
+                                            "/auth/register/sso-biodata");
+                                      }
+                                    } else {
+                                      log("Error ${response.statusCode} : ${response.data}");
+                                    }
+                                  } catch (e) {
+                                    log("ERROR HERE : ${e}");
 
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                  fullscreenDialog: true,
-                                ),
+                                    const snackbar = SnackBar(
+                                      content: Text(
+                                          "An error occurred, Please try again"),
+                                      backgroundColor: yellowColor,
+                                    );
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackbar);
+                                  }
+
+                                  setState(() {
+                                    logoutUser = false;
+                                  });
+
+                                  // Navigator.pop(context);
+                                },
+                                onSignInError: (error) {
+                                  log('Error on sign in: $error');
+                                },
                               );
+
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute<void>(
+                              //     builder: (final BuildContext context) =>
+                              //         LinkedInUserWidget(
+                              //       appBar: AppBar(
+                              //         title: const Text('OAuth User'),
+                              //       ),
+                              //       destroySession: logoutUser,
+                              //       redirectUrl:
+                              //           "http://localhost:8080/callback",
+                              //       clientId: "77pv0j45iro4cd",
+                              //       clientSecret: "LQKSW66VfAIrulyQ",
+                              //       projection: const [
+                              //         ProjectionParameters.id,
+                              //         ProjectionParameters.localizedFirstName,
+                              //         ProjectionParameters.localizedLastName,
+                              //         ProjectionParameters.firstName,
+                              //         ProjectionParameters.lastName,
+                              //         ProjectionParameters.profilePicture,
+                              //       ],
+                              //       onError: (final UserFailedAction e) {
+                              //         print('Error: ${e.toString()}');
+                              //         print(
+                              //             'Error: ${e.stackTrace.toString()}');
+                              //       },
+                              //       onGetUserProfile: (final UserSucceededAction
+                              //           linkedInUser) async {
+                              //         print(
+                              //           'Access token ${linkedInUser.token.accessToken?.accessToken}',
+                              //         );
+                              //
+                              //         print(
+                              //             'User : ${linkedInUser.user.toJson()}');
+                              //
+                              //         user = UserObject(
+                              //           firstName: linkedInUser.user.givenName,
+                              //           lastName: linkedInUser.user.familyName,
+                              //           email: linkedInUser.user.email,
+                              //           profileImageUrl:
+                              //               linkedInUser.user.picture,
+                              //         );
+                              //
+                              //         final url =
+                              //             'https://linkedin-firebase-auth-integrator.vercel.app/token';
+                              //
+                              //         final headers = {
+                              //           'Content-Type': 'application/json',
+                              //         };
+                              //
+                              //         final body = {
+                              //           "accessToken": linkedInUser
+                              //               .token.accessToken?.accessToken,
+                              //           "uid": linkedInUser.user.sub
+                              //         };
+                              //
+                              //         try {
+                              //           final response = await dio.post(
+                              //             url,
+                              //             data: body,
+                              //             options: Options(headers: headers),
+                              //           );
+                              //           if (response.statusCode == 200) {
+                              //             // log("Success : ${response.data}");
+                              //             final userCredential =
+                              //                 await FirebaseAuth.instance
+                              //                     .signInWithCustomToken(
+                              //                         response.data[
+                              //                             'firebaseToken']);
+                              //             // log("User Credential : ${userCredential.user.toString()}");
+                              //             FirebaseAuth.instance
+                              //                 .authStateChanges()
+                              //                 .listen((User? user) async {
+                              //               if (user != null) {
+                              //                 await user.updateEmail(
+                              //                     linkedInUser.user.email!);
+                              //                 await user.updateDisplayName(
+                              //                     linkedInUser.user.name!);
+                              //               }
+                              //             });
+                              //             // log("Name : ${FirebaseAuth.instance.currentUser?.displayName}");
+                              //             bool userExists =
+                              //                 await checkIfUserExists(
+                              //                     userCredential.user!.uid);
+                              //             if (userExists) {
+                              //               final SharedPreferences prefs =
+                              //                   await SharedPreferences
+                              //                       .getInstance();
+                              //               await prefs.setString("email",
+                              //                   userCredential.user!.email!);
+                              //               await prefs.setString("userId",
+                              //                   userCredential.user!.uid);
+                              //               await prefs.setBool(
+                              //                   "isLoggedIn", true);
+                              //               showLinkedinSSOSnackbar(context);
+                              //               context.go("/home");
+                              //             } else {
+                              //               context.pushReplacement(
+                              //                   "/auth/register/sso-biodata");
+                              //             }
+                              //           } else {
+                              //             log("Error ${response.statusCode} : ${response.data}");
+                              //           }
+                              //         } catch (e) {
+                              //           const snackbar = SnackBar(
+                              //             content: Text(
+                              //                 "An error occurred, Please try again"),
+                              //             backgroundColor: yellowColor,
+                              //           );
+                              //           ScaffoldMessenger.of(context)
+                              //               .showSnackBar(snackbar);
+                              //         }
+                              //
+                              //         setState(() {
+                              //           logoutUser = false;
+                              //         });
+                              //
+                              //         Navigator.pop(context);
+                              //       },
+                              //     ),
+                              //     fullscreenDialog: true,
+                              //   ),
+                              // );
                               // const snackbar = SnackBar(
                               //   content:
                               //       Text("Linkedin is not available right now"),
