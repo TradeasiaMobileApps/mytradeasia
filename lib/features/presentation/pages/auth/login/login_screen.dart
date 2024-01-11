@@ -433,7 +433,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                     } else {
                                       log("Error ${response.statusCode} : ${response.data}");
                                     }
-                                  } catch (e) {
+                                  } on DioException catch (e) {
+                                    const snackbar = SnackBar(
+                                      content: Text(
+                                          "An error occurred, Please try again"),
+                                      backgroundColor: yellowColor,
+                                    );
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackbar);
+                                  } on FirebaseAuthException catch (e) {
                                     const snackbar = SnackBar(
                                       content: Text(
                                           "An error occurred, Please try again"),

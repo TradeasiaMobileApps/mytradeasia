@@ -564,6 +564,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     "uid": linkedInUser?.sub
                                   };
 
+                                  log("REQ BODY : ${body}");
+
                                   try {
                                     final response = await dio.post(
                                       url,
@@ -608,12 +610,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     } else {
                                       log("Error ${response.statusCode} : ${response.data}");
                                     }
-                                  } catch (e) {
+                                  } on DioException catch (e) {
+                                    log("ERROR HERE : ${e.stackTrace}");
+
+                                    var snackbar = SnackBar(
+                                      content: Text("Dio Error : ${e.message}"),
+                                      backgroundColor: yellowColor,
+                                    );
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackbar);
+                                  } on FirebaseAuthException catch (e) {
                                     log("ERROR HERE : ${e}");
 
-                                    const snackbar = SnackBar(
-                                      content: Text(
-                                          "An error occurred, Please try again"),
+                                    var snackbar = SnackBar(
+                                      content:
+                                          Text("Firebase Error : ${e.message}"),
                                       backgroundColor: yellowColor,
                                     );
                                     ScaffoldMessenger.of(context)
