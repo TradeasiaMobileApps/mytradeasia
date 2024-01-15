@@ -4,5 +4,5 @@ import '../../../core/resources/data_state.dart';
 
 abstract class RfqRepository {
   Future<DataState<dynamic>> submitRfq(RfqEntity s);
-  void getRfqList();
+  Future<DataState<List<RfqEntity>>> getRfqList();
 }

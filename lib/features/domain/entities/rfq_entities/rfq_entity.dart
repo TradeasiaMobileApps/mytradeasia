@@ -68,7 +68,7 @@ class RfqEntity extends Equatable {
 
 class RfqProduct {
   final String? productName;
-  final double? quantity;
+  final int? quantity;
   final String? unit;
 
   const RfqProduct({

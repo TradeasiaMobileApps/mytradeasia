@@ -71,7 +71,7 @@ class RfqModel extends RfqEntity {
 class RfqProductModel extends RfqProduct {
   const RfqProductModel({
     String? productName,
-    double? quantity,
+    int? quantity,
     String? unit,
   }) : super(
           productName: productName,

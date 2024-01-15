@@ -202,11 +202,11 @@ class _MyTradeAsiaScreenState extends State<MyTradeAsiaScreen> {
                                 urlIcon: "assets/images/icon_quotation.png",
                                 onPressedFunction: () {
                                   _getRfqList();
-                                  // if (streamSnapshot.data['role'] == "Sales") {
-                                  //   context.go("/mytradeasia/sales_quotations");
-                                  // } else {
-                                  //   context.go("/mytradeasia/quotations");
-                                  // }
+                                  if (streamSnapshot.data['role'] == "Sales") {
+                                    context.go("/mytradeasia/sales_quotations");
+                                  } else {
+                                    context.go("/mytradeasia/quotations");
+                                  }
                                 }),
 
                             // contact us menu

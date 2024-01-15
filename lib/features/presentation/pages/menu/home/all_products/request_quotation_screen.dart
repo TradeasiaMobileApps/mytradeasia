@@ -904,7 +904,7 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                           phone: _phoneNumberController.text,
                           products: RfqProduct(
                             productName: e.productName,
-                            quantity: e.quantity,
+                            quantity: e.quantity!.toInt(),
                             unit: e.unit,
                           ),
                           message: _messagesController.text,

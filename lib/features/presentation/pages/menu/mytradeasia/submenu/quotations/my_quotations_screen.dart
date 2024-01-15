@@ -1,12 +1,8 @@
-import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:mytradeasia/config/routes/parameters.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
 import 'package:mytradeasia/features/presentation/widgets/quotations_widget/rfq_list_widget.dart';
 
 import '../../../../../../../utils/static_data.dart';
-import '../../../../../widgets/quotations_widget/quotation_widget.dart';
 
 class QuotationsScreen extends StatelessWidget {
   const QuotationsScreen({super.key});
@@ -73,7 +69,7 @@ class QuotationsScreen extends StatelessWidget {
           ),
         ),
         body: TabBarView(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           children: [
             // All Quotation
             RfqListWidget(rfqEntities: rfqEntities, status: "All"),

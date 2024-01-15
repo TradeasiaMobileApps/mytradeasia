@@ -93,6 +93,7 @@ import 'package:mytradeasia/features/presentation/state_management/faq_bloc/faq_
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/detail_product_bloc/detail_product_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/list_product/list_product_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/search_product/search_product_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/quotations_bloc/quotations_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/recently_seen_bloc/recently_seen_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/rfq_bloc/rfq_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_data/salesforce_data_bloc.dart';
@@ -248,4 +249,5 @@ Future<void> initializeDependencies() async {
   injections.registerFactory<CountriesBloc>(
       () => CountriesBloc(injections(), injections()));
   injections.registerFactory<RfqBloc>(() => RfqBloc(injections()));
+  injections.registerFactory<QuotationBloc>(() => QuotationBloc(injections()));
 }

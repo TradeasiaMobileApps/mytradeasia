@@ -48,7 +48,22 @@ class RfqRepositoryImpl implements RfqRepository {
   }
 
   @override
-  void getRfqList() {
-    _rfqService.getRfqList();
+  Future<DataState<List<RfqModel>>> getRfqList() async {
+    try {
+      final response = await _rfqService.getRfqList();
+
+      if (response.statusCode == HttpStatus.ok) {
+        return DataSuccess(response.data!);
+      } else {
+        return DataFailed(DioException(
+          error: response.statusMessage,
+          response: response,
+          type: DioExceptionType.badResponse,
+          requestOptions: response.requestOptions,
+        ));
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
   }
 }
