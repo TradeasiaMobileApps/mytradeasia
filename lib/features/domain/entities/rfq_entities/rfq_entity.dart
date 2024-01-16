@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 
 class RfqEntity extends Equatable {
   final int? rfqId;
-  final int custId;
+  final String custId;
   final int? salesId;
   final String? firstname;
   final String? lastname;

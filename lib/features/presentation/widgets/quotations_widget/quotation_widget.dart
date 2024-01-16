@@ -13,7 +13,7 @@ class QuotationsWidget extends StatelessWidget {
       required this.navigationPage,
       this.rfqEntity = const RfqEntity(
         rfqId: 0,
-        custId: 0,
+        custId: "0",
         company: "Tradeasia",
         country: "Indonesia",
         firstname: "M Akmal",

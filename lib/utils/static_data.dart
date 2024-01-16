@@ -28,7 +28,7 @@ List<List<dynamic>> allIndustries = [
 List<RfqEntity> rfqEntities = [
   const RfqEntity(
     rfqId: 2,
-    custId: 1,
+    custId: "1",
     company: "Tradeasia",
     country: "Indonesia",
     firstname: "M Akmal",
@@ -44,7 +44,7 @@ List<RfqEntity> rfqEntities = [
   ),
   const RfqEntity(
     rfqId: 1,
-    custId: 1,
+    custId: "1",
     company: "Tradeasia",
     country: "Indonesia",
     firstname: "M Akmal",
@@ -59,7 +59,7 @@ List<RfqEntity> rfqEntities = [
   ),
   const RfqEntity(
     rfqId: 3,
-    custId: 1,
+    custId: "1",
     company: "Tradeasia",
     country: "Indonesia",
     firstname: "M Akmal",
@@ -74,7 +74,7 @@ List<RfqEntity> rfqEntities = [
   ),
   const RfqEntity(
     rfqId: 3,
-    custId: 1,
+    custId: "1",
     company: "Tradeasia",
     country: "Indonesia",
     firstname: "M Akmal",

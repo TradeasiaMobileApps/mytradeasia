@@ -873,6 +873,7 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                           subtitle: "${state.error!.message}",
                           textForButton: "Close",
                           navigatorFunction: () {
+                            BlocProvider.of<RfqBloc>(context).add(DisposeRfq());
                             context.pop();
                           });
                     },

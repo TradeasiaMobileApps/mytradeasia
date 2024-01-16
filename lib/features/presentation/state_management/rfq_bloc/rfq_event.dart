@@ -4,6 +4,8 @@ abstract class RfqEvent {
   const RfqEvent();
 }
 
+class DisposeRfq extends RfqEvent {}
+
 class SubmitRfqEvent extends RfqEvent {
   final RfqEntity rfqEntity;
   const SubmitRfqEvent(this.rfqEntity);

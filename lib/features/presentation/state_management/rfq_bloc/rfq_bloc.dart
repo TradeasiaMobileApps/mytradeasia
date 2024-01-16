@@ -10,9 +10,7 @@ class RfqBloc extends Bloc<RfqEvent, RfqState> {
 
   RfqBloc(this._submitRfq) : super(RfqInitial()) {
     on<SubmitRfqEvent>((event, emit) async {
-      print("called");
       final response = await _submitRfq.call(param: event.rfqEntity);
-      print(response);
       emit(const RfqLoading());
       if (response is DataSuccess) {
         emit(const RfqSuccess("rfq-submit-success"));
@@ -21,6 +19,9 @@ class RfqBloc extends Bloc<RfqEvent, RfqState> {
       if (response is DataFailed) {
         emit(RfqError(response.error!));
       }
+    });
+    on<DisposeRfq>((event, emit) async {
+      emit(RfqInitial());
     });
   }
 }

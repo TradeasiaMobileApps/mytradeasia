@@ -3,7 +3,7 @@ import 'package:mytradeasia/features/domain/entities/rfq_entities/rfq_entity.dar
 class RfqModel extends RfqEntity {
   const RfqModel(
       {required int? rfqId,
-      required int custId,
+      required String custId,
       int? salesId,
       String? firstname,
       String? lastname,

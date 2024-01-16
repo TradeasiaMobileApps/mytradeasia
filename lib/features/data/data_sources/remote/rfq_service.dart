@@ -12,9 +12,7 @@ class RfqService {
   Future<Response<dynamic>>? submitRfqService(RfqModel rfqModel) async {
     final rfqData = json.encode(rfqModel.toJson());
 
-    print(rfqData);
-
-    const String url = "$tradeasiaApi/storequote";
+    const String url = "http://10.0.2.2:3000/mytradeasia/rfq/createRfq";
     final response = await dio.post(
       url,
       data: rfqData,
@@ -25,8 +23,6 @@ class RfqService {
       requestOptions: response.requestOptions,
       data: response.statusMessage,
     );
-
-    // return Response(requestOptions: RequestOptions());
   }
 
   Future<Response<List<RfqModel>>> getRfqList() async {
@@ -34,8 +30,7 @@ class RfqService {
 
     String id = auth.getCurrentUId();
 
-    String url =
-        "http://mytradeasia-backend.vercel.app/mytradeasia/rfq/getRfqList/3";
+    String url = "http://10.0.2.2:3000/mytradeasia/rfq/getRfqList/1";
 
     final response = await dio.get(
       url,
