@@ -12,7 +12,7 @@ abstract class QuotationState extends Equatable {
 }
 
 class InitialQuotations extends QuotationState {
-  const InitialQuotations();
+  const InitialQuotations(List<RfqEntity> rfq) : super(rfq: rfq);
 }
 
 class LoadingQuotations extends QuotationState {

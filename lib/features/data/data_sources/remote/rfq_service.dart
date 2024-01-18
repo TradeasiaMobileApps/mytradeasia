@@ -30,7 +30,7 @@ class RfqService {
 
     String id = auth.getCurrentUId();
 
-    String url = "http://10.0.2.2:3000/mytradeasia/rfq/getRfqList/1";
+    String url = "http://10.0.2.2:3000/mytradeasia/rfq/getRfqList/$id";
 
     final response = await dio.get(
       url,
