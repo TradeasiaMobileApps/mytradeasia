@@ -15,6 +15,7 @@ class SalesQuotationData extends StatelessWidget {
     "Validity": "...",
     "UOM": "..."
   };
+
   Widget dataRow(int index) {
     return Flexible(
       child: Padding(
