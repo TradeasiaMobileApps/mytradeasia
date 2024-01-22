@@ -32,7 +32,6 @@ class QuoteEntity extends Equatable {
     required this.note,
     required this.quotationStatus,
   });
-
   @override
   List<Object?> get props => [
         id,

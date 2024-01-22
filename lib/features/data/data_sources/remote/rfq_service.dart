@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:mytradeasia/core/constants/constants.dart';
 import 'package:mytradeasia/features/data/data_sources/firebase/auth_user_firebase.dart';
 import 'package:mytradeasia/features/data/model/rfq_models/rfq_model.dart';
 import 'dart:convert';
