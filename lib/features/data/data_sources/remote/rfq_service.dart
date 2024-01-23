@@ -80,7 +80,6 @@ class RfqService {
             ),
           )
           .then((value) => print(value));
-      // print(response);
     } on DioException catch (e) {
       print(e);
     }

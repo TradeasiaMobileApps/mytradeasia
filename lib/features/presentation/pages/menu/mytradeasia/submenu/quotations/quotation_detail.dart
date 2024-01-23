@@ -18,29 +18,29 @@ class QuotationDetailScreen extends StatelessWidget {
   final RfqEntity rfqEntity;
   final bool? isSales;
 
-  static const quotationData = {
-    "First Name": "Dimas",
-    "Last Name": "Pradipta",
-    "Phone Number": "(+62) 885691410815",
-    "Country": "Bangladesh",
-    "Company Name": "Tradeasia International",
-    "Product Name": "DIpentene",
-    "Quantity": "800",
-    "Unit": "Tone",
-    "Incoterm": "FOB",
-    "Port of Destination": "Any port in Vietnam",
-    "Message": "...",
-  };
+  // static const quotationData = {
+  //   "First Name": "Dimas",
+  //   "Last Name": "Pradipta",
+  //   "Phone Number": "(+62) 885691410815",
+  //   "Country": "Bangladesh",
+  //   "Company Name": "Tradeasia International",
+  //   "Product Name": "DIpentene",
+  //   "Quantity": "800",
+  //   "Unit": "Tone",
+  //   "Incoterm": "FOB",
+  //   "Port of Destination": "Any port in Vietnam",
+  //   "Message": "...",
+  // };
 
-  static const salesQuotationData = {
-    "Price": "...",
-    "Quantity": "...",
-    "Shipment Date": "...",
-    "Incoterm": "...",
-    "Payment Term": "...",
-    "Validity": "...",
-    "UOM": "..."
-  };
+  // static const salesQuotationData = {
+  //   "Price": "...",
+  //   "Quantity": "...",
+  //   "Shipment Date": "...",
+  //   "Incoterm": "...",
+  //   "Payment Term": "...",
+  //   "Validity": "...",
+  //   "UOM": "..."
+  // };
 
   Widget dataRow(int index) {
     return Row(
@@ -141,6 +141,7 @@ class QuotationDetailScreen extends StatelessWidget {
         bottomNav = const QuotedNavbar();
         salesQuote = SalesQuotationData(
           status: status,
+          quoteId: rfqEntity.quoteId,
         );
         break;
       default:
@@ -185,7 +186,7 @@ class QuotationDetailScreen extends StatelessWidget {
           children: [
             detailBanner,
             // status
-            for (int i = 0; i < quotationData.length; i++)
+            for (int i = 0; i < rfqEntity.toRfqMap().length; i++)
               Padding(
                 padding: const EdgeInsets.only(
                     top: size20px / 2, right: size20px, left: size20px),

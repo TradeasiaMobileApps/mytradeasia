@@ -4,14 +4,9 @@ import 'package:mytradeasia/features/presentation/widgets/quotations_widget/rfq_
 
 import '../../../../../../../utils/static_data.dart';
 
-class QuotationsScreen extends StatefulWidget {
+class QuotationsScreen extends StatelessWidget {
   const QuotationsScreen({super.key});
 
-  @override
-  State<QuotationsScreen> createState() => _QuotationsScreenState();
-}
-
-class _QuotationsScreenState extends State<QuotationsScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(

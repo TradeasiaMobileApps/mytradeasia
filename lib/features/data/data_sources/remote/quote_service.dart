@@ -5,19 +5,20 @@ class QuoteService {
   final dio = Dio();
 
   Future<Response<QuoteModel>> getQuote(int id) async {
-    const String url = "http://localhost:3000/mytradeasia/quote/getQuote";
+    const String url = "http://10.0.2.2:3000/mytradeasia/quote/getQuote";
 
-    final response = await dio.post(
+    final response = await dio.get(
       url,
       data: {"quote_id": id.toString()},
     );
 
-    var rawData = response.data["payload"]["datas"];
-    var data = rawData.map((e) => QuoteModel.fromJson(e));
+    var rawData = response.data["payload"]["datas"] as List;
+    var data = rawData.map((e) => QuoteModel.fromJson(e)).toList();
+
     return Response<QuoteModel>(
       statusCode: response.statusCode,
       requestOptions: response.requestOptions,
-      data: data,
+      data: data[0],
     );
   }
 }

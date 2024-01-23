@@ -16,10 +16,7 @@ class QuotationBloc extends Bloc<QuotationEvent, QuotationState> {
   void onGetQuotation(GetRFQs event, Emitter<QuotationState> emit) async {
     final dataState = await _getRfqList();
 
-    print(dataState.data!);
-
     if (dataState is DataSuccess && dataState.data!.isNotEmpty) {
-      print("success called");
       emit(QuotationDone(dataState.data!));
     }
 
@@ -30,7 +27,6 @@ class QuotationBloc extends Bloc<QuotationEvent, QuotationState> {
 
   void onDisposeQuotation(
       DisposeQuotation event, Emitter<QuotationState> emit) {
-    print("dispose called");
     emit(const InitialQuotations([]));
   }
 }

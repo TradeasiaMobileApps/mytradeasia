@@ -4,6 +4,7 @@ class RfqEntity extends Equatable {
   final int? rfqId;
   final String custId;
   final int? salesId;
+  final int? quoteId;
   final String? firstname;
   final String? lastname;
   final String? phone;
@@ -19,6 +20,7 @@ class RfqEntity extends Equatable {
       {required this.rfqId,
       required this.custId,
       this.salesId,
+      this.quoteId,
       this.firstname,
       this.lastname,
       this.phone,
@@ -52,6 +54,7 @@ class RfqEntity extends Equatable {
       rfqId,
       custId,
       salesId,
+      quoteId,
       firstname,
       lastname,
       phone,
