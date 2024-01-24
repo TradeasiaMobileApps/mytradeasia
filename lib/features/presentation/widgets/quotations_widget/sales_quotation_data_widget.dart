@@ -21,17 +21,16 @@ class SalesQuotationData extends StatelessWidget {
     "UOM": "..."
   };
 
-  Widget dataRow(int index) {
+  Widget dataRow(int index, QuoteEntity quoteEntity) {
     return Flexible(
       child: Padding(
         padding: const EdgeInsets.only(
             top: size20px / 2, right: size20px, left: size20px),
         child: Row(
           children: [
-            //TODO:change this into using quote data fetched from remote
             SizedBox(
               width: size20px * 4.0,
-              child: Text(salesQuotationData.keys.toList()[index],
+              child: Text(quoteEntity.toQuoteMap().keys.toList()[index],
                   style: body2Medium.copyWith(color: greyColor2)),
             ),
             Padding(
@@ -41,7 +40,7 @@ class SalesQuotationData extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                salesQuotationData.values.toList()[index],
+                quoteEntity.toQuoteMap().values.toList()[index],
                 style: body1Medium,
               ),
             ),
@@ -59,31 +58,38 @@ class SalesQuotationData extends StatelessWidget {
       return FutureBuilder<DataState<QuoteEntity>>(
         future: getQuoteData.call(param: quoteId!),
         builder: (context, snapshot) {
-          //TODO:add loading effect before fetching data
           var quoteData = snapshot.data;
           // print(quoteData!.error!.message);
-          return quoteData is DataSuccess
-              ? SizedBox(
-                  height: 203,
-                  width: MediaQuery.of(context).size.width,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "Quotations",
-                        style: heading2,
-                      ),
-                      const SizedBox(
-                        height: size20px - 10,
-                      ),
-                      for (int i = 0; i < salesQuotationData.length; i++)
-                        dataRow(i),
-                    ],
-                  ),
-                )
-              : const Center(
-                  child: Text("Error on retrieving quotation data"),
-                );
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator.adaptive(
+              backgroundColor: primaryColor1,
+            );
+          }
+          if (snapshot.hasData) {
+            return quoteData is DataSuccess
+                ? SizedBox(
+                    height: 203,
+                    width: MediaQuery.of(context).size.width,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Quotations",
+                          style: heading2,
+                        ),
+                        const SizedBox(
+                          height: size20px - 10,
+                        ),
+                        for (int i = 0; i < salesQuotationData.length; i++)
+                          dataRow(i, quoteData!.data!),
+                      ],
+                    ),
+                  )
+                : const Center(
+                    child: Text("Error on retrieving quotation data"),
+                  );
+          }
+          return SizedBox();
         },
       );
     } else {
