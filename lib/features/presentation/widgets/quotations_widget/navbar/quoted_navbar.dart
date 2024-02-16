@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mytradeasia/features/domain/usecases/rfq_usecases/approve_quote.dart';
+import 'package:mytradeasia/features/domain/usecases/rfq_usecases/reject_quote.dart';
+import 'package:mytradeasia/helper/injections_container.dart';
 
 import '../../../../../config/themes/theme.dart';
 
 class QuotedNavbar extends StatelessWidget {
-  const QuotedNavbar({super.key});
+  const QuotedNavbar({super.key, required this.rfqId});
+  final int rfqId;
+  static ApproveQuote aprroveQuote = ApproveQuote(injections());
+  static RejectQuote rejectQuote = RejectQuote(injections());
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +28,10 @@ class QuotedNavbar extends StatelessWidget {
                         borderRadius: BorderRadius.circular(7.0),
                         side: const BorderSide(color: redColor1))),
               ),
-              onPressed: () {},
+              onPressed: () {
+                rejectQuote.call(param: rfqId);
+                context.pop();
+              },
               child: const Icon(
                 Icons.close,
                 color: redColor1,
@@ -42,7 +52,10 @@ class QuotedNavbar extends StatelessWidget {
                           borderRadius: BorderRadius.circular(7.0),
                           side: const BorderSide(color: greenColor1))),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  aprroveQuote.call(param: rfqId);
+                  context.pop();
+                },
                 child: const Icon(
                   Icons.check,
                   color: greenColor1,

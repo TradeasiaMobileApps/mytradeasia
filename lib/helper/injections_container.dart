@@ -58,7 +58,9 @@ import 'package:mytradeasia/features/domain/usecases/dhl_shipment_usecases/get_d
 import 'package:mytradeasia/features/domain/usecases/faq_usecases/get_faq_data.dart';
 import 'package:mytradeasia/features/domain/usecases/industry_usecases/get_industry.dart';
 import 'package:mytradeasia/features/domain/usecases/quote_usecases/get_quote_usecase.dart';
+import 'package:mytradeasia/features/domain/usecases/rfq_usecases/approve_quote.dart';
 import 'package:mytradeasia/features/domain/usecases/rfq_usecases/get_rfq_list.dart';
+import 'package:mytradeasia/features/domain/usecases/rfq_usecases/reject_quote.dart';
 import 'package:mytradeasia/features/domain/usecases/sales_force_data_usecases/create_sales_force_account.dart';
 import 'package:mytradeasia/features/domain/usecases/sales_force_data_usecases/create_sales_force_opportunity.dart';
 import 'package:mytradeasia/features/domain/usecases/sales_force_data_usecases/get_sales_force_cp.dart';
@@ -221,6 +223,8 @@ Future<void> initializeDependencies() async {
       SearchCountryUsecase(injections()));
   injections.registerSingleton<GetRfqList>(GetRfqList(injections()));
   injections.registerSingleton<GetQuote>(GetQuote(injections()));
+  injections.registerSingleton<ApproveQuote>(ApproveQuote(injections()));
+  injections.registerSingleton<RejectQuote>(RejectQuote(injections()));
 
   //Bloc
   injections

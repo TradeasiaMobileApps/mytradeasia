@@ -84,4 +84,54 @@ class RfqService {
       print(e);
     }
   }
+
+  Future<Response> approveQuote(int id) async {
+    const String url = "http://10.0.2.2:3000/mytradeasia/rfq/approveQuote";
+
+    try {
+      final response = await dio.put(
+        url,
+        data: {"rfq_id": id},
+
+        // queryParameters: {'user_id': '1'},
+        options: Options(
+          headers: {
+            HttpHeaders.contentTypeHeader: Headers.jsonContentType,
+          },
+          followRedirects: true, // allow redirects
+        ),
+      );
+      return response;
+    } catch (e) {
+      return Response(
+          requestOptions: RequestOptions(),
+          statusCode: 400,
+          statusMessage: 'error on approve quote');
+    }
+  }
+
+  Future<Response> rejectQuote(int id) async {
+    const String url = "http://10.0.2.2:3000/mytradeasia/rfq/rejectQuote";
+
+    try {
+      final response = await dio.put(
+        url,
+        data: {"rfq_id": id},
+
+        // queryParameters: {'user_id': '1'},
+        options: Options(
+          headers: {
+            HttpHeaders.contentTypeHeader: Headers.jsonContentType,
+          },
+          followRedirects: true, // allow redirects
+        ),
+      );
+      return response;
+    } catch (e) {
+      return Response(
+          requestOptions: RequestOptions(),
+          statusCode: 400,
+          statusMessage: 'error on reject quote');
+    }
+  }
 }

@@ -66,4 +66,44 @@ class RfqRepositoryImpl implements RfqRepository {
       return DataFailed(e);
     }
   }
+
+  @override
+  Future<DataState> approveQuote(int id) async {
+    try {
+      final response = await _rfqService.approveQuote(id);
+
+      if (response.statusCode == HttpStatus.ok) {
+        return DataSuccess(response.data!);
+      } else {
+        return DataFailed(DioException(
+          error: response.statusMessage,
+          response: response,
+          type: DioExceptionType.badResponse,
+          requestOptions: response.requestOptions,
+        ));
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState> rejectQuote(int id) async {
+    try {
+      final response = await _rfqService.rejectQuote(id);
+
+      if (response.statusCode == HttpStatus.ok) {
+        return DataSuccess(response.data!);
+      } else {
+        return DataFailed(DioException(
+          error: response.statusMessage,
+          response: response,
+          type: DioExceptionType.badResponse,
+          requestOptions: response.requestOptions,
+        ));
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
 }

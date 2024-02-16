@@ -138,7 +138,9 @@ class QuotationDetailScreen extends StatelessWidget {
             status: "Quoted",
             fontColor: orangeColor1,
             backgroundColor: orangeColor2);
-        bottomNav = const QuotedNavbar();
+        bottomNav = QuotedNavbar(
+          rfqId: rfqEntity.rfqId!,
+        );
         salesQuote = SalesQuotationData(
           status: status,
           quoteId: rfqEntity.quoteId,
