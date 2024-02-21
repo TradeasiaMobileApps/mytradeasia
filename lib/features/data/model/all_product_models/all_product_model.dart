@@ -1,18 +1,18 @@
-import 'package:mytradeasia/features/domain/entities/product_entities/all_product_entity.dart';
+import '../../../domain/entities/all_product_entities/all_product_entity.dart';
 
 class AllProductModel extends AllProductEntities {
   const AllProductModel({
+    int? id,
     String? productname,
     String? productimage,
     String? hsCode,
     String? casNumber,
-    String? seoUrl,
   }) : super(
+          id: id,
           productname: productname,
           productimage: productimage,
           hsCode: hsCode,
           casNumber: casNumber,
-          seoUrl: seoUrl,
         );
 
   factory AllProductModel.fromJson(Map<String, dynamic> json) =>
@@ -21,7 +21,6 @@ class AllProductModel extends AllProductEntities {
         productimage: json["productimage"],
         hsCode: json["hs_code"],
         casNumber: json["cas_number"],
-        seoUrl: json["seo_url"] ?? " ",
       );
 
   factory AllProductModel.fromFirebase(Map<String, dynamic> json) =>
@@ -30,6 +29,5 @@ class AllProductModel extends AllProductEntities {
         productimage: json["productImage"],
         hsCode: json["hsCode"],
         casNumber: json["casNumber"],
-        seoUrl: json["seo_url"] ?? " ",
       );
 }

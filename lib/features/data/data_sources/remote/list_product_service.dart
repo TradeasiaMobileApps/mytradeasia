@@ -6,9 +6,10 @@ class ListProductService {
   final dio = Dio();
 
   Future<Response<List<AllProductModel>>> getListProduct() async {
-    String endPoint = "/list-product";
-    final response = await dio.get(tradeasiaApi + endPoint);
-    final dataList = response.data as List<dynamic>;
+    String url = "https://tradeasia.vn/api/productByIndustry";
+    final response = await dio.post(url);
+    final dataList =
+        response.data['data']['industry_product']['data'] as List<dynamic>;
     final listProductModel =
         dataList.map((e) => AllProductModel.fromJson(e)).toList();
 

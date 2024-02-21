@@ -1,6 +1,7 @@
-import 'package:mytradeasia/features/domain/entities/product_entities/all_product_entity.dart';
 import 'package:mytradeasia/features/domain/entities/user_entities/user_credential_entity.dart';
 import 'package:mytradeasia/features/domain/entities/user_entities/user_entity.dart';
+
+import '../entities/all_product_entities/all_product_entity.dart';
 
 abstract class UserRepository {
   Future<String> registerUser(UserEntity s);

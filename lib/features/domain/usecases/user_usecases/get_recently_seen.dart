@@ -1,7 +1,7 @@
 import 'package:mytradeasia/core/usecase/usecase.dart';
 import 'package:mytradeasia/features/domain/repository/user_repository.dart';
 
-import '../../entities/product_entities/all_product_entity.dart';
+import '../../entities/all_product_entities/all_product_entity.dart';
 
 class GetRecentlySeen implements UseCase<List<AllProductEntities>, void> {
   final UserRepository _userRepository;

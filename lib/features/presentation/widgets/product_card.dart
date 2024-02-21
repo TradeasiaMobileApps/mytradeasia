@@ -37,7 +37,7 @@ class ProductCard extends StatelessWidget {
                 height: size20px * 5.5,
                 width: MediaQuery.of(context).size.width,
                 child: CachedNetworkImage(
-                  imageUrl: "$url${product.productimage!}",
+                  imageUrl: product.productimage!,
                   fit: BoxFit.fill,
                   placeholder: (context, url) => const Center(
                     child: CircularProgressIndicator.adaptive(),

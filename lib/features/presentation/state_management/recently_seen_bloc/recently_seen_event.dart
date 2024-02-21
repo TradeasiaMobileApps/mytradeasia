@@ -1,4 +1,4 @@
-import 'package:mytradeasia/features/domain/entities/product_entities/all_product_entity.dart';
+import '../../../domain/entities/all_product_entities/all_product_entity.dart';
 
 abstract class RecentlySeenEvent {
   const RecentlySeenEvent();

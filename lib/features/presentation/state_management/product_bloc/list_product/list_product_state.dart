@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:dio/dio.dart';
-import 'package:mytradeasia/features/domain/entities/product_entities/all_product_entity.dart';
+
+import '../../../../domain/entities/all_product_entities/all_product_entity.dart';
 
 abstract class ListProductState extends Equatable {
   final List<AllProductEntities>? products;

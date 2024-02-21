@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:mytradeasia/core/resources/data_state.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/list_product_service.dart';
-import 'package:mytradeasia/features/domain/entities/product_entities/all_product_entity.dart';
+
 import 'package:mytradeasia/features/domain/repository/list_product_repository.dart';
+
+import '../../domain/entities/all_product_entities/all_product_entity.dart';
 
 class ListProductRepositoryImpl implements ListProductRepository {
   final ListProductService _listProductService;

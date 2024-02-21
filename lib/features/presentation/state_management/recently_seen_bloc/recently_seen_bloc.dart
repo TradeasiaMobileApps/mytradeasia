@@ -18,7 +18,6 @@ class RecentlySeenBloc extends Bloc<RecentlySeenEvent, RecentlySeenState> {
     on<AddRecentlySeenEvent>((event, emit) {
       Map<String, dynamic> data = {
         "productName": event.recentlySeen.productname,
-        "seo_url": event.recentlySeen.seoUrl,
         "casNumber": event.recentlySeen.casNumber,
         "hsCode": event.recentlySeen.hsCode,
         "productImage": event.recentlySeen.productimage,

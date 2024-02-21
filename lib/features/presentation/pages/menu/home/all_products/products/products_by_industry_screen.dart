@@ -316,20 +316,20 @@ class IndustryProducts extends StatelessWidget {
                 onTap: () async {
                   /* With go_router */
 
-                  context.pushNamed("product", pathParameters: {
-                    'url': state.products![index].seoUrl ??
-                        "/images/product/alum.webp"
-                  });
+                  // context.pushNamed("product", pathParameters: {
+                  //   'url': state.products![index].seoUrl ??
+                  //       "/images/product/alum.webp"
+                  // });
 
-                  Map<String, dynamic> data = {
-                    "productName": state.products![index].productname,
-                    "seo_url": state.products![index].seoUrl,
-                    "casNumber": state.products![index].casNumber,
-                    "hsCode": state.products![index].hsCode,
-                    "productImage": state.products![index].productimage
-                  };
+                  // Map<String, dynamic> data = {
+                  //   "productName": state.products![index].productname,
+                  //   "seo_url": state.products![index].seoUrl,
+                  //   "casNumber": state.products![index].casNumber,
+                  //   "hsCode": state.products![index].hsCode,
+                  //   "productImage": state.products![index].productimage
+                  // };
 
-                  await _addRecentlySeen(param: data);
+                  // await _addRecentlySeen(param: data);
                 },
                 child: authState.role != "Sales"
                     ? ProductCard(
