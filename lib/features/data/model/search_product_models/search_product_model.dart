@@ -6,13 +6,11 @@ class SearchProductModel extends ProductEntity {
     String? productimage,
     String? hsCode,
     String? casNumber,
-    String? seoUrl,
   }) : super(
           productname: productname,
           productimage: productimage,
           hsCode: hsCode,
           casNumber: casNumber,
-          seoUrl: seoUrl,
         );
 
   factory SearchProductModel.fromJson(Map<String, dynamic> json) =>
@@ -21,6 +19,5 @@ class SearchProductModel extends ProductEntity {
         productimage: json["productimage"],
         hsCode: json["hs_code"],
         casNumber: json["cas_number"],
-        seoUrl: json["seo_url"] ?? "",
       );
 }

@@ -29,7 +29,6 @@ CartModel castProductEntityToCartModel(
       productImage: product.productimage,
       hsCode: product.hsCode,
       casNumber: product.casNumber,
-      seoUrl: product.seoUrl,
       quantity: quantity,
       unit: unit);
 }

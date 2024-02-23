@@ -203,34 +203,34 @@ class _SearchScreenState extends State<SearchScreen> {
                             itemBuilder: (context, index) {
                               return InkWell(
                                 onTap: () async {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) {
-                                        return ProductsDetailScreen(
-                                          urlProduct: state
-                                                  .searchProducts![index]
-                                                  .seoUrl ??
-                                              "/en/acrylic-acid",
-                                        );
-                                      },
-                                    ),
-                                  );
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //     builder: (context) {
+                                  //       return ProductsDetailScreen(
+                                  //         urlProduct: state
+                                  //                 .searchProducts![index]
+                                  //                 .seoUrl ??
+                                  //             "/en/acrylic-acid",
+                                  //       );
+                                  //     },
+                                  //   ),
+                                  // );
 
-                                  Map<String, dynamic> data = {
-                                    "productName": state
-                                        .searchProducts![index].productname,
-                                    "seo_url":
-                                        state.searchProducts![index].seoUrl,
-                                    "casNumber":
-                                        state.searchProducts![index].casNumber,
-                                    "hsCode":
-                                        state.searchProducts![index].hsCode,
-                                    "productImage": state
-                                        .searchProducts![index].productimage
-                                  };
+                                  // Map<String, dynamic> data = {
+                                  //   "productName": state
+                                  //       .searchProducts![index].productname,
+                                  //   "seo_url":
+                                  //       state.searchProducts![index].seoUrl,
+                                  //   "casNumber":
+                                  //       state.searchProducts![index].casNumber,
+                                  //   "hsCode":
+                                  //       state.searchProducts![index].hsCode,
+                                  //   "productImage": state
+                                  //       .searchProducts![index].productimage
+                                  // };
 
-                                  await _addRecentlySeen(param: data);
+                                  // await _addRecentlySeen(param: data);
                                 },
                                 child: BlocBuilder<AuthBloc, AuthState>(
                                   builder: (context, authState) {
@@ -249,9 +249,6 @@ class _SearchScreenState extends State<SearchScreen> {
                                               hsCode: state
                                                   .searchProducts![index]
                                                   .hsCode,
-                                              seoUrl: state
-                                                  .searchProducts![index]
-                                                  .seoUrl,
                                             ),
                                             onPressed: () {
                                               List<ProductToRfq> products = [];
@@ -295,9 +292,6 @@ class _SearchScreenState extends State<SearchScreen> {
                                               hsCode: state
                                                   .searchProducts![index]
                                                   .hsCode,
-                                              seoUrl: state
-                                                  .searchProducts![index]
-                                                  .seoUrl,
                                             ),
                                             isNotRecentSeenCard: false,
                                           );

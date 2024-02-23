@@ -70,16 +70,16 @@ class ListIndustry {
 
 class RelatedProduct {
   const RelatedProduct({
+    required this.productId,
     required this.productname,
     required this.productimage,
     required this.casNumber,
     required this.hsCode,
-    required this.seoUrl,
   });
 
+  final int? productId;
   final String? productname;
   final String? productimage;
   final String? casNumber;
   final String? hsCode;
-  final String? seoUrl;
 }

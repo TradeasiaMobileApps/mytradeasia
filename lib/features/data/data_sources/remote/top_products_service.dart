@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:mytradeasia/core/constants/constants.dart';
 import 'package:mytradeasia/features/data/model/top_products_models/top_product_model.dart';
 
 class TopProductsService {
@@ -7,10 +6,10 @@ class TopProductsService {
   final dio = Dio();
 
   Future<Response<List<TopProductsModel>>> getTopProducts() async {
-    const String endPoint = "/top-products";
-    final response = await dio.get(tradeasiaApi + endPoint);
+    const String endPoint = "https://tradeasia.vn/api/topProducts";
+    final response = await dio.get(endPoint);
 
-    final dataList = response.data as List<dynamic>;
+    final dataList = response.data["data"]["top_product"]["data"] as List;
     final listProductModel =
         dataList.map((e) => TopProductsModel.fromJson(e)).toList();
 

@@ -95,25 +95,25 @@ class _ListIndustryModel extends ListIndustry {
 
 class _RelatedProductModel extends RelatedProduct {
   const _RelatedProductModel({
+    int? productId,
     String? productname,
     String? productimage,
     String? casNumber,
     String? hsCode,
-    String? seoUrl,
   }) : super(
+          productId: productId,
           productname: productname,
           productimage: productimage,
           casNumber: casNumber,
           hsCode: hsCode,
-          seoUrl: seoUrl,
         );
 
   factory _RelatedProductModel.fromJson(Map<String, dynamic> json) =>
       _RelatedProductModel(
+        productId: json["id"],
         productname: json["productname"],
         productimage: json["productimage"],
         casNumber: json["cas_number"],
         hsCode: json["hs_code"],
-        seoUrl: json["seo_url"],
       );
 }

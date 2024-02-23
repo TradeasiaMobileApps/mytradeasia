@@ -576,16 +576,20 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                               return InkWell(
                                 onTap: () {
                                   /* With go_router */
-                                  context.goNamed("product", pathParameters: {
-                                    'url': state
-                                            .detailProductData
-                                            ?.relatedProducts?[indexRelated]
-                                            .seoUrl ??
-                                        "/en/acrylic-acid"
-                                  });
+                                  // context.goNamed("product", pathParameters: {
+                                  //   'url': state
+                                  //           .detailProductData
+                                  //           ?.relatedProducts?[indexRelated]
+                                  //           .seoUrl ??
+                                  //       "/en/acrylic-acid"
+                                  // });
                                 },
                                 child: ProductCard(
                                   product: ProductEntity(
+                                    productId: state
+                                        .detailProductData!
+                                        .relatedProducts![indexRelated]
+                                        .productId,
                                     productname: state
                                         .detailProductData!
                                         .relatedProducts![indexRelated]
@@ -600,8 +604,6 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                                         .casNumber,
                                     hsCode: state.detailProductData!
                                         .relatedProducts![indexRelated].hsCode,
-                                    seoUrl: state.detailProductData!
-                                        .relatedProducts![indexRelated].seoUrl,
                                   ),
                                   isNotRecentSeenCard: false,
                                 ),
@@ -862,7 +864,7 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                                                       Padding(
                                                         padding:
                                                             const EdgeInsets
-                                                                    .only(
+                                                                .only(
                                                                 top: size20px),
                                                         child: Column(
                                                           children: [
@@ -878,7 +880,7 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                                                                   child:
                                                                       ClipRRect(
                                                                     borderRadius: const BorderRadius
-                                                                            .all(
+                                                                        .all(
                                                                         Radius.circular(size20px /
                                                                             4)),
                                                                     child:
@@ -978,7 +980,7 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                                                             ),
                                                             Padding(
                                                               padding: const EdgeInsets
-                                                                      .only(
+                                                                  .only(
                                                                   top:
                                                                       size20px *
                                                                           2,

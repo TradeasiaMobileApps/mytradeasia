@@ -331,7 +331,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         Padding(
                                                           padding:
                                                               const EdgeInsets
-                                                                      .only(
+                                                                  .only(
                                                                   top:
                                                                       size20px *
                                                                           0.75,
@@ -461,34 +461,34 @@ class _HomeScreenState extends State<HomeScreen> {
                                             itemBuilder: (context, index) {
                                               return InkWell(
                                                 onTap: () async {
-                                                  context.pushNamed("product",
-                                                      pathParameters: {
-                                                        'url': state
-                                                            .topProductData![
-                                                                index]
-                                                            .seoUrl!
-                                                      });
+                                                  // context.pushNamed("product",
+                                                  //     pathParameters: {
+                                                  //       'url': state
+                                                  //           .topProductData![
+                                                  //               index]
+                                                  //           .seoUrl!
+                                                  //     });
 
-                                                  Map<String, dynamic> data = {
-                                                    "productName": state
-                                                        .topProductData![index]
-                                                        .productname,
-                                                    "seo_url": state
-                                                        .topProductData![index]
-                                                        .seoUrl,
-                                                    "casNumber": state
-                                                        .topProductData![index]
-                                                        .casNumber,
-                                                    "hsCode": state
-                                                        .topProductData![index]
-                                                        .hsCode,
-                                                    "productImage": state
-                                                        .topProductData![index]
-                                                        .productimage
-                                                  };
+                                                  // Map<String, dynamic> data = {
+                                                  //   "productName": state
+                                                  //       .topProductData![index]
+                                                  //       .productname,
+                                                  //   "seo_url": state
+                                                  //       .topProductData![index]
+                                                  //       .seoUrl,
+                                                  //   "casNumber": state
+                                                  //       .topProductData![index]
+                                                  //       .casNumber,
+                                                  //   "hsCode": state
+                                                  //       .topProductData![index]
+                                                  //       .hsCode,
+                                                  //   "productImage": state
+                                                  //       .topProductData![index]
+                                                  //       .productimage
+                                                  // };
 
-                                                  await _addRecentlySeen(
-                                                      param: data);
+                                                  // await _addRecentlySeen(
+                                                  //     param: data);
                                                 },
                                                 //product cards
 
@@ -497,26 +497,27 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         "Sales"
                                                     ? ProductCard(
                                                         product: ProductEntity(
-                                                            productname: state
-                                                                .topProductData![
-                                                                    index]
-                                                                .productname,
-                                                            productimage: state
-                                                                .topProductData![
-                                                                    index]
-                                                                .productimage!,
-                                                            hsCode: state
-                                                                .topProductData![
-                                                                    index]
-                                                                .hsCode!,
-                                                            casNumber: state
-                                                                .topProductData![
-                                                                    index]
-                                                                .casNumber!,
-                                                            seoUrl: state
-                                                                .topProductData![
-                                                                    index]
-                                                                .seoUrl!),
+                                                          productId: state
+                                                              .topProductData![
+                                                                  index]
+                                                              .productId,
+                                                          productname: state
+                                                              .topProductData![
+                                                                  index]
+                                                              .productname,
+                                                          productimage: state
+                                                              .topProductData![
+                                                                  index]
+                                                              .productimage!,
+                                                          hsCode: state
+                                                              .topProductData![
+                                                                  index]
+                                                              .hsCode!,
+                                                          casNumber: state
+                                                              .topProductData![
+                                                                  index]
+                                                              .casNumber!,
+                                                        ),
                                                         onPressed: () {
                                                           List<ProductToRfq>
                                                               products = [];
@@ -552,26 +553,27 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         })
                                                     : ProductCard(
                                                         product: ProductEntity(
-                                                            productname: state
-                                                                .topProductData![
-                                                                    index]
-                                                                .productname,
-                                                            productimage: state
-                                                                .topProductData![
-                                                                    index]
-                                                                .productimage!,
-                                                            hsCode: state
-                                                                .topProductData![
-                                                                    index]
-                                                                .hsCode!,
-                                                            casNumber: state
-                                                                .topProductData![
-                                                                    index]
-                                                                .casNumber!,
-                                                            seoUrl: state
-                                                                .topProductData![
-                                                                    index]
-                                                                .seoUrl!),
+                                                          productId: state
+                                                              .topProductData![
+                                                                  index]
+                                                              .productId,
+                                                          productname: state
+                                                              .topProductData![
+                                                                  index]
+                                                              .productname,
+                                                          productimage: state
+                                                              .topProductData![
+                                                                  index]
+                                                              .productimage!,
+                                                          hsCode: state
+                                                              .topProductData![
+                                                                  index]
+                                                              .hsCode!,
+                                                          casNumber: state
+                                                              .topProductData![
+                                                                  index]
+                                                              .casNumber!,
+                                                        ),
                                                         isNotRecentSeenCard:
                                                             false,
                                                       ),
@@ -758,14 +760,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                     .length);
                                                           },
                                                           child: Padding(
-                                                            padding: const EdgeInsets
+                                                            padding:
+                                                                const EdgeInsets
                                                                     .symmetric(
-                                                                horizontal:
-                                                                    size20px /
-                                                                        2,
-                                                                vertical:
-                                                                    size20px /
-                                                                        5),
+                                                                    horizontal:
+                                                                        size20px /
+                                                                            2,
+                                                                    vertical:
+                                                                        size20px /
+                                                                            5),
                                                             child: Text(
                                                               "Load More",
                                                               style: text12

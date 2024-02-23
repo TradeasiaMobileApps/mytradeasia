@@ -484,34 +484,32 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                                       } else {
                                         return InkWell(
                                             onTap: () async {
-                                              context.pushNamed("product",
-                                                  pathParameters: {
-                                                    'url': searchState
-                                                            .searchProducts![
-                                                                index]
-                                                            .seoUrl ??
-                                                        "/en/acrylic-acid"
-                                                  });
+                                              // context.pushNamed("product",
+                                              //     pathParameters: {
+                                              //       'url': searchState
+                                              //               .searchProducts![
+                                              //                   index]
+                                              //               .seoUrl ??
+                                              //           "/en/acrylic-acid"
+                                              //     });
 
-                                              Map<String, dynamic> data = {
-                                                "productName": searchState
-                                                    .searchProducts![index]
-                                                    .productname,
-                                                "seo_url": searchState
-                                                    .searchProducts![index]
-                                                    .seoUrl,
-                                                "casNumber": searchState
-                                                    .searchProducts![index]
-                                                    .casNumber,
-                                                "hsCode": searchState
-                                                    .searchProducts![index]
-                                                    .hsCode,
-                                                "productImage": searchState
-                                                    .searchProducts![index]
-                                                    .productimage
-                                              };
-                                              await _addRecentlySeen(
-                                                  param: data);
+                                              // Map<String, dynamic> data = {
+                                              //   "productName": searchState
+                                              //       .searchProducts![index]
+                                              //       .productname,
+
+                                              //   "casNumber": searchState
+                                              //       .searchProducts![index]
+                                              //       .casNumber,
+                                              //   "hsCode": searchState
+                                              //       .searchProducts![index]
+                                              //       .hsCode,
+                                              //   "productImage": searchState
+                                              //       .searchProducts![index]
+                                              //       .productimage
+                                              // };
+                                              // await _addRecentlySeen(
+                                              //     param: data);
                                             },
                                             child: ProductCard(
                                               product: ProductEntity(
