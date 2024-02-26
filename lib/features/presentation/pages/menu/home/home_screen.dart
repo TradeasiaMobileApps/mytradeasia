@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/config/routes/parameters.dart';
+import 'package:mytradeasia/features/data/model/sales_force_data_models/sales_force_create_account_model.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_entity.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_to_rfq_entity.dart';
+import 'package:mytradeasia/features/domain/usecases/sales_force_data_usecases/create_sales_force_account.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/add_recently_seen.dart';
+import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_data.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_snapshot.dart';
 import 'package:mytradeasia/features/presentation/pages/menu/history/tracking_document/tracking_document_screen.dart';
 import 'package:mytradeasia/features/presentation/state_management/cart_bloc/cart_bloc.dart';
@@ -19,9 +22,11 @@ import 'package:mytradeasia/features/presentation/state_management/top_products_
 import 'package:mytradeasia/features/presentation/state_management/top_products_bloc/top_products_state.dart';
 import 'package:mytradeasia/features/presentation/widgets/cart_button.dart';
 import 'package:mytradeasia/features/presentation/widgets/product_card.dart';
+import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
 import 'package:mytradeasia/utils/sales_force_screen.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../../state_management/recently_seen_bloc/recently_seen_state.dart';
@@ -36,15 +41,22 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final GetUserSnapshot _getUserSnapshot = injections<GetUserSnapshot>();
   final AddRecentlySeen _addRecentlySeen = injections<AddRecentlySeen>();
+  final GetUserData _geUserData = injections<GetUserData>();
+  final CreateSalesForceAccount _createSalesForceAccount =
+      injections<CreateSalesForceAccount>();
+
   // final GetRecentlySeen _getRecentlySeen = injections<GetRecentlySeen>();
   final String url = "https://chemtradea.chemtradeasia.com/";
   final bool showAll = false;
   int recentSeenLimit = 4;
+  Map<String, dynamic> _data = {};
+
   // List _recentlySeen = [];
 
   @override
   void initState() {
     super.initState();
+    createSFId();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       BlocProvider.of<TopProductBloc>(context).add(const GetTopProduct());
 
@@ -55,6 +67,23 @@ class _HomeScreenState extends State<HomeScreen> {
       BlocProvider.of<RecentlySeenBloc>(context)
           .add(const GetRecentlySeenEvent());
     });
+  }
+
+  createSFId() async {
+    _data = await _geUserData();
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final tokenSF = prefs.getString("tokenSF") ?? "";
+
+    if (!await checkIdSFExists()) {
+      _createSalesForceAccount.call(
+          paramsOne: tokenSF,
+          paramsTwo: SalesforceCreateAccountForm(
+              name: "${_data['firstname']} ${_data['lastname']}",
+              phone: _data['phone'] ?? "",
+              role: _data['role'].toString().toLowerCase(),
+              company: _data['companyName']));
+    }
   }
 
   void increaseRecentSeenLimit(int num) {
@@ -331,7 +360,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         Padding(
                                                           padding:
                                                               const EdgeInsets
-                                                                      .only(
+                                                                  .only(
                                                                   top:
                                                                       size20px *
                                                                           0.75,
@@ -758,14 +787,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                     .length);
                                                           },
                                                           child: Padding(
-                                                            padding: const EdgeInsets
+                                                            padding:
+                                                                const EdgeInsets
                                                                     .symmetric(
-                                                                horizontal:
-                                                                    size20px /
-                                                                        2,
-                                                                vertical:
-                                                                    size20px /
-                                                                        5),
+                                                                    horizontal:
+                                                                        size20px /
+                                                                            2,
+                                                                    vertical:
+                                                                        size20px /
+                                                                            5),
                                                             child: Text(
                                                               "Load More",
                                                               style: text12

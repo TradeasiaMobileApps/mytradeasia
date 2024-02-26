@@ -4,10 +4,12 @@ import 'package:mytradeasia/features/domain/entities/sales_force_data_entities/s
 import 'package:mytradeasia/features/domain/entities/sales_force_data_entities/sales_force_create_account_entity.dart';
 import 'package:mytradeasia/features/domain/entities/sales_force_data_entities/sales_force_create_opportunity_entity.dart';
 import 'package:mytradeasia/features/domain/entities/sales_force_data_entities/sales_force_data_entity.dart';
+import 'package:mytradeasia/features/domain/entities/sales_force_data_entities/sales_force_opportunity_entity.dart';
 
 abstract class SalesforceDataState extends Equatable {
   final SalesforceDataEntity? dataEntity;
   final SalesforceCPEntity? cpEntity;
+  final SalesforceOpportunityEntity? opportunityEntity;
   final SalesforceCreateAccountEntity? createAccountEntity;
   final SalesforceCreateOpportunityEntity? createOpportunityEntity;
   final DioException? error;
@@ -15,6 +17,7 @@ abstract class SalesforceDataState extends Equatable {
   const SalesforceDataState(
       {this.cpEntity,
       this.dataEntity,
+      this.opportunityEntity,
       this.createAccountEntity,
       this.createOpportunityEntity,
       this.error});
@@ -35,6 +38,11 @@ class SalesforceDataDone extends SalesforceDataState {
 class SalesforceCPDone extends SalesforceDataState {
   const SalesforceCPDone(SalesforceCPEntity cpEntity)
       : super(cpEntity: cpEntity);
+}
+
+class SalesforceOpportunityDone extends SalesforceDataState {
+  const SalesforceOpportunityDone(SalesforceOpportunityEntity opportunityEntity)
+      : super(opportunityEntity: opportunityEntity);
 }
 
 class SalesforceCreateAccountDone extends SalesforceDataState {

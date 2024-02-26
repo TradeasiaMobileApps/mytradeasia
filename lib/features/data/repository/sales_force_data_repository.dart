@@ -11,6 +11,7 @@ import 'package:mytradeasia/features/domain/entities/sales_force_data_entities/s
 import 'package:mytradeasia/features/domain/entities/sales_force_data_entities/sales_force_create_account_entity.dart';
 import 'package:mytradeasia/features/domain/entities/sales_force_data_entities/sales_force_create_opportunity_entity.dart';
 import 'package:mytradeasia/features/domain/entities/sales_force_data_entities/sales_force_data_entity.dart';
+import 'package:mytradeasia/features/domain/entities/sales_force_data_entities/sales_force_opportunity_entity.dart';
 import 'package:mytradeasia/features/domain/repository/sales_force_data_repository.dart';
 
 class SalesforceDataRepositoryImpl implements SalesForceDataRepository {
@@ -92,9 +93,28 @@ class SalesforceDataRepositoryImpl implements SalesForceDataRepository {
       createSalesforceOpportunity(
           SalesforceCreateOpportunityForm formData) async {
     try {
-      log("ITS HERE");
       final response = await _salesforceDataService.createSFOpp(formData);
       if (response.statusCode == HttpStatus.created) {
+        return DataSuccess(response.data!);
+      } else {
+        return DataFailed(DioException(
+          error: response.statusMessage,
+          response: response,
+          type: DioExceptionType.badResponse,
+          requestOptions: response.requestOptions,
+        ));
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState<SalesforceOpportunityEntity>> getSalesforceOpportunity(
+      String id) async {
+    try {
+      final response = await _salesforceDataService.getSFOpp(id);
+      if (response.statusCode == HttpStatus.ok) {
         return DataSuccess(response.data!);
       } else {
         return DataFailed(DioException(

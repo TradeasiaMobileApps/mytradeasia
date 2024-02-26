@@ -6,6 +6,7 @@ import 'package:mytradeasia/config/routes/parameters.dart';
 import 'package:mytradeasia/features/presentation/pages/auth/biodata/sso_biodata_screen.dart';
 import 'package:mytradeasia/features/presentation/pages/auth/register/register_otp_screen.dart';
 import 'package:mytradeasia/features/presentation/pages/menu/home/all_products/products/products_by_industry_screen.dart';
+import 'package:mytradeasia/features/presentation/pages/menu/mytradeasia/submenu/change_password/password_change_otp.dart';
 import '../../features/presentation/pages/auth/biodata/biodata_screen.dart';
 import '../../features/presentation/pages/auth/choose_role/role_user_screen.dart';
 import '../../features/presentation/pages/auth/login/forgot_password/forgot_password_screen.dart';

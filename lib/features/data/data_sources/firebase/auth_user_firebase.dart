@@ -16,7 +16,6 @@ class AuthUserFirebase {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
-  AuthCredential? _credential;
 
   late PhoneAuthCredential phoneAuthCredential;
   var verificationId = '';
@@ -63,8 +62,6 @@ class AuthUserFirebase {
   Future<dynamic> postLoginUser(Map<String, String> auth) async {
     try {
       UserCredential _userCredential = await _auth.signInWithEmailAndPassword(
-          email: auth["email"]!, password: auth["password"]!);
-      _credential = EmailAuthProvider.credential(
           email: auth["email"]!, password: auth["password"]!);
 
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -309,15 +306,15 @@ class AuthUserFirebase {
     }
   }
 
-  Future<String> updateEmail(String newEmail) async {
+  Future<String> updateEmail(String newEmail, String password) async {
     Completer<String> completer = Completer();
     try {
       final user = FirebaseAuth.instance.currentUser!;
-      // await user.sendEmailVerification()
 
-      if (_credential != null) {
-        await user.reauthenticateWithCredential(_credential!);
-      }
+      var cred =
+          EmailAuthProvider.credential(email: user.email!, password: password);
+
+      await user.reauthenticateWithCredential(cred);
 
       await user.updateEmail(newEmail);
       completer.complete("success");

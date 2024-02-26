@@ -1,9 +1,12 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/config/routes/parameters.dart';
-import 'package:mytradeasia/features/domain/usecases/user_usecases/verify_otp.dart';
+import 'package:mytradeasia/core/resources/data_state.dart';
+import 'package:mytradeasia/features/domain/usecases/otp_usecases/send_otp.dart';
+import 'package:mytradeasia/features/domain/usecases/otp_usecases/verify_otp.dart';
+import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
+import 'package:timer_count_down/timer_count_down.dart';
 
 import '../../../../../../../config/themes/theme.dart';
 import '../../../widgets/dialog_sheet_widget.dart';
@@ -33,7 +36,11 @@ class _RegisterOtpScreenState extends State<RegisterOtpScreen> {
   final FocusNode _focusNode5 = FocusNode();
   final FocusNode _focusNode6 = FocusNode();
   final _formKey = GlobalKey<FormState>();
-  final VerifyOtp _verifyOtp = injections<VerifyOtp>();
+  final VerifyOTP _verifyOTP = injections<VerifyOTP>();
+  final SendOTP _sendOTP = injections<SendOTP>();
+  bool isSendingOTP = false;
+  bool isVerifying = false;
+  bool canResend = false;
 
   @override
   void dispose() {
@@ -53,7 +60,7 @@ class _RegisterOtpScreenState extends State<RegisterOtpScreen> {
   }
 
   //TODO:masih pake firebase
-  final _auth = FirebaseAuth.instance;
+  // final _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -77,15 +84,15 @@ class _RegisterOtpScreenState extends State<RegisterOtpScreen> {
                 style: text22,
               ),
               const SizedBox(height: 5),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              Wrap(
+                alignment: WrapAlignment.center,
                 children: [
                   const Text(
                     "Enter the OTP sent to ",
                     style: text12,
                   ),
                   Text(
-                    _auth.currentUser?.email ?? "Email",
+                    widget.email,
                     style: text12.copyWith(color: secondaryColor1),
                   )
                 ],
@@ -317,85 +324,199 @@ class _RegisterOtpScreenState extends State<RegisterOtpScreen> {
               SizedBox(
                 height: 50.0,
                 width: MediaQuery.of(context).size.width,
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                        _digit1Controller.text.isNotEmpty &&
+                child: isVerifying
+                    ? ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(greyColor),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(7.0),
+                            ),
+                          ),
+                        ),
+                        onPressed: null,
+                        child: const Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                          ),
+                        ),
+                      )
+                    : ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              _digit1Controller.text.isNotEmpty &&
+                                      _digit2Controller.text.isNotEmpty &&
+                                      _digit3Controller.text.isNotEmpty &&
+                                      _digit4Controller.text.isNotEmpty &&
+                                      _digit5Controller.text.isNotEmpty &&
+                                      _digit6Controller.text.isNotEmpty
+                                  ? primaryColor1
+                                  : greyColor),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(7.0),
+                            ),
+                          ),
+                        ),
+                        onPressed: _digit1Controller.text.isNotEmpty &&
                                 _digit2Controller.text.isNotEmpty &&
                                 _digit3Controller.text.isNotEmpty &&
                                 _digit4Controller.text.isNotEmpty &&
                                 _digit5Controller.text.isNotEmpty &&
                                 _digit6Controller.text.isNotEmpty
-                            ? primaryColor1
-                            : greyColor),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(7.0),
+                            ? () async {
+                                String otpCode = _digit1Controller.text +
+                                    _digit2Controller.text +
+                                    _digit3Controller.text +
+                                    _digit4Controller.text +
+                                    _digit5Controller.text +
+                                    _digit6Controller.text;
+                                BiodataParameter param = BiodataParameter(
+                                    email: widget.email, phone: widget.phone);
+                                setState(() {
+                                  isVerifying = true;
+                                });
+                                await _verifyOTP
+                                    .call(
+                                        paramsOne: otpCode,
+                                        paramsTwo: widget.email)
+                                    .then((value) {
+                                  if (value is DataSuccess) {
+                                    context.pushReplacement(
+                                        "/auth/register/biodata",
+                                        extra: param);
+                                  } else {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return DialogWidget(
+                                            urlIcon:
+                                                "assets/images/logo_email_change.png",
+                                            title:
+                                                "OTP code wrong/already expired",
+                                            subtitle:
+                                                "Lorem ipsum dolor sit amet consectetur. Egestas porttitor risus enim cursus rutrum molestie tortor",
+                                            textForButton: "Close",
+                                            navigatorFunction: () {
+                                              /* With go_route */
+                                              context.pop();
+                                            });
+                                      },
+                                    );
+                                  }
+                                });
+                                setState(() {
+                                  isVerifying = false;
+                                });
+                                // await _verifyOtp.call(param: otpCode).then((value) {
+                                //   if (value) {
+                                //     context.pushReplacement("/auth/register/biodata",
+                                //         extra: param);
+                                //   } else {
+                                //     showDialog(
+                                //       context: context,
+                                //       builder: (context) {
+                                //         return DialogWidget(
+                                //             urlIcon:
+                                //                 "assets/images/logo_email_change.png",
+                                //             title: "OTP code wrong/already expired",
+                                //             subtitle:
+                                //                 "Lorem ipsum dolor sit amet consectetur. Egestas porttitor risus enim cursus rutrum molestie tortor",
+                                //             textForButton: "Close",
+                                //             navigatorFunction: () {
+                                //               /* With go_route */
+                                //               context.pop();
+                                //             });
+                                //       },
+                                //     );
+                                //   }
+                                // });
+                              }
+                            : null,
+                        child: Text(
+                          "Verify",
+                          style: text16.copyWith(color: whiteColor),
+                        ),
                       ),
-                    ),
-                  ),
-                  onPressed: _digit1Controller.text.isNotEmpty &&
-                          _digit2Controller.text.isNotEmpty &&
-                          _digit3Controller.text.isNotEmpty &&
-                          _digit4Controller.text.isNotEmpty &&
-                          _digit5Controller.text.isNotEmpty &&
-                          _digit6Controller.text.isNotEmpty
-                      ? () async {
-                          String otpCode = _digit1Controller.text +
-                              _digit2Controller.text +
-                              _digit3Controller.text +
-                              _digit4Controller.text +
-                              _digit5Controller.text +
-                              _digit6Controller.text;
-                          BiodataParameter param = BiodataParameter(
-                              email: widget.email, phone: widget.phone);
-                          await _verifyOtp.call(param: otpCode).then((value) {
-                            if (value) {
-                              context.pushReplacement("/auth/register/biodata",
-                                  extra: param);
-                            } else {
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return DialogWidget(
-                                      urlIcon:
-                                          "assets/images/logo_email_change.png",
-                                      title: "OTP code wrong/already expired",
-                                      subtitle:
-                                          "Lorem ipsum dolor sit amet consectetur. Egestas porttitor risus enim cursus rutrum molestie tortor",
-                                      textForButton: "Close",
-                                      navigatorFunction: () {
-                                        /* With go_route */
-                                        context.pop();
-                                      });
-                                },
-                              );
-                            }
-                          });
-                        }
-                      : null,
-                  child: Text(
-                    "Verify",
-                    style: text16.copyWith(color: whiteColor),
-                  ),
-                ),
               ),
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Don't receive the OTP code? "),
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      alignment: Alignment.center,
-                    ),
-                    onPressed: () {
-                      print("Resend");
-                    },
-                    child: const Text("Resend"),
-                  )
+                  Text(canResend
+                      ? "Don't receive the OTP code? "
+                      : "Resend code in "),
+                  canResend
+                      ? TextButton(
+                          style: TextButton.styleFrom(
+                            splashFactory: NoSplash.splashFactory,
+                            padding: EdgeInsets.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            alignment: Alignment.center,
+                          ),
+                          onPressed: isSendingOTP
+                              ? null
+                              : () async {
+                                  setState(() {
+                                    isSendingOTP = true;
+                                  });
+                                  await _sendOTP
+                                      .call(param: widget.email)
+                                      .then((value) => {
+                                            if (value is DataSuccess)
+                                              {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(SnackBar(
+                                                  duration: const Duration(
+                                                      seconds: 2,
+                                                      milliseconds: 500),
+                                                  backgroundColor: Colors.green,
+                                                  content: Text(
+                                                    "OTP code sent to : ${widget.email}",
+                                                    style:
+                                                        body1Regular.copyWith(
+                                                            color: Colors.white,
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                  ),
+                                                ))
+                                              }
+                                          });
+                                  setState(() {
+                                    isSendingOTP = false;
+                                    canResend = false;
+                                  });
+                                },
+                          child: isSendingOTP
+                              ? const Center(
+                                  child: SizedBox(
+                                    child: Center(
+                                        child: CircularProgressIndicator()),
+                                    height: 10.0,
+                                    width: 10.0,
+                                  ),
+                                )
+                              : Text("Resend",
+                                  style:
+                                      text14.copyWith(color: secondaryColor1)),
+                        )
+                      : Countdown(
+                          seconds: 60,
+                          build: (BuildContext context, double time) => Text(
+                              parseDoubleToIntegerIfNecessary(time).toString(),
+                              style: text14.copyWith(color: secondaryColor1)),
+                          interval: Duration(milliseconds: 1000),
+                          onFinished: () {
+                            setState(() {
+                              canResend = true;
+                            });
+                          },
+                        ),
                 ],
               ),
             ],

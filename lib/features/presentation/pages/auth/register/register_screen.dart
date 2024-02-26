@@ -4,12 +4,14 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:linkedin_login/linkedin_login.dart';
-import 'package:mytradeasia/features/domain/usecases/user_usecases/phone_authentication.dart';
+// import 'package:linkedin_login/linkedin_login.dart';
+import 'package:mytradeasia/core/resources/data_state.dart';
+import 'package:mytradeasia/features/domain/usecases/otp_usecases/send_otp.dart';
 import 'package:mytradeasia/features/presentation/widgets/country_picker.dart';
 import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:signin_with_linkedin/signin_with_linkedin.dart';
 import '../../../../../config/routes/parameters.dart';
 import '../../../../../config/themes/theme.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -28,8 +30,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
   //DON`T DELETE THIS UNDER ANY CIRCUMSTANCES
-  final PhoneAuthentication _phoneAuthentication =
-      injections<PhoneAuthentication>();
+  // final PhoneAuthentication _phoneAuthentication =
+  //     injections<PhoneAuthentication>();
 
   final dio = Dio();
 
@@ -37,8 +39,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   final _auth = FirebaseAuth.instance;
 
+  final SendOTP _sendOTP = injections<SendOTP>();
+
   UserObject? user;
   bool logoutUser = false;
+  bool isSendingOTP = false;
+
+  final _linkedInConfig = LinkedInConfig(
+    clientId: '77pv0j45iro4cd',
+    clientSecret: 'LQKSW66VfAIrulyQ',
+    redirectUrl: 'http://localhost:8080/callback',
+    scope: ['openid', 'profile', 'email'],
+  );
+  LinkedInUser? linkedInUser;
 
   Future<UserCredential> signInWithGoogle() async {
     // Trigger the authentication flow
@@ -281,85 +294,143 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 ),
                               ),
                             ),
-                            onPressed: () async {
-                              List<String> userSignInMethods =
-                                  await _auth.fetchSignInMethodsForEmail(
-                                      _emailController.text);
-                              print(userSignInMethods);
-                              if (userSignInMethods.isNotEmpty) {
-                                if (userSignInMethods.first != "password") {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(const SnackBar(
-                                    content: Text(
-                                      "Account already signed up with SSO",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(color: Colors.white),
+                            onPressed: isSendingOTP
+                                ? null
+                                : () async {
+                                    List<String> userSignInMethods =
+                                        await _auth.fetchSignInMethodsForEmail(
+                                            _emailController.text);
+                                    print(userSignInMethods);
+                                    if (userSignInMethods.isNotEmpty) {
+                                      if (userSignInMethods.first !=
+                                          "password") {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                          content: Text(
+                                            "Account already signed up with SSO",
+                                            textAlign: TextAlign.center,
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                          duration:
+                                              Duration(milliseconds: 3000),
+                                          backgroundColor: Colors.redAccent,
+                                        ));
+                                      } else {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                          content: Text(
+                                            "Account already signed up",
+                                            textAlign: TextAlign.center,
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                          duration:
+                                              Duration(milliseconds: 3000),
+                                          backgroundColor: Colors.redAccent,
+                                        ));
+                                      }
+                                    } else {
+                                      setState(() {
+                                        isSendingOTP = true;
+                                      });
+                                      await _sendOTP
+                                          .call(param: _emailController.text)
+                                          .then((value) => {
+                                                if (value is DataSuccess)
+                                                  {
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(SnackBar(
+                                                      duration: const Duration(
+                                                          seconds: 2,
+                                                          milliseconds: 500),
+                                                      backgroundColor:
+                                                          Colors.green,
+                                                      content: Text(
+                                                        "OTP code sent to : ${_emailController.text}",
+                                                        style: body1Regular
+                                                            .copyWith(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 12,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                      ),
+                                                    ))
+                                                  }
+                                              });
+                                      setState(() {
+                                        isSendingOTP = false;
+                                      });
+
+                                      //DON`T DELETE THIS UNDER ANY CIRCUMSTANCES
+                                      OtpVerificationParameter param =
+                                          OtpVerificationParameter(
+                                              phone:
+                                                  "$countryNum${_phoneNumberController.text}",
+                                              email: _emailController.text);
+                                      BiodataParameter param2 = BiodataParameter(
+                                          email: _emailController.text,
+                                          phone:
+                                              "$countryNum${_phoneNumberController.text}");
+                                      //TODO: captcha OTP
+                                      // ignore: use_build_context_synchronously
+                                      // showDialog(
+                                      //   context: context,
+                                      //   builder: (context) {
+                                      //     return const LoadingOverlay();
+                                      //   },
+                                      // );
+
+                                      context.go("/auth/register/otp-register",
+                                          extra: param);
+                                      //TODO:Uncomment this when used
+
+                                      // DO NOT DELETE THIS
+
+                                      // await _phoneAuthentication
+                                      //     .call(
+                                      //         param:
+                                      //             "$countryNum${_phoneNumberController.text}")
+                                      //     .then((value) {
+                                      //   if (value == "invalid-phone-number") {
+                                      //     ScaffoldMessenger.of(context)
+                                      //         .showSnackBar(const SnackBar(
+                                      //       content: Text("Invalid Phone Number"),
+                                      //       duration: Duration(milliseconds: 3000),
+                                      //     ));
+                                      //   } else if (value ==
+                                      //       "verification-completed") {
+                                      //     print(value);
+                                      //   } else if (value == "code-sent") {
+                                      //     context.go("/auth/register/otp-register",
+                                      //         extra: param);
+                                      //   } else {
+                                      //     ScaffoldMessenger.of(context)
+                                      //         .showSnackBar(const SnackBar(
+                                      //       content:
+                                      //           Text("There seem to be an error"),
+                                      //       duration: Duration(milliseconds: 3000),
+                                      //     ));
+                                      //   }
+                                      // });
+                                      // .whenComplete(() =>
+                                      // context.go("/auth/register/otp-register",
+                                      //     extra: param);
+                                    }
+                                  },
+                            child: isSendingOTP
+                                ? const Center(
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
                                     ),
-                                    duration: Duration(milliseconds: 1500),
-                                    backgroundColor: Colors.redAccent,
-                                  ));
-                                }
-                              } else {
-                                //DON`T DELETE THIS UNDER ANY CIRCUMSTANCES
-                                OtpVerificationParameter param =
-                                    OtpVerificationParameter(
-                                        phone:
-                                            "$countryNum${_phoneNumberController.text}",
-                                        email: _emailController.text);
-                                BiodataParameter param2 = BiodataParameter(
-                                    email: _emailController.text,
-                                    phone:
-                                        "$countryNum${_phoneNumberController.text}");
-                                //TODO: captcha OTP
-                                // ignore: use_build_context_synchronously
-                                // showDialog(
-                                //   context: context,
-                                //   builder: (context) {
-                                //     return const LoadingOverlay();
-                                //   },
-                                // );
-
-                                context.go("/auth/register/biodata",
-                                    extra: param2);
-                                //TODO:Uncomment this when used
-
-                                // DO NOT DELETE THIS
-
-                                // await _phoneAuthentication
-                                //     .call(
-                                //         param:
-                                //             "$countryNum${_phoneNumberController.text}")
-                                //     .then((value) {
-                                //   if (value == "invalid-phone-number") {
-                                //     ScaffoldMessenger.of(context)
-                                //         .showSnackBar(const SnackBar(
-                                //       content: Text("Invalid Phone Number"),
-                                //       duration: Duration(milliseconds: 3000),
-                                //     ));
-                                //   } else if (value ==
-                                //       "verification-completed") {
-                                //     print(value);
-                                //   } else if (value == "code-sent") {
-                                //     context.go("/auth/register/otp-register",
-                                //         extra: param);
-                                //   } else {
-                                //     ScaffoldMessenger.of(context)
-                                //         .showSnackBar(const SnackBar(
-                                //       content:
-                                //           Text("There seem to be an error"),
-                                //       duration: Duration(milliseconds: 3000),
-                                //     ));
-                                //   }
-                                // });
-                                // .whenComplete(() =>
-                                // context.go("/auth/register/otp-register",
-                                //     extra: param);
-                              }
-                            },
-                            child: Text(
-                              "Sign Up",
-                              style: text16.copyWith(color: whiteColor),
-                            ),
+                                  )
+                                : Text(
+                                    "Sign Up",
+                                    style: text16.copyWith(color: whiteColor),
+                                  ),
                           )
                         : ElevatedButton(
                             style: ButtonStyle(
@@ -427,10 +498,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             onPressed: () async {
                               UserCredential userCred =
                                   await signInWithGoogle();
-                              log("User Cred : ${userCred.user!.uid}");
-                              log("User Cred : ${userCred.user!.email}");
-                              log("User Cred : ${userCred.user!.displayName?.split(" ")}");
-                              log("User Cred : ${userCred.user!.toString()}");
+                              // log("User Cred : ${userCred.user!.uid}");
+                              // log("User Cred : ${userCred.user!.email}");
+                              // log("User Cred : ${userCred.user!.displayName?.split(" ")}");
+                              // log("User Cred : ${userCred.user!.toString()}");
 
                               bool userExists =
                                   await checkIfUserExists(userCred.user!.uid);
@@ -474,136 +545,102 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               width: size20px + 10,
                             ),
                             onPressed: () {
-                              Navigator.push(
+                              SignInWithLinkedIn.signIn(
                                 context,
-                                MaterialPageRoute<void>(
-                                  builder: (final BuildContext context) =>
-                                      LinkedInUserWidget(
-                                    appBar: AppBar(
-                                      title: const Text('OAuth User'),
-                                    ),
-                                    destroySession: logoutUser,
-                                    redirectUrl:
-                                        "http://localhost:8080/callback",
-                                    clientId: "77pv0j45iro4cd",
-                                    clientSecret: "LQKSW66VfAIrulyQ",
-                                    projection: const [
-                                      ProjectionParameters.id,
-                                      ProjectionParameters.localizedFirstName,
-                                      ProjectionParameters.localizedLastName,
-                                      ProjectionParameters.firstName,
-                                      ProjectionParameters.lastName,
-                                      ProjectionParameters.profilePicture,
-                                    ],
-                                    onError: (final UserFailedAction e) {
-                                      print('Error: ${e.toString()}');
-                                      print(
-                                          'Error: ${e.stackTrace.toString()}');
-                                    },
-                                    onGetUserProfile: (final UserSucceededAction
-                                        linkedInUser) async {
-                                      print(
-                                        'Access token ${linkedInUser.token.accessToken?.accessToken}',
-                                      );
+                                config: _linkedInConfig,
+                                onGetUserProfile: (tokenData, user) async {
+                                  log('Auth token data: ${tokenData.toJson()}');
+                                  log('LinkedIn User: ${user.toJson()}');
+                                  setState(() => linkedInUser = user);
+                                  final url =
+                                      'https://linkedin-firebase-auth-integrator.vercel.app/token';
 
-                                      print(
-                                          'User : ${linkedInUser.user.toJson()}');
+                                  final headers = {
+                                    'Content-Type': 'application/json',
+                                  };
 
-                                      user = UserObject(
-                                        firstName: linkedInUser.user.givenName,
-                                        lastName: linkedInUser.user.familyName,
-                                        email: linkedInUser.user.email,
-                                        profileImageUrl:
-                                            linkedInUser.user.picture,
-                                      );
+                                  final body = {
+                                    "accessToken": tokenData.accessToken,
+                                    "uid": linkedInUser?.sub
+                                  };
 
-                                      const url =
-                                          'https://linkedin-firebase-auth-integrator.vercel.app/token';
+                                  log("REQ BODY : ${body}");
 
-                                      final headers = {
-                                        'Content-Type': 'application/json',
-                                      };
-
-                                      final body = {
-                                        "accessToken": linkedInUser
-                                            .token.accessToken?.accessToken,
-                                        "uid": linkedInUser.user.sub
-                                      };
-
-                                      try {
-                                        final response = await dio.post(
-                                          url,
-                                          data: body,
-                                          options: Options(headers: headers),
-                                        );
-                                        if (response.statusCode == 200) {
-                                          log("Success : ${response.data}");
-                                          final userCredential =
-                                              await FirebaseAuth.instance
-                                                  .signInWithCustomToken(
-                                                      response.data[
-                                                          'firebaseToken']);
-                                          log("User Credential : ${userCredential.user.toString()}");
-                                          FirebaseAuth.instance
-                                              .authStateChanges()
-                                              .listen((User? user) async {
-                                            if (user != null) {
-                                              await user.updateEmail(
-                                                  linkedInUser.user.email!);
-                                              await user.updateDisplayName(
-                                                  linkedInUser.user.name!);
-                                            }
-                                          });
-                                          log("Name : ${FirebaseAuth.instance.currentUser?.displayName}");
-                                          bool userExists =
-                                              await checkIfUserExists(
-                                                  userCredential.user!.uid);
-                                          if (userExists) {
-                                            final SharedPreferences prefs =
-                                                await SharedPreferences
-                                                    .getInstance();
-                                            await prefs.setString("email",
-                                                userCredential.user!.email!);
-                                            await prefs.setString("userId",
-                                                userCredential.user!.uid);
-                                            await prefs.setBool(
-                                                "isLoggedIn", true);
-                                            showLinkedinSSOSnackbar(context);
-                                            context.go("/home");
-                                          } else {
-                                            context.pushReplacement(
-                                                "/auth/register/sso-biodata");
-                                          }
-                                        } else {
-                                          log("Error ${response.statusCode} : ${response.data}");
+                                  try {
+                                    final response = await dio.post(
+                                      url,
+                                      data: body,
+                                      options: Options(headers: headers),
+                                    );
+                                    if (response.statusCode == 200) {
+                                      log("Success : ${response.data}");
+                                      final userCredential = await FirebaseAuth
+                                          .instance
+                                          .signInWithCustomToken(
+                                              response.data['firebaseToken']);
+                                      log("User Credential : ${userCredential.user.toString()}");
+                                      FirebaseAuth.instance
+                                          .authStateChanges()
+                                          .listen((User? user) async {
+                                        if (user != null) {
+                                          await user.updateEmail(
+                                              linkedInUser!.email!);
+                                          await user.updateDisplayName(
+                                              linkedInUser!.name);
                                         }
-                                      } catch (e) {
-                                        const snackbar = SnackBar(
-                                          content: Text(
-                                              "An error occurred, Please try again"),
-                                          backgroundColor: yellowColor,
-                                        );
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(snackbar);
-                                      }
-
-                                      setState(() {
-                                        logoutUser = false;
                                       });
+                                      log("Name : ${FirebaseAuth.instance.currentUser?.displayName}");
+                                      bool userExists = await checkIfUserExists(
+                                          userCredential.user!.uid);
+                                      if (userExists) {
+                                        final SharedPreferences prefs =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        await prefs.setString("email",
+                                            userCredential.user!.email!);
+                                        await prefs.setString(
+                                            "userId", userCredential.user!.uid);
+                                        await prefs.setBool("isLoggedIn", true);
+                                        showLinkedinSSOSnackbar(context);
+                                        context.go("/home");
+                                      } else {
+                                        context.pushReplacement(
+                                            "/auth/register/sso-biodata");
+                                      }
+                                    } else {
+                                      log("Error ${response.statusCode} : ${response.data}");
+                                    }
+                                  } on DioException catch (e) {
+                                    log("ERROR HERE : ${e.stackTrace}");
 
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                  fullscreenDialog: true,
-                                ),
+                                    // var snackbar = SnackBar(
+                                    //   content: Text("Dio Error : ${e.message}"),
+                                    //   backgroundColor: yellowColor,
+                                    // );
+                                    // ScaffoldMessenger.of(context)
+                                    //     .showSnackBar(snackbar);
+                                  } on FirebaseAuthException catch (e) {
+                                    log("ERROR HERE : ${e}");
+
+                                    var snackbar = SnackBar(
+                                      content:
+                                          Text("Firebase Error : ${e.message}"),
+                                      backgroundColor: yellowColor,
+                                    );
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackbar);
+                                  }
+
+                                  setState(() {
+                                    logoutUser = false;
+                                  });
+
+                                  // Navigator.pop(context);
+                                },
+                                onSignInError: (error) {
+                                  log('Error on sign in: $error');
+                                },
                               );
-                              // const snackbar = SnackBar(
-                              //   content:
-                              //       Text("Linkedin is not available right now"),
-                              //   backgroundColor: yellowColor,
-                              // );
-                              // ScaffoldMessenger.of(context)
-                              //     .showSnackBar(snackbar);
                             },
                           ),
                         ),
