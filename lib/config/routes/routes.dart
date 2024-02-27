@@ -233,17 +233,18 @@ class Routes {
                         builder: (context, state) => const PersonalDataScreen(),
                         routes: [
                           GoRoute(
-                              parentNavigatorKey: _rootNavigatorKey,
-                              path: "change_email",
-                              builder: (context, state) =>
-                                  const ChangeEmailScreen(),
-                              routes: [
-                                GoRoute(
-                                    parentNavigatorKey: _rootNavigatorKey,
-                                    path: "otp_email",
-                                    builder: (context, state) =>
-                                        const EmailChangeOtpScreen())
-                              ])
+                            parentNavigatorKey: _rootNavigatorKey,
+                            path: "change_email",
+                            builder: (context, state) =>
+                                const ChangeEmailScreen(),
+                            // routes: [
+                            //   GoRoute(
+                            //       parentNavigatorKey: _rootNavigatorKey,
+                            //       path: "otp_email",
+                            //       builder: (context, state) =>
+                            //           const EmailChangeOtpScreen())
+                            // ]
+                          )
                         ]),
                     GoRoute(
                         parentNavigatorKey: _rootNavigatorKey,

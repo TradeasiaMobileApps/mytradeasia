@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -22,8 +21,11 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
   final TextEditingController _oldEmailController = TextEditingController();
   final TextEditingController _newEmailController = TextEditingController();
   final TextEditingController _confirmEmailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
   final UpdateEmail _updateEmail = injections<UpdateEmail>();
+  bool _passwordVisible = false;
 
   @override
   void dispose() {
@@ -31,6 +33,7 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
     _oldEmailController.dispose();
     _newEmailController.dispose();
     _confirmEmailController.dispose();
+    _passwordController.dispose();
   }
 
   @override
@@ -115,7 +118,59 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
                             // key: _formKey,
                             readOnly: false,
                             controller: _confirmEmailController,
-                            hintText: "Enter your new email adress"),
+                            hintText: "Enter your new email address"),
+                      ),
+                    ),
+                    const Text("Password"),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0, bottom: 15.0),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        child: TextFormField(
+                          style: body1Regular,
+                          obscureText: !_passwordVisible,
+                          keyboardType: TextInputType.visiblePassword,
+                          controller: _passwordController,
+                          validator: (valuePassword) {
+                            if (valuePassword!.isEmpty) {
+                              return "Please input the password";
+                            }
+
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            hintText: "Enter your password",
+                            hintStyle: body1Regular.copyWith(color: greyColor),
+                            errorMaxLines: 3,
+                            contentPadding:
+                                const EdgeInsets.symmetric(horizontal: 20.0),
+                            border: const OutlineInputBorder(),
+                            enabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(color: greyColor3),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(7.0))),
+                            focusedBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(color: secondaryColor1),
+                            ),
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  _passwordVisible = !_passwordVisible;
+                                });
+                              },
+                              icon: !_passwordVisible
+                                  ? Image.asset(
+                                      "assets/images/icon_eye_close.png",
+                                      width: 24.0,
+                                      height: 24.0,
+                                    )
+                                  : Image.asset(
+                                      "assets/images/icon_eye_open.png",
+                                      width: 24.0,
+                                      height: 24.0),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ],
@@ -157,7 +212,6 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
                           textForButtonYes: "Proceed",
                           textForButtonNo: "No",
                           navigatorFunctionYes: () async {
-                            context.pop();
                             showDialog(
                               context: context,
                               builder: (context) {
@@ -167,9 +221,28 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
                             if (_newEmailController.text ==
                                 _confirmEmailController.text) {
                               await _updateEmail
-                                  .call(param: _newEmailController.text)
+                                  .call(
+                                      paramsOne: _newEmailController.text,
+                                      paramsTwo: _passwordController.text)
                                   .then((res) {
                                 switch (res) {
+                                  case "wrong-password":
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => DialogWidget(
+                                          urlIcon:
+                                              "assets/images/logo_delete_account.png",
+                                          title: "Wrong Password",
+                                          subtitle:
+                                              "Wrong password provided for that user.",
+                                          textForButton: "Close",
+                                          navigatorFunction: () {
+                                            context.pop();
+                                            context.pop();
+                                            context.pop();
+                                          }),
+                                    );
+                                    break;
                                   case "invalid-email":
                                     showDialog(
                                       context: context,
@@ -181,6 +254,7 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
                                               "The email you type is invalid",
                                           textForButton: "Close",
                                           navigatorFunction: () {
+                                            context.pop();
                                             context.pop();
                                             context.pop();
                                           }),
@@ -198,6 +272,7 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
                                           navigatorFunction: () {
                                             context.pop();
                                             context.pop();
+                                            context.pop();
                                           }),
                                     );
                                     break;
@@ -213,13 +288,13 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
                                           navigatorFunction: () {
                                             context.pop();
                                             context.pop();
+                                            context.pop();
                                           }),
                                     );
 
                                     break;
                                   default:
                                     authBloc.add(const LogOut());
-                                    // context.pop();
                                     context.go("/");
                                 }
                               });
@@ -234,6 +309,8 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
                                         "New email and confirm email need to be match",
                                     textForButton: "Close",
                                     navigatorFunction: () {
+                                      context.pop();
+                                      context.pop();
                                       context.pop();
                                     }),
                               );
