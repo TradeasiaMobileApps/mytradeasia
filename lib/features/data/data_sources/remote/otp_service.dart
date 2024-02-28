@@ -7,7 +7,7 @@ class OtpService {
   final dio = Dio();
 
   Future<Response<SendOTPModel>> postSendOTP(String email) async {
-    String url = "${mytradeasiaBackend}/sendOtp";
+    String url = "${mytradeasiaBackend}/mytradeasia/otp/send-otp";
 
     final headers = {
       'Content-Type': 'application/json',
@@ -25,7 +25,7 @@ class OtpService {
 
   Future<Response<VerifyOTPModel>> postVerifyOTP(
       String code, String email) async {
-    String url = "${mytradeasiaBackend}/checkOTP";
+    String url = "${mytradeasiaBackend}/mytradeasia/otp/check-otp";
 
     final headers = {
       'Content-Type': 'application/json',

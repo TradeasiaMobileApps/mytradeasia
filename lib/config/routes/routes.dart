@@ -244,6 +244,21 @@ class Routes {
                             //       builder: (context, state) =>
                             //           const EmailChangeOtpScreen())
                             // ]
+                          ),
+                          GoRoute(
+                            parentNavigatorKey: _rootNavigatorKey,
+                            path: "change_email_otp",
+                            builder: (context, state) {
+                              String email = state.extra as String;
+                              return EmailChangeOtpScreen(email: email);
+                            },
+                            // routes: [
+                            //   GoRoute(
+                            //       parentNavigatorKey: _rootNavigatorKey,
+                            //       path: "otp_email",
+                            //       builder: (context, state) =>
+                            //           const EmailChangeOtpScreen())
+                            // ]
                           )
                         ]),
                     GoRoute(
@@ -251,6 +266,13 @@ class Routes {
                         path: "change_password",
                         builder: (context, state) =>
                             const ChangePasswordScreen()),
+                    GoRoute(
+                        parentNavigatorKey: _rootNavigatorKey,
+                        path: "change_password_otp",
+                        builder: (context, state) {
+                          String email = state.extra as String;
+                          return PasswordChangeOtpScreen(email: email);
+                        }),
                     GoRoute(
                         parentNavigatorKey: _rootNavigatorKey,
                         path: "settings",

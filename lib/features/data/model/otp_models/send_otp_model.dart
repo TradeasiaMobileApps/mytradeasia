@@ -4,8 +4,9 @@ class SendOTPModel extends SendOTPEntity {
   const SendOTPModel({required String status, String? message})
       : super(status, message);
 
-  factory SendOTPModel.fromJson(Map<String, dynamic> json) =>
-      SendOTPModel(status: json['status'], message: json['message']);
+  factory SendOTPModel.fromJson(Map<String, dynamic> json) => SendOTPModel(
+      status: json['auth']['status_code'].toString(),
+      message: json['auth']['message']);
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();

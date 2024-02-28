@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -13,6 +14,9 @@ import 'package:mytradeasia/features/presentation/widgets/mytradeasia_widget.dar
 import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
 
+import '../../../../../core/resources/data_state.dart';
+import '../../../../domain/usecases/otp_usecases/send_otp.dart';
+
 class MyTradeAsiaScreen extends StatefulWidget {
   const MyTradeAsiaScreen({super.key});
 
@@ -23,6 +27,8 @@ class MyTradeAsiaScreen extends StatefulWidget {
 class _MyTradeAsiaScreenState extends State<MyTradeAsiaScreen> {
   final GetUserSnapshot _getUserSnapshot = injections<GetUserSnapshot>();
   final GetRfqList _getRfqList = injections<GetRfqList>();
+  final SendOTP _sendOTP = injections<SendOTP>();
+  final _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -146,25 +152,87 @@ class _MyTradeAsiaScreenState extends State<MyTradeAsiaScreen> {
                             FutureBuilder(
                                 future: isSSOAuth(),
                                 builder: (context, snapshot) {
-                                  // if (snapshot.connectionState ==
-                                  //     ConnectionState.waiting) {
-                                  //   return Container();
-                                  // }
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return Container();
+                                  }
 
-                                  // if (snapshot.hasError) {
-                                  //   return Text('Error: ${snapshot.error}');
-                                  // }
+                                  if (snapshot.hasError) {
+                                    return Text('Error: ${snapshot.error}');
+                                  }
 
-                                  // if (snapshot.data == true) {
-                                  //   return Container();
-                                  // }
+                                  if (snapshot.data == true) {
+                                    return Container();
+                                  }
                                   return MyTradeAsiaWidget(
                                     nama: "Change Password",
                                     urlIcon: "assets/images/icon_password.png",
-                                    onPressedFunction: () {
-                                      if (snapshot.data == false) {
-                                        context
-                                            .go("/mytradeasia/change_password");
+                                    onPressedFunction: () async {
+                                      showDialog(
+                                        context: context,
+                                        barrierDismissible:
+                                            false, // Prevents the dialog from closing on tap outside
+                                        builder: (context) => const Center(
+                                            child:
+                                                CircularProgressIndicator()), // Loading indicator
+                                      );
+
+                                      try {
+                                        var result = await _sendOTP.call(
+                                            param: _auth.currentUser!.email!);
+
+                                        if (result is DataSuccess) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              duration: const Duration(
+                                                  seconds: 2,
+                                                  milliseconds: 500),
+                                              backgroundColor: Colors.green,
+                                              content: Text(
+                                                "OTP code sent to : ${_auth.currentUser!.email!}",
+                                                style: body1Regular.copyWith(
+                                                    color: Colors.white,
+                                                    fontSize: 12,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ),
+                                          );
+                                          context.go(
+                                              "/mytradeasia/change_password_otp",
+                                              extra: _auth.currentUser!.email!);
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              duration: const Duration(
+                                                  seconds: 2,
+                                                  milliseconds: 500),
+                                              backgroundColor: Colors.red,
+                                              content: Text(
+                                                "Failed to send OTP. Please try again.",
+                                                style: body1Regular.copyWith(
+                                                    color: Colors.white,
+                                                    fontSize: 12,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      } catch (e) {
+                                        // Navigator.of(context).pop();
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: Text("Error occurred: $e"),
+                                          ),
+                                        );
+                                      } finally {
+                                        Navigator.of(context,
+                                                rootNavigator: true)
+                                            .pop();
                                       }
                                     },
                                   );
