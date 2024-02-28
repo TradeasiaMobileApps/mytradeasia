@@ -20,7 +20,7 @@ class DetailProductBloc extends Bloc<DetailProductEvent, DetailProductState> {
 
   void onGetDetailProduct(
       GetDetailProductEvent event, Emitter<DetailProductState> emit) async {
-    final dataState = await _getDetailProductUseCase(param: event.product);
+    final dataState = await _getDetailProductUseCase(param: event.productId);
 
     if (dataState.data!.detailProduct == null) {
       emit(const DetailProductEmpty());

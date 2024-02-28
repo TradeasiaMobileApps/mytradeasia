@@ -4,13 +4,16 @@ import 'package:mytradeasia/features/data/model/detail_product_models/detail_pro
 class DetailProductService {
   final dio = Dio();
 
-  Future<Response<DetailsProductModel>> getDetailProduct(String seoUrl) async {
-    String url = "https://tradeasia.sg$seoUrl";
+  Future<Response<DetailsProductModel>> getDetailProduct(
+      String productId) async {
+    String url = "https://tradeasia.vn/api/productDetails/$productId";
 
     final response = await dio.get(url);
-    final data = response.data;
-    final detailProductModel = DetailsProductModel.fromJson(data);
 
+    final data = response.data;
+
+    final detailProductModel = DetailsProductModel.fromJson(data['data']);
+    print(detailProductModel);
     return Response<DetailsProductModel>(
       statusCode: response.statusCode,
       requestOptions: response.requestOptions,

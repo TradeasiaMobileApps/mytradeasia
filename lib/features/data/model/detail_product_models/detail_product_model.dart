@@ -4,32 +4,32 @@ class DetailsProductModel extends DetailsProductEntity {
   const DetailsProductModel({
     _DetailProduct? detailProduct,
     List<_ListIndustryModel>? listIndustry,
-    List<_ListCategoryModel>? listCategory,
     List<_RelatedProductModel>? relatedProducts,
+    _BasicInfoModel? basicInfoModel,
   }) : super(
           detailProduct: detailProduct,
           listIndustry: listIndustry,
-          listCategory: listCategory,
           relatedProducts: relatedProducts,
+          basicInfo: basicInfoModel,
         );
 
   factory DetailsProductModel.fromJson(Map<String, dynamic> json) =>
       DetailsProductModel(
-        detailProduct: json["detail_product"] != null
-            ? _DetailProduct.fromJson(json["detail_product"])
+        detailProduct: json["product_detail"] != null
+            ? _DetailProduct.fromJson(json["product_detail"])
             : null,
-        listIndustry: List<_ListIndustryModel>.from(
-            json["list-industry"].map((x) => _ListIndustryModel.fromJson(x))),
-        listCategory: List<_ListCategoryModel>.from(
-            json["list-category"].map((x) => _ListCategoryModel.fromJson(x))),
-        relatedProducts: List<_RelatedProductModel>.from(
-            json["related-products"]
-                .map((x) => _RelatedProductModel.fromJson(x))),
+        listIndustry: List<_ListIndustryModel>.from(json["product_detail"]
+                ["productIndustries"]
+            .map((x) => _ListIndustryModel.fromJson(x))),
+        relatedProducts: List<_RelatedProductModel>.from(json["related_product"]
+            .map((x) => _RelatedProductModel.fromJson(x))),
+        basicInfoModel: _BasicInfoModel.fromJson(json["basic_info"]),
       );
 }
 
 class _DetailProduct extends DetailProduct {
   const _DetailProduct({
+    String? productId,
     String? productname,
     String? productimage,
     String? iupacName,
@@ -39,7 +39,9 @@ class _DetailProduct extends DetailProduct {
     String? description,
     String? application,
     String? packagingName,
+    String? categoryName,
   }) : super(
+          productId: productId,
           productname: productname,
           productimage: productimage,
           iupacName: iupacName,
@@ -49,6 +51,7 @@ class _DetailProduct extends DetailProduct {
           description: description,
           application: application,
           packagingName: packagingName,
+          categoryName: categoryName,
         );
 
   factory _DetailProduct.fromJson(Map<String, dynamic> json) => _DetailProduct(
@@ -61,41 +64,32 @@ class _DetailProduct extends DetailProduct {
         description: json["description"] ?? "",
         application: json["application"] ?? "",
         packagingName: json["packaging_name"] ?? "",
-      );
-}
-
-class _ListCategoryModel extends ListCategory {
-  const _ListCategoryModel({
-    String? categoryUrl,
-    String? categoryName,
-  }) : super(categoryName: categoryName, categoryUrl: categoryUrl);
-
-  factory _ListCategoryModel.fromJson(Map<String, dynamic> json) =>
-      _ListCategoryModel(
-        categoryUrl: json["category_url"],
-        categoryName: json["category_name"],
+        categoryName: json["category_name"] ?? "",
       );
 }
 
 class _ListIndustryModel extends ListIndustry {
   const _ListIndustryModel({
+    String? industryId,
     String? industryUrl,
     String? industryName,
   }) : super(
+          industryId: industryId,
           industryUrl: industryUrl,
           industryName: industryName,
         );
 
   factory _ListIndustryModel.fromJson(Map<String, dynamic> json) =>
       _ListIndustryModel(
-        industryUrl: json["industry_url"],
-        industryName: json["industry_name"],
+        industryId: json["id"].toString(),
+        industryUrl: json["prodind_url"],
+        industryName: json["prodind_name"],
       );
 }
 
 class _RelatedProductModel extends RelatedProduct {
   const _RelatedProductModel({
-    int? productId,
+    String? productId,
     String? productname,
     String? productimage,
     String? casNumber,
@@ -110,10 +104,29 @@ class _RelatedProductModel extends RelatedProduct {
 
   factory _RelatedProductModel.fromJson(Map<String, dynamic> json) =>
       _RelatedProductModel(
-        productId: json["id"],
+        productId: json["id"].toString(),
         productname: json["productname"],
         productimage: json["productimage"],
         casNumber: json["cas_number"],
         hsCode: json["hs_code"],
+      );
+}
+
+class _BasicInfoModel extends BasicInfo {
+  const _BasicInfoModel({
+    String? phy_appear_name,
+    String? packaging_name,
+    String? common_names,
+  }) : super(
+          phy_appear_name: phy_appear_name,
+          packaging_name: packaging_name,
+          common_names: common_names,
+        );
+
+  factory _BasicInfoModel.fromJson(Map<String, dynamic> json) =>
+      _BasicInfoModel(
+        phy_appear_name: json["phy_appear_name"],
+        packaging_name: json["packaging_name"],
+        common_names: json["common_names"],
       );
 }

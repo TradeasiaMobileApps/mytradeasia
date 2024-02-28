@@ -4,13 +4,13 @@ import 'package:mytradeasia/features/domain/entities/detail_product_entities/det
 import 'package:mytradeasia/features/domain/repository/detail_product_repository.dart';
 
 class GetDetailProduct
-    implements UseCase<DataState<DetailsProductEntity>, String> {
+    implements UseCase<DataState<DetailsProductEntity>, int> {
   final DetailProductRepository _detailProductRepository;
 
   GetDetailProduct(this._detailProductRepository);
 
   @override
-  Future<DataState<DetailsProductEntity>> call({required String? param}) {
+  Future<DataState<DetailsProductEntity>> call({required int? param}) {
     return _detailProductRepository.getDetailProductRepo(param!);
   }
 }

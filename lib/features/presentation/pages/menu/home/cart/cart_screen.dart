@@ -659,6 +659,7 @@ class ActiveButton extends StatelessWidget {
           for (var item in cartData) {
             if (item.isChecked!) {
               ProductToRfq data = ProductToRfq(
+                  productId: item.productId!,
                   productName: item.productName!,
                   productImage: item.productImage!,
                   hsCode: item.hsCode!,
@@ -668,23 +669,12 @@ class ActiveButton extends StatelessWidget {
               selectedItem.add(data);
             }
           }
-          // List<ProductToRfq> products = [];
-          // ProductToRfq product = ProductToRfq(productName: data
-          //     .products![
-          // index]
-          //     .productname!);
-          // products.add(product);
-          //
+
           RequestQuotationParameter param = RequestQuotationParameter(
             products: selectedItem,
           );
 
           context.push("/home/request_quotation", extra: param);
-          // Navigator.push(context, MaterialPageRoute(
-          //   builder: (context) {
-          //     return navigationPage;
-          //   },
-          // ));
         }),
         child: Text(
           titleButton,

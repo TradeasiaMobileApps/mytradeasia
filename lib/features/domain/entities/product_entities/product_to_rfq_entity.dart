@@ -1,4 +1,5 @@
 class ProductToRfq {
+  final String productId;
   final String productName;
   final String productImage;
   final String hsCode;
@@ -7,7 +8,8 @@ class ProductToRfq {
   String? unit;
 
   ProductToRfq(
-      {required this.productName,
+      {required this.productId,
+      required this.productName,
       required this.productImage,
       required this.hsCode,
       required this.casNumber,

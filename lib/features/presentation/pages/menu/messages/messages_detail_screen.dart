@@ -21,14 +21,14 @@ class MessagesDetailScreen extends StatefulWidget {
       required this.otherUserId,
       required this.currentUserId,
       required this.chatId,
-      required this.prodUrl,
+      required this.productId,
       required this.customerName});
 
   final String channelUrl;
   final String chatId; // ID percakapan
   final String currentUserId; // UID pengguna saat ini
   final String otherUserId; // UID pengguna lain
-  final String prodUrl;
+  final String productId;
   final String customerName;
 
   @override
@@ -54,9 +54,8 @@ class MessagesDetailScreenState extends State<MessagesDetailScreen> {
   void initState() {
     super.initState();
     initializeMessageCollection();
-    if (widget.prodUrl != "") {
-      _getProduct(widget.prodUrl);
-    }
+
+    _getProduct(int.parse(widget.productId));
   }
 
   @override
@@ -66,9 +65,10 @@ class MessagesDetailScreenState extends State<MessagesDetailScreen> {
     super.dispose();
   }
 
-  void _getProduct(String? url) async {
-    var prod =
-        await _getDetailProduct.call(param: url).whenComplete(() => setState(
+  void _getProduct(int? productId) async {
+    var prod = await _getDetailProduct
+        .call(param: productId)
+        .whenComplete(() => setState(
               () {},
             ));
     product = prod.data!;

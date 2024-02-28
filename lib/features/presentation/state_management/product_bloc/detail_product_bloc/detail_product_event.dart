@@ -3,8 +3,8 @@ abstract class DetailProductEvent {
 }
 
 class GetDetailProductEvent extends DetailProductEvent {
-  final String product;
-  const GetDetailProductEvent(this.product);
+  final int productId;
+  const GetDetailProductEvent(this.productId);
 }
 
 class DetailDispose extends DetailProductEvent {}

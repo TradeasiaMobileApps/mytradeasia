@@ -2,7 +2,7 @@ import 'package:mytradeasia/features/domain/entities/top_products_entities/top_p
 
 class TopProductsModel extends TopProductEntity {
   const TopProductsModel({
-    int? productId,
+    String? productId,
     String? productimage,
     String? productname,
     String? casNumber,
@@ -18,7 +18,7 @@ class TopProductsModel extends TopProductEntity {
 
   factory TopProductsModel.fromJson(Map<String, dynamic> json) =>
       TopProductsModel(
-        productId: json["id"],
+        productId: json["id"].toString(),
         productimage: json["productimage"],
         productname: json["productname"],
         casNumber: json["cas_number"],

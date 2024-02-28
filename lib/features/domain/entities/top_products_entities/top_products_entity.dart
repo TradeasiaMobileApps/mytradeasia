@@ -2,7 +2,7 @@ import 'package:mytradeasia/features/domain/entities/product_entities/product_en
 
 class TopProductEntity extends ProductEntity {
   const TopProductEntity({
-    int? productId,
+    String? productId,
     String? productimage,
     String? productname,
     String? casNumber,

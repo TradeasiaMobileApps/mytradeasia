@@ -254,6 +254,9 @@ class _SearchScreenState extends State<SearchScreen> {
                                               List<ProductToRfq> products = [];
                                               ProductToRfq product =
                                                   ProductToRfq(
+                                                productId: state
+                                                    .searchProducts![index]
+                                                    .productId!,
                                                 productName: state
                                                     .searchProducts![index]
                                                     .productname!,

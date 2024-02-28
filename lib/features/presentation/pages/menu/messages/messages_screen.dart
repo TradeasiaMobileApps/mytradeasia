@@ -207,7 +207,7 @@ class MessageScreenState extends State<MessageScreen> {
                                       userState.sendbirdUser!.nickname,
                                   chatId: groupChannel.chat.chatId.toString(),
                                   channelUrl: groupChannel.channelUrl,
-                                  prodUrl: groupChannel.data,
+                                  productId: groupChannel.data,
                                 ));
 
                             // print(await state.channels![index]
@@ -355,7 +355,7 @@ class MessageScreenState extends State<MessageScreen> {
                                                         decoration:
                                                             BoxDecoration(
                                                                 color: const Color
-                                                                        .fromARGB(
+                                                                    .fromARGB(
                                                                     224,
                                                                     243,
                                                                     247,
@@ -363,7 +363,7 @@ class MessageScreenState extends State<MessageScreen> {
                                                                 border:
                                                                     Border.all(
                                                                   color: const Color
-                                                                          .fromARGB(
+                                                                      .fromARGB(
                                                                       160,
                                                                       18,
                                                                       60,
@@ -382,11 +382,8 @@ class MessageScreenState extends State<MessageScreen> {
                                                                 text10.copyWith(
                                                               fontSize: 9,
                                                               color: const Color
-                                                                      .fromARGB(
-                                                                  160,
-                                                                  18,
-                                                                  60,
-                                                                  105),
+                                                                  .fromARGB(160,
+                                                                  18, 60, 105),
                                                             ),
                                                           ),
                                                         ),

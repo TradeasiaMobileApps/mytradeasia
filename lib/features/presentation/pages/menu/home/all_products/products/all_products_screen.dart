@@ -368,27 +368,27 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                                           onTap: () async {
                                             /* With go_router */
 
-                                            // context.pushNamed("product",
-                                            //     pathParameters: {
-                                            //       'url': state.products![index]
-                                            //               .seoUrl ??
-                                            //           "/images/product/alum.webp"
-                                            //     });
+                                            context.pushNamed("product",
+                                                pathParameters: {
+                                                  'productId': state
+                                                      .products![index].id
+                                                      .toString()
+                                                });
 
-                                            // Map<String, dynamic> data = {
-                                            //   "productId":
-                                            //       state.products![index].id,
-                                            //   "productName": state
-                                            //       .products![index].productname,
-                                            //   "casNumber": state
-                                            //       .products![index].casNumber,
-                                            //   "hsCode":
-                                            //       state.products![index].hsCode,
-                                            //   "productImage": state
-                                            //       .products![index].productimage
-                                            // };
+                                            Map<String, dynamic> data = {
+                                              "productId":
+                                                  state.products![index].id,
+                                              "productName": state
+                                                  .products![index].productname,
+                                              "casNumber": state
+                                                  .products![index].casNumber,
+                                              "hsCode":
+                                                  state.products![index].hsCode,
+                                              "productImage": state
+                                                  .products![index].productimage
+                                            };
 
-                                            // await _addRecentlySeen(param: data);
+                                            await _addRecentlySeen(param: data);
                                           },
                                           child: authState.role != "Sales"
                                               ? ProductCard(
@@ -410,6 +410,9 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                                                         products = [];
                                                     ProductToRfq product =
                                                         ProductToRfq(
+                                                      productId: state
+                                                          .products![index].id
+                                                          .toString(),
                                                       productName: state
                                                           .products![index]
                                                           .productname!,
@@ -531,6 +534,10 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                                                     [];
                                                 ProductToRfq product =
                                                     ProductToRfq(
+                                                  productId: searchState
+                                                      .searchProducts![index]
+                                                      .productId
+                                                      .toString(),
                                                   productName: searchState
                                                       .searchProducts![index]
                                                       .productname!,

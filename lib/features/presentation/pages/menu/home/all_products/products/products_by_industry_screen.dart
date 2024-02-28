@@ -316,24 +316,24 @@ class IndustryProducts extends StatelessWidget {
                 onTap: () async {
                   /* With go_router */
 
-                  // context.pushNamed("product", pathParameters: {
-                  //   'url': state.products![index].seoUrl ??
-                  //       "/images/product/alum.webp"
-                  // });
+                  context.pushNamed("product", pathParameters: {
+                    'productId': state.products![index].id.toString()
+                  });
 
-                  // Map<String, dynamic> data = {
-                  //   "productName": state.products![index].productname,
-                  //   "seo_url": state.products![index].seoUrl,
-                  //   "casNumber": state.products![index].casNumber,
-                  //   "hsCode": state.products![index].hsCode,
-                  //   "productImage": state.products![index].productimage
-                  // };
+                  Map<String, dynamic> data = {
+                    "productName": state.products![index].productname,
+                    "productId": state.products![index].id,
+                    "casNumber": state.products![index].casNumber,
+                    "hsCode": state.products![index].hsCode,
+                    "productImage": state.products![index].productimage
+                  };
 
-                  // await _addRecentlySeen(param: data);
+                  await _addRecentlySeen(param: data);
                 },
                 child: authState.role != "Sales"
                     ? ProductCard(
                         product: ProductEntity(
+                            productId: state.products![index].id,
                             productname: state.products![index].productname,
                             productimage: state.products![index].productimage,
                             casNumber: state.products![index].casNumber,
@@ -341,6 +341,7 @@ class IndustryProducts extends StatelessWidget {
                         onPressed: () {
                           List<ProductToRfq> products = [];
                           ProductToRfq product = ProductToRfq(
+                            productId: state.products![index].id.toString(),
                             productName: state.products![index].productname!,
                             productImage: state.products![index].productimage!,
                             hsCode: state.products![index].hsCode!,
@@ -357,6 +358,7 @@ class IndustryProducts extends StatelessWidget {
                       )
                     : ProductCard(
                         product: ProductEntity(
+                            productId: state.products![index].id,
                             productname: state.products![index].productname,
                             productimage: state.products![index].productimage,
                             casNumber: state.products![index].casNumber,

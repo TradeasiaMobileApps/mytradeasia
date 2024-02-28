@@ -13,9 +13,10 @@ class DetailProductRepositoryImpl implements DetailProductRepository {
 
   @override
   Future<DataState<DetailsProductModel>> getDetailProductRepo(
-      String seoUrl) async {
+      int productId) async {
     try {
-      final response = await _detailProductService.getDetailProduct(seoUrl);
+      final response =
+          await _detailProductService.getDetailProduct(productId.toString());
       if (response.statusCode == HttpStatus.ok) {
         return DataSuccess(response.data!);
       } else {

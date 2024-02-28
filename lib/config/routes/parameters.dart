@@ -26,19 +26,21 @@ class QuotationDetailParameter {
 }
 
 class MessageDetailParameter {
+  String productId;
   String otherUserId;
   String currentUserId;
   String customerName;
   String chatId;
   String channelUrl;
-  String? prodUrl;
-  MessageDetailParameter(
-      {required this.otherUserId,
-      required this.currentUserId,
-      required this.customerName,
-      required this.chatId,
-      required this.channelUrl,
-      this.prodUrl});
+
+  MessageDetailParameter({
+    required this.productId,
+    required this.otherUserId,
+    required this.currentUserId,
+    required this.customerName,
+    required this.chatId,
+    required this.channelUrl,
+  });
 }
 
 class BiodataParameter {

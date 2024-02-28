@@ -180,21 +180,22 @@ class AllTopProductsWidget extends StatelessWidget {
                       return InkWell(
                         onTap: () async {
                           /* With go_router */
-                          // context.pushNamed("product", pathParameters: {
-                          //   'url': state.topProductData![index].seoUrl!
-                          // });
+                          context.pushNamed("product", pathParameters: {
+                            'productId': state.topProductData![index].productId
+                                .toString()
+                          });
 
-                          // Map<String, dynamic> data = {
-                          //   "productName":
-                          //       state.topProductData![index].productname,
-                          //   "seo_url": state.topProductData![index].seoUrl,
-                          //   "casNumber": state.topProductData![index].casNumber,
-                          //   "hsCode": state.topProductData![index].hsCode,
-                          //   "productImage":
-                          //       state.topProductData![index].productimage
-                          // };
+                          Map<String, dynamic> data = {
+                            "productName":
+                                state.topProductData![index].productname,
+                            "productId": state.topProductData![index].productId,
+                            "casNumber": state.topProductData![index].casNumber,
+                            "hsCode": state.topProductData![index].hsCode,
+                            "productImage":
+                                state.topProductData![index].productimage
+                          };
 
-                          // await _addRecentlySeen.call(param: data);
+                          await _addRecentlySeen.call(param: data);
                         },
                         child: authState.role != "Sales"
                             ? ProductCard(
@@ -210,6 +211,8 @@ class AllTopProductsWidget extends StatelessWidget {
                                 onPressed: () {
                                   List<ProductToRfq> products = [];
                                   ProductToRfq product = ProductToRfq(
+                                    productId:
+                                        state.topProductData![index].productId!,
                                     productName: state
                                         .topProductData![index].productname!,
                                     productImage: state

@@ -110,11 +110,12 @@ class Routes {
                         routes: [
                           GoRoute(
                               parentNavigatorKey: _rootNavigatorKey,
-                              path: "product/:url",
+                              path: "product/:productId",
                               name: 'product',
                               builder: (context, state) {
                                 return ProductsDetailScreen(
-                                    urlProduct: state.pathParameters['url']!);
+                                    productId: int.parse(
+                                        state.pathParameters['productId']!));
                               })
                         ]),
                     GoRoute(
@@ -155,7 +156,7 @@ class Routes {
                             currentUserId: param.currentUserId,
                             chatId: param.chatId,
                             channelUrl: param.channelUrl,
-                            prodUrl: param.prodUrl ?? "",
+                            productId: param.productId,
                             customerName: param.customerName,
                           );
                         })

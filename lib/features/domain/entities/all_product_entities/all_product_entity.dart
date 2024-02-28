@@ -9,7 +9,7 @@ class AllProductEntities extends Equatable {
     required this.casNumber,
   });
 
-  final int? id;
+  final String? id;
   final String? productname;
   final String? productimage;
   final String? hsCode;

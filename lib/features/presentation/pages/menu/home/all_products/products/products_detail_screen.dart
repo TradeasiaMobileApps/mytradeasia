@@ -28,9 +28,9 @@ import '../../../../../widgets/tabbar_content/tabbar_detail_description_widget.d
 import '../../../../../widgets/text_editing_widget.dart';
 
 class ProductsDetailScreen extends StatefulWidget {
-  const ProductsDetailScreen({super.key, required this.urlProduct});
+  const ProductsDetailScreen({super.key, required this.productId});
 
-  final String urlProduct;
+  final int productId;
 
   @override
   State<ProductsDetailScreen> createState() => _ProductsDetailScreenState();
@@ -44,7 +44,7 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
     super.initState();
     var detailProductBloc = BlocProvider.of<DetailProductBloc>(context);
     detailProductBloc.add(DetailDispose());
-    detailProductBloc.add(GetDetailProductEvent(widget.urlProduct));
+    detailProductBloc.add(GetDetailProductEvent(widget.productId));
   }
 
   final String url = "https://chemtradea.chemtradeasia.com/";
@@ -58,8 +58,8 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   void addToCart(
-      {required String productName,
-      required String seoUrl,
+      {required String productId,
+      required String productName,
       required String casNumber,
       required String hsCode,
       required String productImage}) async {
@@ -67,8 +67,8 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
     String docsId = _auth.currentUser!.uid.toString();
 
     Map<String, dynamic> data = {
+      "productId": productId,
       "productName": productName,
-      "seo_url": seoUrl,
       "casNumber": casNumber,
       "hsCode": hsCode,
       "productImage": productImage,
@@ -92,7 +92,7 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
           onRefresh: () async {
             setState(() {});
             return detailProductBloc
-                .add(GetDetailProductEvent(widget.urlProduct));
+                .add(GetDetailProductEvent(widget.productId));
           },
           child: SingleChildScrollView(
             child: BlocBuilder<DetailProductBloc, DetailProductState>(
@@ -118,8 +118,8 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                           width: MediaQuery.of(context).size.width,
                           height: size20px * 15.0,
                           child: CachedNetworkImage(
-                            imageUrl:
-                                "$url${state.detailProductData!.detailProduct!.productimage!}",
+                            imageUrl: state.detailProductData!.detailProduct!
+                                .productimage!,
                             fit: BoxFit.fill,
                             placeholder: (context, url) => const Center(
                               child: CircularProgressIndicator.adaptive(),
@@ -415,12 +415,22 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                                             ?.iupacName ??
                                         "N/A")
                                   ],
-                                  ["Appearance", "N/A"],
-                                  ["Common Name", "N/A"],
+                                  [
+                                    "Appearance",
+                                    state.detailProductData?.basicInfo
+                                            ?.phy_appear_name ??
+                                        "N/A"
+                                  ],
+                                  [
+                                    "Common Name",
+                                    state.detailProductData?.basicInfo
+                                            ?.common_names ??
+                                        "N/A"
+                                  ],
                                   [
                                     "Packaging",
-                                    (state.detailProductData?.detailProduct
-                                            ?.packagingName ??
+                                    (state.detailProductData?.basicInfo
+                                            ?.packaging_name ??
                                         "N/A")
                                   ]
                                 ];
@@ -738,8 +748,9 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                                                         ])
                                                   .then((value) =>
                                                       value.createMetaData({
-                                                        'urlProduct':
-                                                            widget.urlProduct,
+                                                        'productId': widget
+                                                            .productId
+                                                            .toString(),
                                                         'status': 'product',
                                                       }))
                                                   .whenComplete(
@@ -1169,8 +1180,8 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                                                                             ScaffoldMessenger.of(context).showSnackBar(snackbar);
                                                                           } else {
                                                                             addToCart(
+                                                                                productId: prodState.detailProductData!.detailProduct?.productId ?? "N/A",
                                                                                 productName: prodState.detailProductData!.detailProduct?.productname ?? "N/A",
-                                                                                seoUrl: widget.urlProduct,
                                                                                 casNumber: prodState.detailProductData!.detailProduct?.casNumber ?? "N/A",
                                                                                 hsCode: prodState.detailProductData!.detailProduct?.hsCode ?? "N/A",
                                                                                 productImage: prodState.detailProductData!.detailProduct?.productimage ?? "N/A");
@@ -1231,6 +1242,8 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                                   onPressed: () {
                                     List<ProductToRfq> products = [];
                                     ProductToRfq product = ProductToRfq(
+                                      productId: prodState.detailProductData!
+                                          .detailProduct!.productId!,
                                       productName: prodState.detailProductData!
                                           .detailProduct!.productname!,
                                       productImage: prodState.detailProductData!

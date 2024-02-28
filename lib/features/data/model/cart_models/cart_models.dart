@@ -1,4 +1,5 @@
 class CartModel {
+  String? productId;
   String? seoUrl;
   String? unit;
   double? quantity;
@@ -9,7 +10,8 @@ class CartModel {
   bool? isChecked;
 
   CartModel(
-      {this.seoUrl,
+      {this.productId,
+      this.seoUrl,
       this.unit,
       this.quantity,
       this.productImage,
@@ -19,6 +21,7 @@ class CartModel {
       this.isChecked});
 
   CartModel.fromJson(Map<String, dynamic> json) {
+    productId = json['productId'].toString();
     seoUrl = json['seo_url'];
     unit = json['unit'];
     quantity = json['quantity'];
@@ -31,6 +34,7 @@ class CartModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    data['productId'] = productId;
     data['seo_url'] = seoUrl;
     data['unit'] = unit;
     data['quantity'] = quantity;
@@ -44,6 +48,7 @@ class CartModel {
 
   Map<String, dynamic> toFirebase() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    data['productId'] = productId;
     data['seo_url'] = seoUrl;
     data['unit'] = unit;
     data['quantity'] = quantity;

@@ -461,34 +461,35 @@ class _HomeScreenState extends State<HomeScreen> {
                                             itemBuilder: (context, index) {
                                               return InkWell(
                                                 onTap: () async {
-                                                  // context.pushNamed("product",
-                                                  //     pathParameters: {
-                                                  //       'url': state
-                                                  //           .topProductData![
-                                                  //               index]
-                                                  //           .seoUrl!
-                                                  //     });
+                                                  context.pushNamed("product",
+                                                      pathParameters: {
+                                                        'productId': state
+                                                            .topProductData![
+                                                                index]
+                                                            .productId!
+                                                            .toString()
+                                                      });
 
-                                                  // Map<String, dynamic> data = {
-                                                  //   "productName": state
-                                                  //       .topProductData![index]
-                                                  //       .productname,
-                                                  //   "seo_url": state
-                                                  //       .topProductData![index]
-                                                  //       .seoUrl,
-                                                  //   "casNumber": state
-                                                  //       .topProductData![index]
-                                                  //       .casNumber,
-                                                  //   "hsCode": state
-                                                  //       .topProductData![index]
-                                                  //       .hsCode,
-                                                  //   "productImage": state
-                                                  //       .topProductData![index]
-                                                  //       .productimage
-                                                  // };
+                                                  Map<String, dynamic> data = {
+                                                    "productId": state
+                                                        .topProductData![index]
+                                                        .productId,
+                                                    "productName": state
+                                                        .topProductData![index]
+                                                        .productname,
+                                                    "casNumber": state
+                                                        .topProductData![index]
+                                                        .casNumber,
+                                                    "hsCode": state
+                                                        .topProductData![index]
+                                                        .hsCode,
+                                                    "productImage": state
+                                                        .topProductData![index]
+                                                        .productimage
+                                                  };
 
-                                                  // await _addRecentlySeen(
-                                                  //     param: data);
+                                                  await _addRecentlySeen(
+                                                      param: data);
                                                 },
                                                 //product cards
 
@@ -523,6 +524,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               products = [];
                                                           ProductToRfq product =
                                                               ProductToRfq(
+                                                            productId: state
+                                                                .topProductData![
+                                                                    index]
+                                                                .productId!,
                                                             productName: state
                                                                 .topProductData![
                                                                     index]
