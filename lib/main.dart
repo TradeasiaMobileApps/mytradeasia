@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:mytradeasia/features/presentation/state_management/category_bloc/category_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/countries_bloc/countries_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/quotations_bloc/quotations_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/recently_seen_bloc/recently_seen_bloc.dart';
@@ -110,6 +111,7 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(create: (_) => injections<CountriesBloc>()),
         BlocProvider(create: (_) => injections<RfqBloc>()),
         BlocProvider(create: (_) => injections<QuotationBloc>()),
+        BlocProvider(create: (_) => injections<CategoryBloc>())
       ],
       child: StreamBuilder<InternetConnectionStatus>(
         initialData: InternetConnectionStatus.connected,

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mytradeasia/features/domain/entities/all_industry_entities/all_industry_entity.dart';
+import 'package:mytradeasia/features/presentation/state_management/category_bloc/category_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/category_bloc/category_event.dart';
 import 'package:mytradeasia/features/presentation/widgets/banner_industry_products_widget.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -13,6 +14,7 @@ import '../../../../../../domain/entities/product_entities/product_to_rfq_entity
 import '../../../../../../domain/usecases/user_usecases/add_recently_seen.dart';
 import '../../../../../state_management/auth_bloc/auth_bloc.dart';
 import '../../../../../state_management/auth_bloc/auth_state.dart';
+import '../../../../../state_management/category_bloc/category_state.dart';
 import '../../../../../state_management/product_bloc/list_product/list_product_bloc.dart';
 import '../../../../../state_management/product_bloc/list_product/list_product_event.dart';
 import '../../../../../state_management/product_bloc/list_product/list_product_state.dart';
@@ -20,8 +22,13 @@ import '../../../../../widgets/cart_button.dart';
 import '../../../../../widgets/product_card.dart';
 
 class ProductByIndustryScreen extends StatefulWidget {
-  final DetailIndustry industryType;
-  const ProductByIndustryScreen({super.key, required this.industryType});
+  final int industryIndex;
+  final String industryName;
+  const ProductByIndustryScreen({
+    super.key,
+    required this.industryIndex,
+    required this.industryName,
+  });
 
   @override
   State<ProductByIndustryScreen> createState() =>
@@ -39,6 +46,8 @@ class _ProductByIndustryScreenState extends State<ProductByIndustryScreen> {
   @override
   void initState() {
     BlocProvider.of<ListProductBloc>(context).add(const DisposeProducts());
+    BlocProvider.of<CategoryBloc>(context).add(const DisposeCategoryState());
+    BlocProvider.of<CategoryBloc>(context).add(const GetCategories());
     BlocProvider.of<ListProductBloc>(context).add(const GetProducts());
     super.initState();
   }
@@ -117,8 +126,7 @@ class _ProductByIndustryScreenState extends State<ProductByIndustryScreen> {
                       ],
                     ),
                   ),
-                  BannerIndustryProducts(
-                      industryType: widget.industryType.industryName!),
+                  BannerIndustryProducts(industryType: widget.industryName),
                   Padding(
                     padding: const EdgeInsets.only(
                         top: size20px + 10, bottom: size20px - 4),
@@ -159,41 +167,81 @@ class _ProductByIndustryScreenState extends State<ProductByIndustryScreen> {
                                           ),
                                           Column(
                                             children: [
-                                              GridView.builder(
-                                                gridDelegate:
-                                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                                        crossAxisCount: 2,
-                                                        crossAxisSpacing:
-                                                            size20px - 5,
-                                                        mainAxisSpacing:
-                                                            size20px - 5,
-                                                        childAspectRatio: 3.5),
-                                                itemCount: widget.industryType
-                                                    .category!.length,
-                                                shrinkWrap: true,
-                                                physics:
-                                                    const NeverScrollableScrollPhysics(),
-                                                itemBuilder: (context, index) {
-                                                  return Container(
-                                                    decoration:
-                                                        const BoxDecoration(
-                                                      color: thirdColor1,
-                                                      borderRadius: BorderRadius
-                                                          .all(Radius.circular(
-                                                              size20px / 4)),
-                                                    ),
-                                                    child: Center(
-                                                      child: Text(
-                                                        widget
-                                                                .industryType
-                                                                .category![
-                                                                    index]
-                                                                .categoryName ??
-                                                            "",
-                                                        style: body1Medium,
+                                              BlocBuilder<CategoryBloc,
+                                                  CategoryState>(
+                                                builder: (context, state) {
+                                                  if (state
+                                                      is CategoryLoading) {
+                                                    return const Center(
+                                                      child:
+                                                          CircularProgressIndicator
+                                                              .adaptive(),
+                                                    );
+                                                  }
+
+                                                  if (state is CategoryError) {
+                                                    return const Center(
+                                                      child: Column(
+                                                        children: [
+                                                          Icon(Icons.warning),
+                                                          Text(
+                                                              "Categories Data Fetch Error"),
+                                                        ],
                                                       ),
-                                                    ),
-                                                  );
+                                                    );
+                                                  }
+
+                                                  if (state is CategoryDone) {
+                                                    return GridView.builder(
+                                                      gridDelegate:
+                                                          const SliverGridDelegateWithFixedCrossAxisCount(
+                                                              crossAxisCount: 2,
+                                                              crossAxisSpacing:
+                                                                  size20px - 5,
+                                                              mainAxisSpacing:
+                                                                  size20px - 5,
+                                                              childAspectRatio:
+                                                                  3.5),
+                                                      itemCount: state
+                                                          .categoryIndustry![
+                                                              widget
+                                                                  .industryIndex]
+                                                          .category!
+                                                          .length,
+                                                      shrinkWrap: true,
+                                                      physics:
+                                                          const NeverScrollableScrollPhysics(),
+                                                      itemBuilder:
+                                                          (context, index) {
+                                                        return Container(
+                                                          decoration:
+                                                              const BoxDecoration(
+                                                            color: thirdColor1,
+                                                            borderRadius:
+                                                                BorderRadius.all(
+                                                                    Radius.circular(
+                                                                        size20px /
+                                                                            4)),
+                                                          ),
+                                                          child: Center(
+                                                            child: Text(
+                                                              state
+                                                                      .categoryIndustry![
+                                                                          widget
+                                                                              .industryIndex]
+                                                                      .category![
+                                                                          index]
+                                                                      .categoryName ??
+                                                                  "",
+                                                              style:
+                                                                  body1Medium,
+                                                            ),
+                                                          ),
+                                                        );
+                                                      },
+                                                    );
+                                                  }
+                                                  return SizedBox();
                                                 },
                                               ),
                                               SizedBox(

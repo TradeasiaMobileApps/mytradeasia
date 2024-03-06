@@ -1,4 +1,4 @@
-import 'package:mytradeasia/features/domain/entities/all_industry_entities/all_industry_entity.dart';
+import 'package:mytradeasia/features/domain/entities/category_entities/category_entity.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_to_rfq_entity.dart';
 import 'package:mytradeasia/features/domain/entities/searates_entities/searates_bl_entity.dart';
 
@@ -61,6 +61,7 @@ class RequestQuotationParameter {
 }
 
 class ProductsIndustryParameter {
-  DetailIndustry industry;
-  ProductsIndustryParameter({required this.industry});
+  int index;
+  String industryName;
+  ProductsIndustryParameter({required this.index, required this.industryName});
 }

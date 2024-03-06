@@ -135,7 +135,9 @@ class Routes {
                                 ProductsIndustryParameter parameter =
                                     state.extra as ProductsIndustryParameter;
                                 return ProductByIndustryScreen(
-                                    industryType: parameter.industry);
+                                  industryIndex: parameter.index,
+                                  industryName: parameter.industryName,
+                                );
                               })
                         ]),
                   ]),

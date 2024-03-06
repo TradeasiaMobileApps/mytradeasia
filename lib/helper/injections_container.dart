@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:mytradeasia/features/data/data_sources/firebase/auth_user_firebase.dart';
 import 'package:mytradeasia/features/data/data_sources/firebase/cart_firebase.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/all_industry_service.dart';
+import 'package:mytradeasia/features/data/data_sources/remote/category_service.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/country_service.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/detail_product_service.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/dhl_shipment_service.dart';
@@ -16,6 +17,7 @@ import 'package:mytradeasia/features/data/data_sources/remote/searates_service.d
 import 'package:mytradeasia/features/data/data_sources/remote/search_product_service.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/top_products_service.dart';
 import 'package:mytradeasia/features/data/repository/cart_repository_impl.dart';
+import 'package:mytradeasia/features/data/repository/category_repository_impl.dart';
 import 'package:mytradeasia/features/data/repository/country_repository_impl.dart';
 import 'package:mytradeasia/features/data/repository/detail_product_repository.dart';
 import 'package:mytradeasia/features/data/repository/dhl_shipment_repository.dart';
@@ -32,6 +34,7 @@ import 'package:mytradeasia/features/data/repository/search_product_repository.d
 import 'package:mytradeasia/features/data/repository/top_product_repository.dart';
 import 'package:mytradeasia/features/data/repository/user_repository_impl.dart';
 import 'package:mytradeasia/features/domain/repository/cart_repository.dart';
+import 'package:mytradeasia/features/domain/repository/category_repository.dart';
 import 'package:mytradeasia/features/domain/repository/country_repository.dart';
 import 'package:mytradeasia/features/domain/repository/detail_product_repository.dart';
 import 'package:mytradeasia/features/domain/repository/dhl_shipment_repository.dart';
@@ -51,6 +54,7 @@ import 'package:mytradeasia/features/domain/usecases/cart_usecases/add_cart.dart
 import 'package:mytradeasia/features/domain/usecases/cart_usecases/delete_cart_item.dart';
 import 'package:mytradeasia/features/domain/usecases/cart_usecases/get_cart.dart';
 import 'package:mytradeasia/features/domain/usecases/cart_usecases/update_cart.dart';
+import 'package:mytradeasia/features/domain/usecases/category_usecases/get_category_usecases.dart';
 import 'package:mytradeasia/features/domain/usecases/country_usecases/get_country_usecase.dart';
 import 'package:mytradeasia/features/domain/usecases/country_usecases/search_country_usecase.dart';
 import 'package:mytradeasia/features/domain/usecases/detail_product_usecases/get_detail_product.dart';
@@ -92,6 +96,7 @@ import 'package:mytradeasia/features/domain/usecases/user_usecases/update_profil
 import 'package:mytradeasia/features/domain/usecases/user_usecases/verify_otp.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/cart_bloc/cart_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/category_bloc/category_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/countries_bloc/countries_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/dhl_shipment_bloc/dhl_shipment_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/industry_bloc/industry_bloc.dart';
@@ -131,6 +136,7 @@ Future<void> initializeDependencies() async {
   injections.registerSingleton<SearatesService>(SearatesService());
   injections.registerSingleton<CountryService>(CountryService());
   injections.registerSingleton<QuoteService>(QuoteService());
+  injections.registerSingleton<CategoryService>(CategoryService());
 
   //Repositories Dependencies
   injections.registerSingleton<DetailProductRepository>(
@@ -163,6 +169,8 @@ Future<void> initializeDependencies() async {
       .registerSingleton<CountryRepository>(CountryRepoImpl(injections()));
   injections
       .registerSingleton<QuoteRepository>(QuoteRepositoryImpl(injections()));
+  injections.registerSingleton<CategoryRepository>(
+      CategoryRepositoryImpl(injections()));
 
   //UseCases Dependencies
   injections
@@ -225,6 +233,8 @@ Future<void> initializeDependencies() async {
   injections.registerSingleton<GetQuote>(GetQuote(injections()));
   injections.registerSingleton<ApproveQuote>(ApproveQuote(injections()));
   injections.registerSingleton<RejectQuote>(RejectQuote(injections()));
+  injections
+      .registerSingleton<GetCategoryUseCase>(GetCategoryUseCase(injections()));
 
   //Bloc
   injections
@@ -262,4 +272,5 @@ Future<void> initializeDependencies() async {
       () => CountriesBloc(injections(), injections()));
   injections.registerFactory<RfqBloc>(() => RfqBloc(injections()));
   injections.registerFactory<QuotationBloc>(() => QuotationBloc(injections()));
+  injections.registerFactory<CategoryBloc>(() => CategoryBloc(injections()));
 }

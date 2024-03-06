@@ -6,9 +6,9 @@ class AllIndustryService {
   final dio = Dio();
 
   Future<Response<AllIndustryModel>> getAllIndustryList() async {
-    const String endPoint = "/list-industry";
-    final response = await dio.get(tradeasiaApi + endPoint);
-    final data = response.data;
+    const String endPoint = "https://tradeasia.vn/api/industryList";
+    final response = await dio.get(endPoint);
+    final data = response.data["data"];
     final allIndustry = AllIndustryModel.fromJson(data);
 
     return Response<AllIndustryModel>(

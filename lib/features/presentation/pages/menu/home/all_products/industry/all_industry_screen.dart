@@ -91,14 +91,15 @@ class _AllIndustryScreenState extends State<AllIndustryScreen> {
                       mainAxisSpacing: 10,
                       childAspectRatio: 0.8),
                   itemBuilder: (context, index) {
-                    var photoItem = industries[extractWord(
-                        state.industry!.detailIndustry![index].industryUrl!)];
+                    var photoItem =
+                        state.industry!.detailIndustry![index].industryImage!;
                     return InkWell(
                       onTap: () {
                         ProductsIndustryParameter param =
                             ProductsIndustryParameter(
-                                industry:
-                                    state.industry!.detailIndustry![index]);
+                                index: index,
+                                industryName: state.industry!
+                                    .detailIndustry![index].industryName!);
 
                         context.go("/home/all_industry/products_industry",
                             extra: param);
@@ -206,11 +207,12 @@ class _AllIndustryScreenState extends State<AllIndustryScreen> {
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(5.0))),
                               ),
-                              Image.asset(
-                                photoItem!,
-                                width: size24px,
+                              Image.network(
+                                photoItem,
+                                fit: BoxFit.fill,
+                                width: 24,
                                 height: size24px,
-                              )
+                              ),
                             ],
                           ),
                           const SizedBox(
