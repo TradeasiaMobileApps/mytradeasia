@@ -2,11 +2,13 @@ import 'package:mytradeasia/features/domain/entities/product_entities/product_en
 
 class SearchProductModel extends ProductEntity {
   const SearchProductModel({
+    String? id,
     String? productname,
     String? productimage,
     String? hsCode,
     String? casNumber,
   }) : super(
+          productId: id,
           productname: productname,
           productimage: productimage,
           hsCode: hsCode,
@@ -15,6 +17,7 @@ class SearchProductModel extends ProductEntity {
 
   factory SearchProductModel.fromJson(Map<String, dynamic> json) =>
       SearchProductModel(
+        id: json["id"].toString(),
         productname: json["productname"],
         productimage: json["productimage"],
         hsCode: json["hs_code"],

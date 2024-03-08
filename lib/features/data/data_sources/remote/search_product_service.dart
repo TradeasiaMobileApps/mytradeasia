@@ -7,10 +7,10 @@ class SearchProductService {
 
   Future<Response<List<SearchProductModel>>> getSearchProduct(
       String productName) async {
-    String url = "http://tradeasia.sg/en/list-product?productname=$productName";
-    final response = await dio.get(url);
+    String url = "https://www.tradeasia.co/api/homeProductSearch";
+    final response = await dio.post(url, data: {"search": productName});
 
-    final dataList = response.data as List<dynamic>;
+    final dataList = response.data["data"]["product_search"] as List<dynamic>;
     final listProductModel =
         dataList.map((e) => SearchProductModel.fromJson(e)).toList();
 
