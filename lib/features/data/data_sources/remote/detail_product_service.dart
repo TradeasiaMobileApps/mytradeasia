@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:mytradeasia/core/constants/constants.dart';
 import 'package:mytradeasia/features/data/model/detail_product_models/detail_product_model.dart';
 
 class DetailProductService {
@@ -6,9 +7,9 @@ class DetailProductService {
 
   Future<Response<DetailsProductModel>> getDetailProduct(
       String productId) async {
-    String url = "https://tradeasia.vn/api/productDetails/$productId";
+    String endpoint = "productDetails/$productId";
 
-    final response = await dio.get(url);
+    final response = await dio.get(newTradeasiaApi + endpoint);
 
     final data = response.data;
 

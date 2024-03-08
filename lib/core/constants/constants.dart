@@ -1,4 +1,5 @@
 const String tradeasiaApi = "http://tradeasia.sg/en";
+const String newTradeasiaApi = "https://tradeasia.co/api/";
 const String dhlApiKey = "PmEGPG6egTkieQW6tCo5v5GGRPGNAzG2";
 const String faqApi = "https://tradeasia.sg/en/faq";
 const String salesforceDataApi =
