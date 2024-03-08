@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:mytradeasia/core/constants/constants.dart';
 import 'package:mytradeasia/features/data/model/search_product_models/search_product_model.dart';
 
 class SearchProductService {
@@ -7,8 +8,8 @@ class SearchProductService {
 
   Future<Response<List<SearchProductModel>>> getSearchProduct(
       String productName) async {
-    String url = "https://www.tradeasia.co/api/homeProductSearch";
-    final response = await dio.post(url, data: {"search": productName});
+    String endpoint = "${newTradeasiaApi}homeProductSearch";
+    final response = await dio.post(endpoint, data: {"search": productName});
 
     final dataList = response.data["data"]["product_search"] as List<dynamic>;
     final listProductModel =
