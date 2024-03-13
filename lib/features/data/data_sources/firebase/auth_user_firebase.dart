@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,15 +8,19 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:intl/intl.dart';
 import 'package:mytradeasia/features/data/model/all_product_models/all_product_model.dart';
 import 'package:mytradeasia/features/data/model/user_credential_models/user_credential_model.dart';
 import 'package:mytradeasia/features/data/model/user_models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../utils/notification_service.dart';
+
 class AuthUserFirebase {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
+  NotificationService notificationServices = NotificationService();
 
   late PhoneAuthCredential phoneAuthCredential;
   var verificationId = '';
@@ -60,6 +65,51 @@ class AuthUserFirebase {
   String getCurrentUId() => _auth.currentUser!.uid;
 
   Future<dynamic> postLoginUser(Map<String, String> auth) async {
+    try {
+      notificationServices.requestNotificationPermission();
+      notificationServices.getDeviceToken().then((value) async {
+        if (Platform.isAndroid) {
+          final headers = {
+            "datetime":
+                DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()),
+            "role": "customer",
+            "device_type": "android",
+          };
+
+          final response = await dio.post("https://www.tradeasia.co/api/signin",
+              data: {"email": auth["email"], "password": auth["password"]},
+              options: Options(headers: headers));
+
+          if (response.statusCode != 200) {
+            return {
+              'code': response.statusCode,
+              'message': response.statusMessage
+            };
+          }
+        } else {
+          final headers = {
+            "datetime":
+                DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()),
+            "role": "customer",
+            "device_type": "ios",
+          };
+
+          final response = await dio.post("https://www.tradeasia.co/api/signin",
+              data: {"email": auth["email"], "password": auth["password"]},
+              options: Options(headers: headers));
+
+          if (response.statusCode != 200) {
+            return {
+              'code': response.statusCode,
+              'message': response.statusMessage
+            };
+          }
+        }
+      });
+    } on DioException catch (e) {
+      return {'code': e.response?.statusCode, 'message': e.message};
+    }
+
     try {
       UserCredential _userCredential = await _auth.signInWithEmailAndPassword(
           email: auth["email"]!, password: auth["password"]!);
