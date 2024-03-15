@@ -27,6 +27,73 @@ class AuthUserFirebase {
   final dio = Dio();
 
   Future<String> postRegisterUser(UserModel userData) async {
+    final dateTime = DateTime.now();
+
+    try {
+      notificationServices.requestNotificationPermission();
+      notificationServices.getDeviceToken().then((value) async {
+        if (Platform.isAndroid) {
+          final headers = {
+            "datetime":
+                DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()),
+            "role": "customer",
+            "device_type": "android",
+          };
+
+          final response = await dio.post("https://www.tradeasia.co/api/signup",
+              data: {
+                "first_name": userData.firstName,
+                "last_name": userData.lastName,
+                "company_name": userData.companyName,
+                "country": userData.country,
+                "dialing_code": userData.countryCode,
+                "mobile_number": userData.phone,
+                "email": userData.email,
+                "password": userData.password,
+                "timezone": dateTime.timeZoneName,
+                "device_token": value,
+                "login_type": "by_form",
+                "comet_chat_user_id": dateTime.millisecondsSinceEpoch
+              },
+              options: Options(headers: headers));
+
+          if (response.statusCode != 200) {
+            return response.statusCode.toString();
+          }
+        } else {
+          final headers = {
+            "datetime":
+                DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()),
+            "role": "customer",
+            "device_type": "ios",
+          };
+
+          final response = await dio.post("https://www.tradeasia.co/api/signup",
+              data: {
+                "first_name": userData.firstName,
+                "last_name": userData.lastName,
+                "company_name": userData.companyName,
+                "country": userData.country,
+                "dialing_code": userData.countryCode,
+                "mobile_number": userData.phone,
+                "email": userData.email,
+                "password": userData.password,
+                "timezone": dateTime.timeZoneName,
+                "device_token": value,
+                "login_type": "by_form",
+                "comet_chat_user_id": dateTime.millisecondsSinceEpoch
+              },
+              options: Options(headers: headers));
+
+          if (response.statusCode != 200) {
+            return response.statusCode.toString();
+          }
+        }
+      });
+    } on DioException catch (e) {
+      return e.response!.statusMessage!;
+    }
+
     try {
       await _auth.createUserWithEmailAndPassword(
           email: userData.email!, password: userData.password!);
@@ -77,7 +144,11 @@ class AuthUserFirebase {
           };
 
           final response = await dio.post("https://www.tradeasia.co/api/signin",
-              data: {"email": auth["email"], "password": auth["password"]},
+              data: {
+                "email": auth["email"],
+                "password": auth["password"],
+                "device_token": value
+              },
               options: Options(headers: headers));
 
           if (response.statusCode != 200) {
@@ -95,7 +166,11 @@ class AuthUserFirebase {
           };
 
           final response = await dio.post("https://www.tradeasia.co/api/signin",
-              data: {"email": auth["email"], "password": auth["password"]},
+              data: {
+                "email": auth["email"],
+                "password": auth["password"],
+                "device_token": value
+              },
               options: Options(headers: headers));
 
           if (response.statusCode != 200) {
