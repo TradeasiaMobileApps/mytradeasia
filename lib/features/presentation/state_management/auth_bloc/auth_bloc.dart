@@ -95,15 +95,31 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final response = await _postRegisterUser.call(param: event.userData);
       if (response == "success") {
         log("register success");
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) {
+            return DialogWidget(
+                urlIcon: "assets/images/icon_sukses_reset_password.png",
+                title: "Successful Registration",
+                subtitle:
+                    "Lorem ipsum dolor sit amet consectetur. Egestas porttitor risus enim cursus rutrum molestie tortor",
+                textForButton: "Go to Home",
+                navigatorFunction: () {
+                  /* with go_router */
+                  context.go("/auth/login");
+                });
+          },
+        );
       } else {
         log(response);
         showDialog(
           context: context,
           builder: (context) => DialogWidget(
               urlIcon: "assets/images/logo_delete_account.png",
-              title: "Email already in use",
-              subtitle: "Try another email for registration",
-              textForButton: "Go back",
+              title: "Error",
+              subtitle: "An error occurred, please try again",
+              textForButton: "Try Again",
               navigatorFunction: () {
                 Navigator.pop(context);
               }),

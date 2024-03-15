@@ -1,4 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -111,7 +113,7 @@ class _BiodataScreenState extends State<BiodataScreen> {
                           password: _passwordController.text,
                           phone: widget.phone,
                           role: role,
-                          countryCode: countryCode == '' ? "ID" : countryCode,
+                          countryCode: countryCode == '' ? "+62" : countryCode,
                         ),
                         context,
                       ));
@@ -124,24 +126,6 @@ class _BiodataScreenState extends State<BiodataScreen> {
                               phone: widget.phone,
                               role: role,
                               company: _companyNameController.text)));
-
-                      await showDialog(
-                        barrierDismissible: false,
-                        context: context,
-                        builder: (context) {
-                          return DialogWidget(
-                              urlIcon:
-                                  "assets/images/icon_sukses_reset_password.png",
-                              title: "Successful Registration",
-                              subtitle:
-                                  "Lorem ipsum dolor sit amet consectetur. Egestas porttitor risus enim cursus rutrum molestie tortor",
-                              textForButton: "Go to Home",
-                              navigatorFunction: () {
-                                /* with go_router */
-                                context.go("/auth/login");
-                              });
-                        },
-                      );
                     }
                   },
                   child: Text(
@@ -307,8 +291,10 @@ class _BiodataScreenState extends State<BiodataScreen> {
                           suffixIcon: CountryPicker(
                             suffixIconMode: true,
                             onChanged: (value) {
-                              countryCode = value.codeCountry!;
-                              _countryController.text = value.name!;
+                              setState(() {
+                                countryCode = value.phoneCode!;
+                                _countryController.text = value.name!;
+                              });
                             },
                           ),
                         ),

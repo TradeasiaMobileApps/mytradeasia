@@ -20,6 +20,11 @@ dynamic parseDoubleToIntegerIfNecessary(double input) {
   }
 }
 
+int getIntegerFromDialingCode(String dialingCode) {
+  String numericPart = dialingCode.replaceFirst('+', ''); // Remove the '+' sign
+  return int.parse(numericPart); // Convert the numeric part to an integer
+}
+
 CartModel castProductEntityToCartModel(
     {required ProductEntity product,
     required double quantity,

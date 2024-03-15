@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
@@ -12,6 +13,7 @@ import 'package:intl/intl.dart';
 import 'package:mytradeasia/features/data/model/all_product_models/all_product_model.dart';
 import 'package:mytradeasia/features/data/model/user_credential_models/user_credential_model.dart';
 import 'package:mytradeasia/features/data/model/user_models/user_model.dart';
+import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../utils/notification_service.dart';
@@ -29,87 +31,115 @@ class AuthUserFirebase {
   Future<String> postRegisterUser(UserModel userData) async {
     final dateTime = DateTime.now();
 
+    String status = "error";
+
     try {
       notificationServices.requestNotificationPermission();
-      notificationServices.getDeviceToken().then((value) async {
-        if (Platform.isAndroid) {
-          final headers = {
-            "datetime":
-                DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()),
-            "role": "customer",
-            "device_type": "android",
-          };
+      String? deviceToken = await notificationServices.getDeviceToken();
 
-          final response = await dio.post("https://www.tradeasia.co/api/signup",
-              data: {
-                "first_name": userData.firstName,
-                "last_name": userData.lastName,
-                "company_name": userData.companyName,
-                "country": userData.country,
-                "dialing_code": userData.countryCode,
-                "mobile_number": userData.phone,
-                "email": userData.email,
-                "password": userData.password,
-                "timezone": dateTime.timeZoneName,
-                "device_token": value,
-                "login_type": "by_form",
-                "comet_chat_user_id": dateTime.millisecondsSinceEpoch
-              },
-              options: Options(headers: headers));
+      if (Platform.isAndroid) {
+        final headers = {
+          "datetime": DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()),
+          "role": "customer",
+          "device_type": "android",
+        };
 
-          if (response.statusCode != 200) {
-            return response.statusCode.toString();
-          }
-        } else {
-          final headers = {
-            "datetime":
-                DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()),
-            "role": "customer",
-            "device_type": "ios",
-          };
+        final response = await dio.post("https://www.tradeasia.co/api/signup",
+            data: {
+              "first_name": userData.firstName,
+              "last_name": userData.lastName,
+              "company_name": userData.companyName,
+              "country": userData.country,
+              "dialing_code": userData.countryCode,
+              "mobile_number": userData.phone,
+              "email": userData.email,
+              "password": userData.password,
+              "timezone": dateTime.timeZoneName,
+              "device_token": deviceToken,
+              "login_type": "by_form",
+              "comet_chat_user_id":
+                  "${userData.firstName ?? "user"}_${dateTime.millisecondsSinceEpoch}"
+                      .toLowerCase()
+            },
+            options: Options(headers: headers));
 
-          final response = await dio.post("https://www.tradeasia.co/api/signup",
-              data: {
-                "first_name": userData.firstName,
-                "last_name": userData.lastName,
-                "company_name": userData.companyName,
-                "country": userData.country,
-                "dialing_code": userData.countryCode,
-                "mobile_number": userData.phone,
-                "email": userData.email,
-                "password": userData.password,
-                "timezone": dateTime.timeZoneName,
-                "device_token": value,
-                "login_type": "by_form",
-                "comet_chat_user_id": dateTime.millisecondsSinceEpoch
-              },
-              options: Options(headers: headers));
+        log("SIGNUP RESPONSE DATA : ${{
+          "first_name": userData.firstName,
+          "last_name": userData.lastName,
+          "company_name": userData.companyName,
+          "country": userData.country,
+          "dialing_code": getIntegerFromDialingCode(userData.countryCode!),
+          "mobile_number": userData.phone,
+          "email": userData.email,
+          "password": userData.password,
+          "timezone": dateTime.timeZoneName,
+          "device_token": deviceToken,
+          "login_type": "by_form",
+          "comet_chat_user_id":
+              "${userData.firstName ?? "user"}_${dateTime.millisecondsSinceEpoch}"
+        }}");
 
-          if (response.statusCode != 200) {
-            return response.statusCode.toString();
-          }
+        log("SIGNUP RESPONSE : ${response.data}");
+
+        if (response.data['status']) {
+          status = 'success';
         }
-      });
+
+        // return response.statusCode.toString();
+      } else {
+        final headers = {
+          "datetime": DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()),
+          "role": "customer",
+          "device_type": "ios",
+        };
+
+        final response = await dio.post("https://www.tradeasia.co/api/signup",
+            data: {
+              "first_name": userData.firstName,
+              "last_name": userData.lastName,
+              "company_name": userData.companyName,
+              "country": userData.country,
+              "dialing_code": getIntegerFromDialingCode(userData.countryCode!),
+              "mobile_number": userData.phone,
+              "email": userData.email,
+              "password": userData.password,
+              "timezone": dateTime.timeZoneName,
+              "device_token": deviceToken,
+              "login_type": "by_form",
+              "comet_chat_user_id":
+                  "${userData.firstName ?? "user"}_${dateTime.millisecondsSinceEpoch}"
+                      .toLowerCase()
+            },
+            options: Options(headers: headers));
+
+        if (response.data['status']) {
+          status = 'success';
+        }
+      }
     } on DioException catch (e) {
-      return e.response!.statusMessage!;
+      status = e.response!.statusCode.toString();
     }
 
-    try {
-      await _auth.createUserWithEmailAndPassword(
-          email: userData.email!, password: userData.password!);
+    if (status != "success") {
+      return status;
+    } else {
+      try {
+        await _auth.createUserWithEmailAndPassword(
+            email: userData.email!, password: userData.password!);
 
-      //TODO:Uncomment this when used
+        //TODO:Uncomment this when used
 
-      // FirebaseAuth.instance.currentUser!
-      //     .linkWithCredential(phoneAuthCredential);
+        // FirebaseAuth.instance.currentUser!
+        //     .linkWithCredential(phoneAuthCredential);
 
-      String docsId = FirebaseAuth.instance.currentUser!.uid.toString();
-      Map<String, dynamic> data = userData.toMap();
-      data["uid"] = docsId;
-      _firestore.collection('biodata').doc(docsId).set(data);
-      return 'success';
-    } on FirebaseAuthException catch (e) {
-      return e.code;
+        String docsId = FirebaseAuth.instance.currentUser!.uid.toString();
+        Map<String, dynamic> data = userData.toMap();
+        data["uid"] = docsId;
+        _firestore.collection('biodata').doc(docsId).set(data);
+        return 'success';
+      } on FirebaseAuthException catch (e) {
+        return e.code;
+      }
     }
   }
 
