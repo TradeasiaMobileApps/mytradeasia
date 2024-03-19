@@ -9,6 +9,9 @@ import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_snap
 import 'package:mytradeasia/features/presentation/pages/menu/history/tracking_document/tracking_document_screen.dart';
 import 'package:mytradeasia/features/presentation/state_management/cart_bloc/cart_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/cart_bloc/cart_event.dart';
+import 'package:mytradeasia/features/presentation/state_management/home_bloc/home_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/home_bloc/home_event.dart';
+import 'package:mytradeasia/features/presentation/state_management/home_bloc/home_state.dart';
 import 'package:mytradeasia/features/presentation/state_management/recently_seen_bloc/recently_seen_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/recently_seen_bloc/recently_seen_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_login/salesforce_login_bloc.dart';
@@ -46,6 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      BlocProvider.of<HomeBloc>(context).add(const GetHomeDataEvent());
       BlocProvider.of<TopProductBloc>(context).add(const GetTopProduct());
 
       BlocProvider.of<SalesforceLoginBloc>(context)
@@ -62,12 +66,14 @@ class _HomeScreenState extends State<HomeScreen> {
     int dovnum = num % 4;
 
     if (recentSeenLimit % 4 == 0 && divnum > 4) {
-      recentSeenLimit = recentSeenLimit + 4;
+      setState(() {
+        recentSeenLimit = recentSeenLimit + 4;
+      });
     } else {
-      recentSeenLimit = recentSeenLimit + dovnum;
+      setState(() {
+        recentSeenLimit = recentSeenLimit + dovnum;
+      });
     }
-
-    setState(() {});
   }
 
   @override
@@ -419,10 +425,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                     Padding(
                                       padding: const EdgeInsets.only(
                                           bottom: size20px / 2, top: size20px),
-                                      child: BlocBuilder<TopProductBloc,
-                                              TopProductState>(
+                                      child: BlocBuilder<HomeBloc, HomeState>(
                                           builder: (context, state) {
-                                        if (state is TopProductLoading) {
+                                        if (state is HomeLoading) {
                                           return Shimmer.fromColors(
                                             baseColor: greyColor3,
                                             highlightColor: greyColor,
@@ -442,7 +447,23 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   const Card(),
                                             ),
                                           );
-                                        } else if (state is TopProductDone) {
+                                        } else if (state is HomeDone) {
+                                          // for (var i = 0;
+                                          //     i <
+                                          //         state.homeData!.byIndustry!
+                                          //             .detailIndustry!.length;
+                                          //     i++) {
+                                          //   if (i == 7) {
+                                          //     print("all industry");
+                                          //   } else {
+                                          //     print(state
+                                          //         .homeData!
+                                          //         .byIndustry!
+                                          //         .detailIndustry![i]
+                                          //         .industryName);
+                                          //   }
+                                          // }
+
                                           return GridView.builder(
                                             gridDelegate:
                                                 const SliverGridDelegateWithFixedCrossAxisCount(
@@ -450,10 +471,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     crossAxisSpacing: 15,
                                                     mainAxisSpacing: 15,
                                                     childAspectRatio: 0.6),
-                                            itemCount:
-                                                state.topProductData!.isNotEmpty
-                                                    ? 4
-                                                    : 0,
+                                            itemCount: state.homeData!
+                                                    .topProduct!.isNotEmpty
+                                                ? 4
+                                                : 0,
                                             shrinkWrap: true,
                                             padding: EdgeInsets.zero,
                                             physics:
@@ -464,27 +485,32 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   context.pushNamed("product",
                                                       pathParameters: {
                                                         'productId': state
-                                                            .topProductData![
-                                                                index]
+                                                            .homeData!
+                                                            .topProduct![index]
                                                             .productId!
                                                             .toString()
                                                       });
 
                                                   Map<String, dynamic> data = {
                                                     "productId": state
-                                                        .topProductData![index]
+                                                        .homeData!
+                                                        .topProduct![index]
                                                         .productId,
                                                     "productName": state
-                                                        .topProductData![index]
+                                                        .homeData!
+                                                        .topProduct![index]
                                                         .productname,
                                                     "casNumber": state
-                                                        .topProductData![index]
+                                                        .homeData!
+                                                        .topProduct![index]
                                                         .casNumber,
                                                     "hsCode": state
-                                                        .topProductData![index]
+                                                        .homeData!
+                                                        .topProduct![index]
                                                         .hsCode,
                                                     "productImage": state
-                                                        .topProductData![index]
+                                                        .homeData!
+                                                        .topProduct![index]
                                                         .productimage
                                                   };
 
@@ -499,23 +525,28 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     ? ProductCard(
                                                         product: ProductEntity(
                                                           productId: state
-                                                              .topProductData![
+                                                              .homeData!
+                                                              .topProduct![
                                                                   index]
                                                               .productId,
                                                           productname: state
-                                                              .topProductData![
+                                                              .homeData!
+                                                              .topProduct![
                                                                   index]
                                                               .productname,
                                                           productimage: state
-                                                              .topProductData![
+                                                              .homeData!
+                                                              .topProduct![
                                                                   index]
                                                               .productimage!,
                                                           hsCode: state
-                                                              .topProductData![
+                                                              .homeData!
+                                                              .topProduct![
                                                                   index]
                                                               .hsCode!,
                                                           casNumber: state
-                                                              .topProductData![
+                                                              .homeData!
+                                                              .topProduct![
                                                                   index]
                                                               .casNumber!,
                                                         ),
@@ -525,23 +556,28 @@ class _HomeScreenState extends State<HomeScreen> {
                                                           ProductToRfq product =
                                                               ProductToRfq(
                                                             productId: state
-                                                                .topProductData![
+                                                                .homeData!
+                                                                .topProduct![
                                                                     index]
                                                                 .productId!,
                                                             productName: state
-                                                                .topProductData![
+                                                                .homeData!
+                                                                .topProduct![
                                                                     index]
                                                                 .productname!,
                                                             productImage: state
-                                                                .topProductData![
+                                                                .homeData!
+                                                                .topProduct![
                                                                     index]
                                                                 .productimage!,
                                                             hsCode: state
-                                                                .topProductData![
+                                                                .homeData!
+                                                                .topProduct![
                                                                     index]
                                                                 .hsCode!,
                                                             casNumber: state
-                                                                .topProductData![
+                                                                .homeData!
+                                                                .topProduct![
                                                                     index]
                                                                 .casNumber!,
                                                           );
@@ -559,23 +595,28 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     : ProductCard(
                                                         product: ProductEntity(
                                                           productId: state
-                                                              .topProductData![
+                                                              .homeData!
+                                                              .topProduct![
                                                                   index]
                                                               .productId,
                                                           productname: state
-                                                              .topProductData![
+                                                              .homeData!
+                                                              .topProduct![
                                                                   index]
                                                               .productname,
                                                           productimage: state
-                                                              .topProductData![
+                                                              .homeData!
+                                                              .topProduct![
                                                                   index]
                                                               .productimage!,
                                                           hsCode: state
-                                                              .topProductData![
+                                                              .homeData!
+                                                              .topProduct![
                                                                   index]
                                                               .hsCode!,
                                                           casNumber: state
-                                                              .topProductData![
+                                                              .homeData!
+                                                              .topProduct![
                                                                   index]
                                                               .casNumber!,
                                                         ),
@@ -613,67 +654,86 @@ class _HomeScreenState extends State<HomeScreen> {
                                           : MediaQuery.of(context).size.height *
                                               0.24,
                                       width: MediaQuery.of(context).size.width,
-                                      child: GridView(
-                                        padding: EdgeInsets.zero,
-                                        physics:
-                                            const NeverScrollableScrollPhysics(),
-                                        shrinkWrap: true,
-                                        clipBehavior: Clip.none,
-                                        gridDelegate:
-                                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                                crossAxisCount: 4,
-                                                crossAxisSpacing: 5,
-                                                mainAxisSpacing: 5,
-                                                childAspectRatio: 0.9),
-                                        children: [
-                                          TopIndustryWidget(
-                                              icon:
-                                                  "assets/images/icon_agri.png",
-                                              onPressed: () {},
-                                              topIndustryName: "Agriculture"),
-                                          TopIndustryWidget(
-                                              icon:
-                                                  "assets/images/icon_animal.png",
-                                              onPressed: () {},
-                                              topIndustryName: "Animal Feed"),
-                                          TopIndustryWidget(
-                                              icon:
-                                                  "assets/images/icon_beauty.png",
-                                              onPressed: () {},
-                                              topIndustryName:
-                                                  "Beauty & Personal Care"),
-                                          TopIndustryWidget(
-                                              icon:
-                                                  "assets/images/icon_food.png",
-                                              onPressed: () {},
-                                              topIndustryName:
-                                                  "Food & Beverage"),
-                                          TopIndustryWidget(
-                                              icon:
-                                                  "assets/images/icon_glass.png",
-                                              onPressed: () {},
-                                              topIndustryName:
-                                                  "Glass & Ceramic"),
-                                          TopIndustryWidget(
-                                              icon:
-                                                  "assets/images/icon_leather.png",
-                                              onPressed: () {},
-                                              topIndustryName: "Leather"),
-                                          TopIndustryWidget(
-                                              icon:
-                                                  "assets/images/icon_metal.png",
-                                              onPressed: () {},
-                                              topIndustryName: "Metal & Steel"),
-                                          TopIndustryWidget(
-                                              icon:
-                                                  "assets/images/icon_all_industry.png",
-                                              onPressed: () {
-                                                context
-                                                    .go("/home/all_industry");
-                                              },
-                                              topIndustryName:
-                                                  "All Industries"),
-                                        ],
+                                      child: BlocBuilder<HomeBloc, HomeState>(
+                                        builder: (context, state) {
+                                          if (state is HomeLoading) {
+                                            return const Center(
+                                              child: CircularProgressIndicator
+                                                  .adaptive(),
+                                            );
+                                          } else if (state is HomeDone) {
+                                            return GridView(
+                                              padding: EdgeInsets.zero,
+                                              physics:
+                                                  const NeverScrollableScrollPhysics(),
+                                              shrinkWrap: true,
+                                              clipBehavior: Clip.none,
+                                              gridDelegate:
+                                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                                      crossAxisCount: 4,
+                                                      crossAxisSpacing: 5,
+                                                      mainAxisSpacing: 5,
+                                                      childAspectRatio: 0.9),
+                                              children: [
+                                                for (var i = 0;
+                                                    i <
+                                                        state
+                                                            .homeData!
+                                                            .byIndustry!
+                                                            .detailIndustry!
+                                                            .length;
+                                                    i++)
+                                                  i == 7
+                                                      ? TopIndustryWidget(
+                                                          icon:
+                                                              "assets/images/icon_all_industry.png",
+                                                          onPressed: () {
+                                                            context.go(
+                                                                "/home/all_industry");
+                                                          },
+                                                          topIndustryName:
+                                                              "All Industries")
+                                                      : TopIndustryWidget(
+                                                          icon: state
+                                                              .homeData!
+                                                              .byIndustry!
+                                                              .detailIndustry![
+                                                                  i]
+                                                              .industryImage!,
+                                                          onPressed: () {
+                                                            ProductsIndustryParameter
+                                                                param =
+                                                                ProductsIndustryParameter(
+                                                                    index: i,
+                                                                    industryName: state
+                                                                        .homeData!
+                                                                        .byIndustry!
+                                                                        .detailIndustry![
+                                                                            i]
+                                                                        .industryName!);
+
+                                                            context.push(
+                                                                "/home/all_industry/products_industry",
+                                                                extra: param);
+                                                          },
+                                                          topIndustryName: state
+                                                              .homeData!
+                                                              .byIndustry!
+                                                              .detailIndustry![
+                                                                  i]
+                                                              .industryName!)
+                                              ],
+                                            );
+                                          } else {
+                                            return Center(
+                                              child: Text(
+                                                "Error",
+                                                style: heading1.copyWith(
+                                                    color: redColor1),
+                                              ),
+                                            );
+                                          }
+                                        },
                                       ),
                                     ),
                                     /* End Industry Section */
@@ -842,12 +902,19 @@ class TopIndustryWidget extends StatelessWidget {
                   borderRadius: BorderRadius.all(Radius.circular(7)),
                 ),
               ),
-              Image.asset(
-                icon,
-                color: primaryColor1,
-                width: size24px,
-                height: size24px,
-              ),
+              topIndustryName == "All Industries"
+                  ? Image.asset(
+                      icon,
+                      color: primaryColor1,
+                      width: size24px,
+                      height: size24px,
+                    )
+                  : Image.network(
+                      icon,
+                      fit: BoxFit.fill,
+                      width: 24,
+                      height: size24px,
+                    ),
             ],
           ),
           const SizedBox(
