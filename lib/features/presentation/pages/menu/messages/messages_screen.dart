@@ -198,17 +198,19 @@ class MessageScreenState extends State<MessageScreen> {
 
                         return InkWell(
                           onTap: () async {
-                            // print(userState.sendbirdUser!.nickname);
-                            context.goNamed("message",
-                                extra: MessageDetailParameter(
-                                  otherUserId: "sales",
-                                  currentUserId: userState.sendbirdUser!.userId,
-                                  customerName:
-                                      userState.sendbirdUser!.nickname,
-                                  chatId: groupChannel.chat.chatId.toString(),
-                                  channelUrl: groupChannel.channelUrl,
-                                  productId: groupChannel.data,
-                                ));
+                            groupChannel.getMetaData(["productId"]).then(
+                              (value) => context.goNamed("message",
+                                  extra: MessageDetailParameter(
+                                    otherUserId: "sales",
+                                    currentUserId:
+                                        userState.sendbirdUser!.userId,
+                                    customerName:
+                                        userState.sendbirdUser!.nickname,
+                                    chatId: groupChannel.chat.chatId.toString(),
+                                    channelUrl: groupChannel.channelUrl,
+                                    productId: value["productId"]!,
+                                  )),
+                            );
 
                             // print(await state.channels![index]
                             //     .getMessagesByTimestamp(

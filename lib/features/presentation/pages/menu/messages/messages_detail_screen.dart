@@ -48,7 +48,7 @@ class MessagesDetailScreenState extends State<MessagesDetailScreen> {
   List<String> memberIdList = [];
   DetailsProductEntity? product;
   GroupChannel? groupChannel;
-  String url = "https://chemtradea.chemtradeasia.com/";
+  // String url = "https://chemtradea.chemtradeasia.com/";
 
   @override
   void initState() {
@@ -126,8 +126,8 @@ class MessagesDetailScreenState extends State<MessagesDetailScreen> {
                                       width: 100,
                                       height: 100,
                                       child: CachedNetworkImage(
-                                          imageUrl:
-                                              "$url${product!.detailProduct!.productimage!}",
+                                          imageUrl: product!
+                                              .detailProduct!.productimage!,
                                           fit: BoxFit.fill,
                                           placeholder: (context, url) =>
                                               const Center(

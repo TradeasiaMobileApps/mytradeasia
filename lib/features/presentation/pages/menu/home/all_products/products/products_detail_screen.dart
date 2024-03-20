@@ -735,6 +735,8 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                                         onPressed: () async {
                                           if (state is AuthLoggedInState) {
                                             try {
+                                              Map<String, dynamic> channelUrl =
+                                                  {};
                                               await GroupChannel.createChannel(
                                                       GroupChannelCreateParams()
                                                         ..name = prodState
@@ -746,17 +748,41 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                                                               .userId,
                                                           'sales'
                                                         ])
-                                                  .then((value) =>
-                                                      value.createMetaData({
-                                                        'productId': widget
-                                                            .productId
-                                                            .toString(),
-                                                        'status': 'product',
-                                                      }))
-                                                  .whenComplete(
-                                                    () =>
-                                                        context.go("/messages"),
-                                                  );
+                                                  .then((value) {
+                                                channelUrl = {
+                                                  "userId":
+                                                      value.creator!.userId,
+                                                  "customerName":
+                                                      value.creator!.nickname,
+                                                  "chatId": value.chat.chatId
+                                                      .toString(),
+                                                  "channelUrl": value.channelUrl
+                                                };
+                                                value.createMetaData({
+                                                  'productId': widget.productId
+                                                      .toString(),
+                                                  'status': 'product',
+                                                });
+                                              }).whenComplete(() {
+                                                // print(channelUrl)
+                                                // () => context.go("/messages"),
+                                                context.goNamed("message",
+                                                    extra:
+                                                        MessageDetailParameter(
+                                                      otherUserId: "sales",
+                                                      currentUserId:
+                                                          channelUrl["userId"],
+                                                      customerName: channelUrl[
+                                                          "customerName"],
+                                                      chatId:
+                                                          channelUrl["chatId"],
+                                                      channelUrl: channelUrl[
+                                                          "channelUrl"],
+                                                      productId: widget
+                                                          .productId
+                                                          .toString(),
+                                                    ));
+                                              });
                                             } catch (e) {
                                               // Handle error.
                                               log(e.toString());

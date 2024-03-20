@@ -14,7 +14,7 @@ class DetailProductService {
     final data = response.data;
 
     final detailProductModel = DetailsProductModel.fromJson(data['data']);
-    print(detailProductModel);
+    // print(detailProductModel);
     return Response<DetailsProductModel>(
       statusCode: response.statusCode,
       requestOptions: response.requestOptions,
