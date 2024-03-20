@@ -15,6 +15,11 @@ class GetCPSalesforce extends SalesforceDataEvent {
   const GetCPSalesforce(this.userId);
 }
 
+class GetOpportunitySalesforce extends SalesforceDataEvent {
+  final String userId;
+  const GetOpportunitySalesforce(this.userId);
+}
+
 class CreateSFAccount extends SalesforceDataEvent {
   final String token;
   final SalesforceCreateAccountForm salesforceCreateAccountForm;

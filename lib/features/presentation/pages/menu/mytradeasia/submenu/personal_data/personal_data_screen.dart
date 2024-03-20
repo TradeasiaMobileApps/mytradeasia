@@ -2,11 +2,14 @@ import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
+import 'package:mytradeasia/core/resources/data_state.dart';
+import 'package:mytradeasia/features/domain/usecases/otp_usecases/send_otp.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_snapshot.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/update_profile.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_bloc.dart';
@@ -40,6 +43,8 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
 
   final GetUserSnapshot _getUserSnapshot = injections<GetUserSnapshot>();
   final UpdateProfile _updateProfile = injections<UpdateProfile>();
+  final SendOTP _sendOTP = injections<SendOTP>();
+  final _auth = FirebaseAuth.instance;
 
   @override
   void dispose() {
@@ -533,18 +538,131 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
                                             width: MediaQuery.of(context)
                                                 .size
                                                 .width,
-                                            child: TextEditingWithIconSuffix(
-                                              readOnly: true,
-                                              controller: _emailController,
-                                              hintText: state.user != null
-                                                  ? state.user!.email!
-                                                  : "",
-                                              imageUrl:
-                                                  "assets/images/icon_forward.png",
-                                              navigationPage: () {
-                                                context.go(
-                                                    "/mytradeasia/personal_data/change_email");
-                                                // print(state.user!);
+                                            child: FutureBuilder(
+                                              future: isSSOAuth(),
+                                              builder: (context, snapshot) {
+                                                if (snapshot.connectionState ==
+                                                    ConnectionState.waiting) {
+                                                  return Container();
+                                                }
+
+                                                if (snapshot.hasError) {
+                                                  return Text(
+                                                      'Error: ${snapshot.error}');
+                                                }
+
+                                                if (snapshot.data == true) {
+                                                  // Using SSO
+                                                  return TextEditingWidget(
+                                                      readOnly: true,
+                                                      controller:
+                                                          _emailController,
+                                                      hintText: state.user !=
+                                                              null
+                                                          ? state.user!.email!
+                                                          : _auth.currentUser!
+                                                              .email!);
+                                                }
+                                                return TextEditingWithIconSuffix(
+                                                  readOnly: true,
+                                                  controller: _emailController,
+                                                  hintText: state.user != null
+                                                      ? state.user!.email!
+                                                      : _auth
+                                                          .currentUser!.email!,
+                                                  imageUrl:
+                                                      "assets/images/icon_forward.png",
+                                                  navigationPage: () async {
+                                                    showDialog(
+                                                      context: context,
+                                                      barrierDismissible:
+                                                          false, // Prevents the dialog from closing on tap outside
+                                                      builder: (context) =>
+                                                          const Center(
+                                                              child:
+                                                                  CircularProgressIndicator()), // Loading indicator
+                                                    );
+
+                                                    try {
+                                                      var result =
+                                                          await _sendOTP.call(
+                                                              param: _auth
+                                                                  .currentUser!
+                                                                  .email!);
+
+                                                      if (result
+                                                          is DataSuccess) {
+                                                        ScaffoldMessenger.of(
+                                                                context)
+                                                            .showSnackBar(
+                                                          SnackBar(
+                                                            duration:
+                                                                const Duration(
+                                                                    seconds: 2,
+                                                                    milliseconds:
+                                                                        500),
+                                                            backgroundColor:
+                                                                Colors.green,
+                                                            content: Text(
+                                                              "OTP code sent to : ${_auth.currentUser!.email!}",
+                                                              style: body1Regular.copyWith(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 12,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            ),
+                                                          ),
+                                                        );
+                                                        context.go(
+                                                            "/mytradeasia/personal_data/change_email_otp",
+                                                            extra: _auth
+                                                                .currentUser!
+                                                                .email!);
+                                                      } else {
+                                                        ScaffoldMessenger.of(
+                                                                context)
+                                                            .showSnackBar(
+                                                          SnackBar(
+                                                            duration:
+                                                                const Duration(
+                                                                    seconds: 2,
+                                                                    milliseconds:
+                                                                        500),
+                                                            backgroundColor:
+                                                                Colors.red,
+                                                            content: Text(
+                                                              "Failed to send OTP. Please try again.",
+                                                              style: body1Regular.copyWith(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 12,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            ),
+                                                          ),
+                                                        );
+                                                      }
+                                                    } catch (e) {
+                                                      // Navigator.of(context).pop();
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
+                                                        SnackBar(
+                                                          content: Text(
+                                                              "Error occurred: $e"),
+                                                        ),
+                                                      );
+                                                    } finally {
+                                                      Navigator.of(context,
+                                                              rootNavigator:
+                                                                  true)
+                                                          .pop();
+                                                    }
+                                                  },
+                                                );
                                               },
                                             ),
                                           ),

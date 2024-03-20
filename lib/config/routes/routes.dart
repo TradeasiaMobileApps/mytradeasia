@@ -6,6 +6,7 @@ import 'package:mytradeasia/config/routes/parameters.dart';
 import 'package:mytradeasia/features/presentation/pages/auth/biodata/sso_biodata_screen.dart';
 import 'package:mytradeasia/features/presentation/pages/auth/register/register_otp_screen.dart';
 import 'package:mytradeasia/features/presentation/pages/menu/home/all_products/products/products_by_industry_screen.dart';
+import 'package:mytradeasia/features/presentation/pages/menu/mytradeasia/submenu/change_password/password_change_otp.dart';
 import '../../features/presentation/pages/auth/biodata/biodata_screen.dart';
 import '../../features/presentation/pages/auth/choose_role/role_user_screen.dart';
 import '../../features/presentation/pages/auth/login/forgot_password/forgot_password_screen.dart';
@@ -235,23 +236,46 @@ class Routes {
                         builder: (context, state) => const PersonalDataScreen(),
                         routes: [
                           GoRoute(
-                              parentNavigatorKey: _rootNavigatorKey,
-                              path: "change_email",
-                              builder: (context, state) =>
-                                  const ChangeEmailScreen(),
-                              routes: [
-                                GoRoute(
-                                    parentNavigatorKey: _rootNavigatorKey,
-                                    path: "otp_email",
-                                    builder: (context, state) =>
-                                        const EmailChangeOtpScreen())
-                              ])
+                            parentNavigatorKey: _rootNavigatorKey,
+                            path: "change_email",
+                            builder: (context, state) =>
+                                const ChangeEmailScreen(),
+                            // routes: [
+                            //   GoRoute(
+                            //       parentNavigatorKey: _rootNavigatorKey,
+                            //       path: "otp_email",
+                            //       builder: (context, state) =>
+                            //           const EmailChangeOtpScreen())
+                            // ]
+                          ),
+                          GoRoute(
+                            parentNavigatorKey: _rootNavigatorKey,
+                            path: "change_email_otp",
+                            builder: (context, state) {
+                              String email = state.extra as String;
+                              return EmailChangeOtpScreen(email: email);
+                            },
+                            // routes: [
+                            //   GoRoute(
+                            //       parentNavigatorKey: _rootNavigatorKey,
+                            //       path: "otp_email",
+                            //       builder: (context, state) =>
+                            //           const EmailChangeOtpScreen())
+                            // ]
+                          )
                         ]),
                     GoRoute(
                         parentNavigatorKey: _rootNavigatorKey,
                         path: "change_password",
                         builder: (context, state) =>
                             const ChangePasswordScreen()),
+                    GoRoute(
+                        parentNavigatorKey: _rootNavigatorKey,
+                        path: "change_password_otp",
+                        builder: (context, state) {
+                          String email = state.extra as String;
+                          return PasswordChangeOtpScreen(email: email);
+                        }),
                     GoRoute(
                         parentNavigatorKey: _rootNavigatorKey,
                         path: "settings",

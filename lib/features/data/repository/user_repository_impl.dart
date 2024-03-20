@@ -129,8 +129,8 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<String> updateEmail(String s) async {
-    return await _authUserFirebase.updateEmail(s);
+  Future<String> updateEmail(String newEmail, String password) async {
+    return await _authUserFirebase.updateEmail(newEmail, password);
   }
 
   @override
