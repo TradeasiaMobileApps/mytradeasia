@@ -93,6 +93,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       BuildContext context = event.context;
 
       final response = await _postRegisterUser.call(param: event.userData);
+      event.stopLoadingFunc();
+
       if (response == "success") {
         log("register success");
         showDialog(

@@ -30,6 +30,7 @@ class RegisterWithEmail extends AuthEvent {
   // final String country;
   // final String password;
   final BuildContext context;
+  final Function stopLoadingFunc;
 
   const RegisterWithEmail(
     this.userData,
@@ -42,6 +43,7 @@ class RegisterWithEmail extends AuthEvent {
     // this.lastName,
     // this.password,
     // this.country);
+      this.stopLoadingFunc
   );
 }
 
