@@ -330,16 +330,31 @@ class MessagesDetailScreenState extends State<MessagesDetailScreen> {
         });
   }
 
+  ///legacycode
+  // bool isDateBeforePresent(
+  //     DateTime messageDateTime, DateTime dayBeforeMessage) {
+  //   if (messageDateTime.day > dayBeforeMessage.day) {
+  //     if (messageDateTime.day > dayBeforeMessage.day &&
+  //         messageDateTime.month > dayBeforeMessage.month) {
+  //       if (messageDateTime.day > dayBeforeMessage.day &&
+  //           messageDateTime.month > dayBeforeMessage.month &&
+  //           messageDateTime.year > dayBeforeMessage.year) {
+  //         return true;
+  //       }
+  //       return true;
+  //     }
+  //     return true;
+  //   }
+  //   return false;
+  // }
+
+  ///check if date is before today
   bool isDateBeforePresent(
       DateTime messageDateTime, DateTime dayBeforeMessage) {
     if (messageDateTime.day > dayBeforeMessage.day) {
       if (messageDateTime.day > dayBeforeMessage.day &&
-          messageDateTime.month > dayBeforeMessage.month) {
-        if (messageDateTime.day > dayBeforeMessage.day &&
-            messageDateTime.month > dayBeforeMessage.month &&
-            messageDateTime.year > dayBeforeMessage.year) {
-          return true;
-        }
+          messageDateTime.month > dayBeforeMessage.month &&
+          messageDateTime.year > dayBeforeMessage.year) {
         return true;
       }
       return true;
@@ -347,17 +362,19 @@ class MessagesDetailScreenState extends State<MessagesDetailScreen> {
     return false;
   }
 
+  ///Check if date same as today
   bool isDateSameAsDateNow(DateTime messageDateTime) {
     DateTime today = DateTime.now();
     if (messageDateTime.day == today.day &&
         messageDateTime.month == today.month &&
         messageDateTime.year == today.year) {
-      return false;
-    } else {
       return true;
+    } else {
+      return false;
     }
   }
 
+  ///convert raw time to DateTime data type
   DateTime toDateTime(int date) {
     return DateTime.fromMillisecondsSinceEpoch(
       date,
@@ -383,25 +400,37 @@ class MessagesDetailScreenState extends State<MessagesDetailScreen> {
         String firstMessageDate = "Today";
         bool isShowSeparator = false;
 
+        ///this if condition is to save current index message time after the template message
         if (index > 0) {
           messageTime = messageList[index - 1].createdAt;
           messageDateTime = toDateTime(messageTime);
         }
 
+        ///this if condition is to check if first message is from today
+        ///if first message is from today then the separator will shown 'Today'
+        ///if the first message is not today then it will shown as date
         if (index == 0 && messageList.isNotEmpty) {
           messageTime = messageList[index].createdAt;
           messageDateTime = toDateTime(messageTime);
-          if (isDateSameAsDateNow(toDateTime(messageList[index].createdAt))) {
+          if (!isDateSameAsDateNow(toDateTime(messageList[index].createdAt))) {
             firstMessageDate =
                 "${messageDateTime.day}-${messageDateTime.month}-${messageDateTime.year}";
           }
         }
 
+        ///this logic is to check every message time, to separate message based on the date they sent
+        ///how this works is the program check `messageList[index-1]` time with `messageList[index - 2]`
+        ///the first if condition is to check if the message is not the first message
         if (index > 1) {
+          ///the dayBeforeMessage variable is to get message date time before the newest message
           var dayBeforeMessage = toDateTime(messageList[index - 2].createdAt);
+
+          ///this if condition is to check current index message with previous of current index message
           if (isDateBeforePresent(messageDateTime, dayBeforeMessage)) {
             isShowSeparator = true;
-            if (isDateSameAsDateNow(messageDateTime)) {
+
+            ///this is to check if the current index message
+            if (!isDateSameAsDateNow(messageDateTime)) {
               separator =
                   "${messageDateTime.day}-${messageDateTime.month}-${messageDateTime.year}";
             }
@@ -448,6 +477,7 @@ class MessagesDetailScreenState extends State<MessagesDetailScreen> {
         }
 
         BaseMessage message = messageList[index - 1];
+
         List<Member> unreadMembers = (collection != null)
             ? collection!.channel.getUnreadMembers(message)
             : [];
