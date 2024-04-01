@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mytradeasia/features/domain/entities/all_product_entities/lazy_load_list_product.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_entity.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_to_rfq_entity.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/add_recently_seen.dart';
@@ -35,18 +36,29 @@ class AllProductsScreen extends StatefulWidget {
 class _AllProductsScreenState extends State<AllProductsScreen> {
   final TextEditingController _searchProductController =
       TextEditingController();
+  bool onLoadData = false;
+  String nextPayload = "";
+  late ScrollController scrollController;
   final AddRecentlySeen _addRecentlySeen = injections<AddRecentlySeen>();
+  int listExtendLength = 2;
+  ProductLazyLoadEntity? tempData;
+
   Timer? debouncerTime;
 
-  Future<void> _getListProducts() async {
-    BlocProvider.of<ListProductBloc>(context).add(const GetProducts());
+  Future<void> _refreshListProducts() async {
+    BlocProvider.of<ListProductBloc>(context).add(const DisposeProducts());
+    BlocProvider.of<ListProductBloc>(context).add(GetProducts(tempData, null));
+    setState(() {
+      listExtendLength = 2;
+    });
   }
 
   @override
   void initState() {
     BlocProvider.of<ListProductBloc>(context).add(const DisposeProducts());
-    BlocProvider.of<ListProductBloc>(context).add(const GetProducts());
+    BlocProvider.of<ListProductBloc>(context).add(GetProducts(tempData, null));
     BlocProvider.of<CartBloc>(context).add(const GetCartItems());
+    scrollController = ScrollController()..addListener(_scrollListener);
     super.initState();
   }
 
@@ -65,11 +77,10 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // String url = "https://chemtradea.chemtradeasia.com/";
     var industryBloc = BlocProvider.of<IndustryBloc>(context);
     return Scaffold(
       body: RefreshIndicator(
-        onRefresh: _getListProducts,
+        onRefresh: _refreshListProducts,
         color: primaryColor1,
         edgeOffset: size20px * 3,
         child: SafeArea(
@@ -110,11 +121,6 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                                     BlocProvider.of<SearchProductBloc>(context)
                                         .add(SearchProduct(
                                             _searchProductController.text));
-
-                                    // Provider.of<SearchProductProvider>(context,
-                                    //         listen: false)
-                                    //     .getListProduct(
-                                    //         _searchProductController.text);
                                   });
                                 }),
                                 decoration: InputDecoration(
@@ -342,6 +348,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                         builder: (context, searchState) {
                           return BlocBuilder<ListProductBloc, ListProductState>(
                               builder: (_, state) {
+                            tempData = state.products;
                             return _searchProductController.text.isEmpty
                                 /* All product */
                                 ? GridView.builder(
@@ -353,8 +360,11 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                                             childAspectRatio: 0.6),
                                     itemCount: state is ListProductLoading
                                         ? 6
-                                        : state.products?.length,
+                                        : state.products!.productPayload
+                                                .length +
+                                            listExtendLength,
                                     shrinkWrap: true,
+                                    controller: scrollController,
                                     physics: const BouncingScrollPhysics(),
                                     padding: EdgeInsets.zero,
                                     itemBuilder: (context, index) {
@@ -364,28 +374,45 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                                             highlightColor: greyColor,
                                             child: const Card());
                                       } else {
+                                        nextPayload =
+                                            state.products!.nextPayload;
+                                        if (index + 1 >
+                                            state.products!.productPayload
+                                                .length) {
+                                          return Shimmer.fromColors(
+                                              baseColor: greyColor3,
+                                              highlightColor: greyColor,
+                                              child: const Card());
+                                        }
+
                                         return InkWell(
                                           onTap: () async {
                                             /* With go_router */
 
                                             context.pushNamed("product",
                                                 pathParameters: {
-                                                  'productId': state
-                                                      .products![index].id
+                                                  'productId': state.products!
+                                                      .productPayload[index].id
                                                       .toString()
                                                 });
 
                                             Map<String, dynamic> data = {
-                                              "productId":
-                                                  state.products![index].id,
+                                              "productId": state.products!
+                                                  .productPayload[index].id,
                                               "productName": state
-                                                  .products![index].productname,
+                                                  .products!
+                                                  .productPayload[index]
+                                                  .productname,
                                               "casNumber": state
-                                                  .products![index].casNumber,
-                                              "hsCode":
-                                                  state.products![index].hsCode,
+                                                  .products!
+                                                  .productPayload[index]
+                                                  .casNumber,
+                                              "hsCode": state.products!
+                                                  .productPayload[index].hsCode,
                                               "productImage": state
-                                                  .products![index].productimage
+                                                  .products!
+                                                  .productPayload[index]
+                                                  .productimage
                                             };
 
                                             await _addRecentlySeen(param: data);
@@ -394,16 +421,20 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                                               ? ProductCard(
                                                   product: ProductEntity(
                                                       productname: state
-                                                          .products![index]
+                                                          .products!
+                                                          .productPayload[index]
                                                           .productname,
                                                       productimage: state
-                                                          .products![index]
+                                                          .products!
+                                                          .productPayload[index]
                                                           .productimage,
                                                       casNumber: state
-                                                          .products![index]
+                                                          .products!
+                                                          .productPayload[index]
                                                           .casNumber,
                                                       hsCode: state
-                                                          .products![index]
+                                                          .products!
+                                                          .productPayload[index]
                                                           .hsCode),
                                                   onPressed: () {
                                                     List<ProductToRfq>
@@ -411,19 +442,25 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                                                     ProductToRfq product =
                                                         ProductToRfq(
                                                       productId: state
-                                                          .products![index].id
+                                                          .products!
+                                                          .productPayload[index]
+                                                          .id
                                                           .toString(),
                                                       productName: state
-                                                          .products![index]
+                                                          .products!
+                                                          .productPayload[index]
                                                           .productname!,
                                                       productImage: state
-                                                          .products![index]
+                                                          .products!
+                                                          .productPayload[index]
                                                           .productimage!,
                                                       hsCode: state
-                                                          .products![index]
+                                                          .products!
+                                                          .productPayload[index]
                                                           .hsCode!,
                                                       casNumber: state
-                                                          .products![index]
+                                                          .products!
+                                                          .productPayload[index]
                                                           .casNumber!,
                                                     );
                                                     products.add(product);
@@ -441,16 +478,20 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                                               : ProductCard(
                                                   product: ProductEntity(
                                                       productname: state
-                                                          .products![index]
+                                                          .products!
+                                                          .productPayload[index]
                                                           .productname,
                                                       productimage: state
-                                                          .products![index]
+                                                          .products!
+                                                          .productPayload[index]
                                                           .productimage,
                                                       casNumber: state
-                                                          .products![index]
+                                                          .products!
+                                                          .productPayload[index]
                                                           .casNumber,
                                                       hsCode: state
-                                                          .products![index]
+                                                          .products!
+                                                          .productPayload[index]
                                                           .hsCode),
                                                   isNotRecentSeenCard: false,
                                                 ),
@@ -459,6 +500,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                                     },
                                   )
                                 // Search Provider
+                                // TODO:not yet lazy loaded
                                 : GridView.builder(
                                     gridDelegate:
                                         const SliverGridDelegateWithFixedCrossAxisCount(
@@ -578,5 +620,57 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
         ),
       ),
     );
+  }
+
+  //Lazy load function
+  void _scrollListener() {
+    if (scrollController.offset >=
+            scrollController.position.maxScrollExtent - 500 &&
+        !onLoadData) {
+      // Reach the bottom, load more data
+      onLoadData = true;
+      _loadMoreData();
+    }
+  }
+
+  //Lazy load data source
+  void _loadMoreData() async {
+    // Simulate a delay to fetch more data
+    await Future.delayed(const Duration(seconds: 2));
+
+    BlocProvider.of<ListProductBloc>(context)
+        .add(GetProducts(tempData, nextPayload));
+    onLoadData = false;
+
+    BlocListener<ListProductBloc, ListProductState>(
+        listener: ((context, state) {
+      if (state is ListProductError) {
+        setState(() {
+          listExtendLength = 0;
+        });
+      }
+    }));
+
+    // scrollController.jumpTo(scrollController.position.maxScrollExtent);
+
+    // scrollController.scrollTo(
+    //     index: collection!.messageList.length,
+    //     duration: const Duration(milliseconds: 200),
+    //     curve: Curves.bounceIn,
+    //   );
+
+    // // Add more data to the list
+    // if (total > PageNumber * 10) {
+    //   PageNumber++;
+    //   productByIndustry(PageNumber);
+    //   print("page num: $PageNumber");
+    // } else {
+    //   log('else');
+    //   onLoaderDismiss();
+    // }
+
+    // setState(() {
+    //   isLoading = false;
+    // });
   }
 }

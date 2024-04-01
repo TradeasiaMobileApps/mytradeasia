@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mytradeasia/features/domain/entities/all_product_entities/lazy_load_list_product.dart';
 import 'package:mytradeasia/features/presentation/state_management/category_bloc/category_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/category_bloc/category_event.dart';
 import 'package:mytradeasia/features/presentation/widgets/banner_industry_products_widget.dart';
@@ -43,12 +44,14 @@ class _ProductByIndustryScreenState extends State<ProductByIndustryScreen> {
     );
   }
 
+  ProductLazyLoadEntity? tempData;
+
   @override
   void initState() {
     BlocProvider.of<ListProductBloc>(context).add(const DisposeProducts());
     BlocProvider.of<CategoryBloc>(context).add(const DisposeCategoryState());
     BlocProvider.of<CategoryBloc>(context).add(const GetCategories());
-    BlocProvider.of<ListProductBloc>(context).add(const GetProducts());
+    BlocProvider.of<ListProductBloc>(context).add(GetProducts(tempData, null));
     super.initState();
   }
 
@@ -349,7 +352,9 @@ class IndustryProducts extends StatelessWidget {
               crossAxisSpacing: 15,
               mainAxisSpacing: 15,
               childAspectRatio: 0.6),
-          itemCount: state is ListProductLoading ? 6 : state.products?.length,
+          itemCount: state is ListProductLoading
+              ? 6
+              : state.products?.productPayload.length,
           shrinkWrap: true,
           physics: const BouncingScrollPhysics(),
           padding: EdgeInsets.zero,
@@ -365,15 +370,19 @@ class IndustryProducts extends StatelessWidget {
                   /* With go_router */
 
                   context.pushNamed("product", pathParameters: {
-                    'productId': state.products![index].id.toString()
+                    'productId':
+                        state.products!.productPayload[index].id.toString()
                   });
 
                   Map<String, dynamic> data = {
-                    "productName": state.products![index].productname,
-                    "productId": state.products![index].id,
-                    "casNumber": state.products![index].casNumber,
-                    "hsCode": state.products![index].hsCode,
-                    "productImage": state.products![index].productimage
+                    "productName":
+                        state.products!.productPayload[index].productname,
+                    "productId": state.products!.productPayload[index].id,
+                    "casNumber":
+                        state.products!.productPayload[index].casNumber,
+                    "hsCode": state.products!.productPayload[index].hsCode,
+                    "productImage":
+                        state.products!.productPayload[index].productimage
                   };
 
                   await _addRecentlySeen(param: data);
@@ -381,19 +390,28 @@ class IndustryProducts extends StatelessWidget {
                 child: authState.role != "Sales"
                     ? ProductCard(
                         product: ProductEntity(
-                            productId: state.products![index].id,
-                            productname: state.products![index].productname,
-                            productimage: state.products![index].productimage,
-                            casNumber: state.products![index].casNumber,
-                            hsCode: state.products![index].hsCode),
+                            productId: state.products!.productPayload[index].id,
+                            productname: state
+                                .products!.productPayload[index].productname,
+                            productimage: state
+                                .products!.productPayload[index].productimage,
+                            casNumber:
+                                state.products!.productPayload[index].casNumber,
+                            hsCode:
+                                state.products!.productPayload[index].hsCode),
                         onPressed: () {
                           List<ProductToRfq> products = [];
                           ProductToRfq product = ProductToRfq(
-                            productId: state.products![index].id.toString(),
-                            productName: state.products![index].productname!,
-                            productImage: state.products![index].productimage!,
-                            hsCode: state.products![index].hsCode!,
-                            casNumber: state.products![index].casNumber!,
+                            productId: state.products!.productPayload[index].id
+                                .toString(),
+                            productName: state
+                                .products!.productPayload[index].productname!,
+                            productImage: state
+                                .products!.productPayload[index].productimage!,
+                            hsCode:
+                                state.products!.productPayload[index].hsCode!,
+                            casNumber: state
+                                .products!.productPayload[index].casNumber!,
                           );
                           products.add(product);
 
@@ -406,11 +424,15 @@ class IndustryProducts extends StatelessWidget {
                       )
                     : ProductCard(
                         product: ProductEntity(
-                            productId: state.products![index].id,
-                            productname: state.products![index].productname,
-                            productimage: state.products![index].productimage,
-                            casNumber: state.products![index].casNumber,
-                            hsCode: state.products![index].hsCode),
+                            productId: state.products!.productPayload[index].id,
+                            productname: state
+                                .products!.productPayload[index].productname,
+                            productimage: state
+                                .products!.productPayload[index].productimage,
+                            casNumber:
+                                state.products!.productPayload[index].casNumber,
+                            hsCode:
+                                state.products!.productPayload[index].hsCode),
                         isNotRecentSeenCard: false,
                       ),
               );
