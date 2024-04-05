@@ -20,7 +20,6 @@ import 'package:mytradeasia/helper/injections_container.dart';
 import '../../../../../../config/routes/parameters.dart';
 import '../../../../state_management/auth_bloc/auth_state.dart';
 import '../../../../state_management/recently_seen_bloc/recently_seen_state.dart';
-import '../all_products/products/products_detail_screen.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -427,8 +426,6 @@ class RecentlySeenWidget extends StatefulWidget {
 }
 
 class _RecentlySeenWidgetState extends State<RecentlySeenWidget> {
-  final String url = "https://chemtradea.chemtradeasia.com/";
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<RecentlySeenBloc, RecentlySeenState>(
@@ -489,8 +486,9 @@ class _RecentlySeenWidgetState extends State<RecentlySeenWidget> {
                                         borderRadius: const BorderRadius.all(
                                             Radius.circular(7.0)),
                                         child: CachedNetworkImage(
-                                          imageUrl:
-                                              "$url${state.products![index].productimage}",
+                                          imageUrl: state.products![index]
+                                                  .productimage ??
+                                              "",
                                           height: 76,
                                           width: 76,
                                           fit: BoxFit.fill,

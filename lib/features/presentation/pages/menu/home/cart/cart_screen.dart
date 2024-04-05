@@ -332,8 +332,6 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String url = "https://chemtradea.chemtradeasia.com/";
-
     return BlocBuilder<CartBloc, CartState>(builder: (context, state) {
       if (state is CartDoneState) {
         if (state.cartItems != null && state.cartItems!.isNotEmpty) {
@@ -446,7 +444,7 @@ class _CartScreenState extends State<CartScreen> {
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(10.0),
                                   child: CachedNetworkImage(
-                                    imageUrl: "$url${item.productImage}",
+                                    imageUrl: item.productImage ?? "",
                                     width: size20px * 4.5,
                                     height: size20px * 4.5 + 5,
                                     fit: BoxFit.cover,
