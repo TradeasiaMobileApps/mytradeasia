@@ -368,6 +368,7 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                                           ),
                                         ],
                                       ),
+                                      //products
                                       widget.products.isNotEmpty
                                           ? SizedBox(
                                               height: widget.products.length > 1
@@ -412,8 +413,10 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                                                                             10.0),
                                                                 child:
                                                                     CachedNetworkImage(
-                                                                  imageUrl:
-                                                                      "$chemtradeasiaUrl${widget.products[index].productImage}",
+                                                                  imageUrl: widget
+                                                                      .products[
+                                                                          index]
+                                                                      .productImage,
                                                                   width:
                                                                       size20px *
                                                                           4.5,
@@ -974,8 +977,7 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                               borderRadius: const BorderRadius.all(
                                   Radius.circular(size20px / 4)),
                               child: CachedNetworkImage(
-                                imageUrl:
-                                    '$chemtradeasiaUrl${product.productImage}',
+                                imageUrl: product.productImage,
                                 fit: BoxFit.fill,
                                 placeholder: (context, url) => const Center(
                                   child: CircularProgressIndicator.adaptive(),
