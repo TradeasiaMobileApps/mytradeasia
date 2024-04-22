@@ -8,10 +8,12 @@ import '../pages/menu/other/languages_screen.dart';
 class CountryPicker extends StatefulWidget {
   final ValueChanged<CountryEntity> onChanged;
   final bool suffixIconMode;
+  final bool readOnly;
   const CountryPicker({
     super.key,
     required this.onChanged,
     this.suffixIconMode = false,
+    this.readOnly = false,
   });
 
   @override
@@ -20,7 +22,7 @@ class CountryPicker extends StatefulWidget {
 
 class _CountryPickerState extends State<CountryPicker> {
   ValueNotifier<CountryEntity> country =
-      ValueNotifier<CountryEntity>(CountryEntity(
+      ValueNotifier<CountryEntity>(const CountryEntity(
     name: "indonesia",
     codeCountry: "ID",
     flagUrl: "https://flagcdn.com/w320/id.png",
@@ -30,30 +32,34 @@ class _CountryPickerState extends State<CountryPicker> {
   Widget build(BuildContext context) {
     return widget.suffixIconMode
         ? IconButton(
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context) {
-                  return LanguagesScreen(
-                    onChanged: widget.onChanged,
-                    country: country,
-                  );
-                },
-              ));
-            },
+            onPressed: !widget.readOnly
+                ? () {
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) {
+                        return LanguagesScreen(
+                          onChanged: widget.onChanged,
+                          country: country,
+                        );
+                      },
+                    ));
+                  }
+                : null,
             icon: Image.asset("assets/images/icon_forward.png",
                 width: 24.0, height: 24.0),
           )
         : InkWell(
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context) {
-                  return LanguagesScreen(
-                    onChanged: widget.onChanged,
-                    country: country,
-                  );
-                },
-              ));
-            },
+            onTap: !widget.readOnly
+                ? () {
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) {
+                        return LanguagesScreen(
+                          onChanged: widget.onChanged,
+                          country: country,
+                        );
+                      },
+                    ));
+                  }
+                : null,
             child: ValueListenableBuilder<CountryEntity>(
               valueListenable: country,
               builder: (context, value, child) {

@@ -24,7 +24,7 @@ import '../../features/presentation/pages/menu/home/all_products/industry/all_in
 import '../../features/presentation/pages/menu/home/all_products/products/all_products_screen.dart';
 import '../../features/presentation/pages/menu/home/all_products/products/products_detail_screen.dart';
 import '../../features/presentation/pages/menu/home/all_products/products/rfq_submitted_screen.dart';
-import '../../features/presentation/pages/menu/home/all_products/request_quotation_screen.dart';
+import '../../features/presentation/pages/menu/home/all_products/request_quotation/request_quotation_screen.dart';
 import '../../features/presentation/pages/menu/home/cart/cart_screen.dart';
 import '../../features/presentation/pages/menu/home/home_screen.dart';
 import '../../features/presentation/pages/menu/home/notification/notification_screen.dart';
