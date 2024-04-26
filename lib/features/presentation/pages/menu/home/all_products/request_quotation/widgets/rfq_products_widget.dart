@@ -1,8 +1,13 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_to_rfq_entity.dart';
+import 'package:mytradeasia/features/presentation/state_management/dropdown_uom_bloc/dropdown_uom_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/dropdown_uom_bloc/dropdown_uom_event.dart';
+import 'package:mytradeasia/features/presentation/state_management/dropdown_uom_bloc/dropdown_uom_state.dart';
 import 'package:mytradeasia/features/presentation/widgets/text_editing_widget.dart';
 import 'package:mytradeasia/helper/helper_functions.dart';
 
@@ -23,8 +28,13 @@ class _RfqProductsState extends State<RfqProducts> {
   String? _selectedValueUnit = "";
 
   @override
+  void initState() {
+    getUomData();
+    super.initState();
+  }
+
+  @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.products.isNotEmpty) {
@@ -32,6 +42,10 @@ class _RfqProductsState extends State<RfqProducts> {
             products: widget.products, product: widget.products[0]);
       }
     });
+  }
+
+  getUomData() {
+    BlocProvider.of<DropdownUomBloc>(context).add(const GetUomEvent());
   }
 
   @override
@@ -332,50 +346,49 @@ class _RfqProductsState extends State<RfqProducts> {
                                       padding: const EdgeInsets.only(
                                         left: size20px,
                                       ),
-                                      child: DropdownButtonFormField(
-                                        icon: Image.asset(
-                                            "assets/images/icon_bottom.png"),
-                                        hint: Text(
-                                          "Unit",
-                                          style: body1Regular.copyWith(
-                                              color: greyColor),
-                                        ),
-                                        decoration: const InputDecoration(
-                                          border: InputBorder.none,
-                                        ),
-                                        style: body1Regular,
-                                        items: const [
-                                          DropdownMenuItem(
-                                            value: 'Tonne',
-                                            child: Text('Tonne',
-                                                style: body1Regular),
-                                          ),
-                                          DropdownMenuItem(
-                                            value: '20” FCL',
-                                            child: Text('20” FCL',
-                                                style: body1Regular),
-                                          ),
-                                          DropdownMenuItem(
-                                            value: 'Litres',
-                                            child: Text('Litres',
-                                                style: body1Regular),
-                                          ),
-                                          DropdownMenuItem(
-                                            value: 'Kilogram (Kg)',
-                                            child: Text('Kilogram (Kg)',
-                                                style: body1Regular),
-                                          ),
-                                          DropdownMenuItem(
-                                            value: 'Metric Tonne (MT)',
-                                            child: Text('Metric Tonne (MT)',
-                                                style: body1Regular),
-                                          ),
-                                        ],
-                                        value: _selectedValueUnit,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            _selectedValueUnit = value;
-                                          });
+                                      child: BlocBuilder<DropdownUomBloc,
+                                          DropdownUomState>(
+                                        builder: (context, state) {
+                                          List<DropdownMenuItem> incoterm = [];
+                                          if (state is DropdownUomSuccess) {
+                                            for (var i = 0;
+                                                i < state.dropdownUom!.length;
+                                                i++) {
+                                              incoterm.add(DropdownMenuItem(
+                                                value: state
+                                                    .dropdownUom![i].uomName,
+                                                child: AutoSizeText(
+                                                  state.dropdownUom![i].uomName,
+                                                  // style: TextStyle(fontSize: 7),
+                                                  minFontSize: 10,
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ));
+                                            }
+                                          }
+                                          return DropdownButtonFormField(
+                                            isExpanded: true,
+                                            icon: Image.asset(
+                                                "assets/images/icon_bottom.png"),
+                                            hint: Text(
+                                              "Unit",
+                                              style: body1Regular.copyWith(
+                                                  color: greyColor),
+                                            ),
+                                            decoration: const InputDecoration(
+                                              border: InputBorder.none,
+                                            ),
+                                            style: body1Regular,
+                                            items: incoterm,
+                                            value: _selectedValueUnit,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                _selectedValueUnit = value;
+                                              });
+                                            },
+                                          );
                                         },
                                       ),
                                     ),

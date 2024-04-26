@@ -6,6 +6,7 @@ import 'package:mytradeasia/features/data/data_sources/remote/category_service.d
 import 'package:mytradeasia/features/data/data_sources/remote/country_service.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/detail_product_service.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/dhl_shipment_service.dart';
+import 'package:mytradeasia/features/data/data_sources/remote/dropdown_service.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/faq_service.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/home_service.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/list_product_service.dart';
@@ -23,6 +24,7 @@ import 'package:mytradeasia/features/data/repository/category_repository_impl.da
 import 'package:mytradeasia/features/data/repository/country_repository_impl.dart';
 import 'package:mytradeasia/features/data/repository/detail_product_repository.dart';
 import 'package:mytradeasia/features/data/repository/dhl_shipment_repository.dart';
+import 'package:mytradeasia/features/data/repository/dropdown_repository_impl.dart';
 import 'package:mytradeasia/features/data/repository/faq_repository.dart';
 import 'package:mytradeasia/features/data/repository/home_repository_impl.dart';
 import 'package:mytradeasia/features/data/repository/industry_repository.dart';
@@ -42,6 +44,7 @@ import 'package:mytradeasia/features/domain/repository/category_repository.dart'
 import 'package:mytradeasia/features/domain/repository/country_repository.dart';
 import 'package:mytradeasia/features/domain/repository/detail_product_repository.dart';
 import 'package:mytradeasia/features/domain/repository/dhl_shipment_repository.dart';
+import 'package:mytradeasia/features/domain/repository/dropdown_repository.dart';
 import 'package:mytradeasia/features/domain/repository/faq_repository.dart';
 import 'package:mytradeasia/features/domain/repository/home_repository.dart';
 import 'package:mytradeasia/features/domain/repository/industry_repository.dart';
@@ -65,6 +68,9 @@ import 'package:mytradeasia/features/domain/usecases/country_usecases/get_countr
 import 'package:mytradeasia/features/domain/usecases/country_usecases/search_country_usecase.dart';
 import 'package:mytradeasia/features/domain/usecases/detail_product_usecases/get_detail_product.dart';
 import 'package:mytradeasia/features/domain/usecases/dhl_shipment_usecases/get_dhl_shipment.dart';
+import 'package:mytradeasia/features/domain/usecases/dropdown_usecases/get_currency_usecase.dart';
+import 'package:mytradeasia/features/domain/usecases/dropdown_usecases/get_incoterm_usecase.dart';
+import 'package:mytradeasia/features/domain/usecases/dropdown_usecases/get_uom_usecase.dart';
 import 'package:mytradeasia/features/domain/usecases/faq_usecases/get_faq_data.dart';
 import 'package:mytradeasia/features/domain/usecases/home_usecases/get_home_data.dart';
 import 'package:mytradeasia/features/domain/usecases/industry_usecases/get_industry.dart';
@@ -109,6 +115,9 @@ import 'package:mytradeasia/features/presentation/state_management/cart_bloc/car
 import 'package:mytradeasia/features/presentation/state_management/category_bloc/category_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/countries_bloc/countries_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/dhl_shipment_bloc/dhl_shipment_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/dropdown_currency_bloc/dropdown_currency_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/dropdown_incoterm_bloc/dropdown_incoterm_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/dropdown_uom_bloc/dropdown_uom_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/home_bloc/home_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/industry_bloc/industry_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/faq_bloc/faq_bloc.dart';
@@ -150,6 +159,7 @@ Future<void> initializeDependencies() async {
   injections.registerSingleton<CategoryService>(CategoryService());
   injections.registerSingleton<HomeService>(HomeService());
   injections.registerSingleton<OtpService>(OtpService());
+  injections.registerSingleton<DropdownService>(DropdownService());
 
   //Repositories Dependencies
   injections.registerSingleton<DetailProductRepository>(
@@ -187,6 +197,8 @@ Future<void> initializeDependencies() async {
   injections
       .registerSingleton<HomeRepository>(HomeRepositoryImpl(injections()));
   injections.registerSingleton<OTPRepository>(OTPRepositoryImpl(injections()));
+  injections.registerSingleton<DropdownRepository>(
+      DropdownRepositoryImpl(injections()));
 
   //UseCases Dependencies
   injections
@@ -256,6 +268,11 @@ Future<void> initializeDependencies() async {
   injections.registerSingleton<GetHomeData>(GetHomeData(injections()));
   injections.registerSingleton<SendOTP>(SendOTP(injections()));
   injections.registerSingleton<VerifyOTP>(VerifyOTP(injections()));
+  injections
+      .registerSingleton<GetIncotermUsecase>(GetIncotermUsecase(injections()));
+  injections
+      .registerSingleton<GetCurrencyUsecase>(GetCurrencyUsecase(injections()));
+  injections.registerSingleton<GetUomUsecase>(GetUomUsecase(injections()));
 
   //Bloc
   injections
@@ -295,4 +312,10 @@ Future<void> initializeDependencies() async {
   injections.registerFactory<QuotationBloc>(() => QuotationBloc(injections()));
   injections.registerFactory<CategoryBloc>(() => CategoryBloc(injections()));
   injections.registerFactory<HomeBloc>(() => HomeBloc(injections()));
+  injections.registerFactory<DropdownIncotermBloc>(
+      () => DropdownIncotermBloc(injections()));
+  injections.registerFactory<DropdownCurrencyBloc>(
+      () => DropdownCurrencyBloc(injections()));
+  injections
+      .registerFactory<DropdownUomBloc>(() => DropdownUomBloc(injections()));
 }

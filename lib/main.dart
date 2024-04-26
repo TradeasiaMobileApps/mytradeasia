@@ -5,6 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:mytradeasia/features/presentation/state_management/category_bloc/category_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/countries_bloc/countries_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/dropdown_currency_bloc/dropdown_currency_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/dropdown_incoterm_bloc/dropdown_incoterm_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/dropdown_uom_bloc/dropdown_uom_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/home_bloc/home_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/quotations_bloc/quotations_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/recently_seen_bloc/recently_seen_bloc.dart';
@@ -113,7 +116,10 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(create: (_) => injections<RfqBloc>()),
         BlocProvider(create: (_) => injections<QuotationBloc>()),
         BlocProvider(create: (_) => injections<CategoryBloc>()),
-        BlocProvider(create: (_) => injections<HomeBloc>())
+        BlocProvider(create: (_) => injections<HomeBloc>()),
+        BlocProvider(create: (_) => injections<DropdownIncotermBloc>()),
+        BlocProvider(create: (_) => injections<DropdownCurrencyBloc>()),
+        BlocProvider(create: (_) => injections<DropdownUomBloc>()),
       ],
       child: StreamBuilder<InternetConnectionStatus>(
         initialData: InternetConnectionStatus.connected,

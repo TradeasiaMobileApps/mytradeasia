@@ -7,6 +7,5 @@ class DropdownIncotermModel extends DropdownIncotermEntity {
   }) : super(id: id, incotermName: incotermName);
 
   factory DropdownIncotermModel.fromJson(Map<String, dynamic> json) =>
-      DropdownIncotermModel(
-          id: json["id"], incotermName: json["incoterm_name"]);
+      DropdownIncotermModel(id: json["id"], incotermName: json["name"] ?? "");
 }

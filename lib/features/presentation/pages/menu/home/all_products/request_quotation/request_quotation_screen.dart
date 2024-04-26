@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
-import 'package:mytradeasia/core/constants/constants.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_to_rfq_entity.dart';
 import 'package:mytradeasia/features/domain/entities/rfq_entities/rfq_entity.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_data.dart';
 import 'package:mytradeasia/features/presentation/pages/menu/home/all_products/request_quotation/widgets/messages_widget.dart';
 import 'package:mytradeasia/features/presentation/pages/menu/home/all_products/request_quotation/widgets/rfq_products_widget.dart';
+import 'package:mytradeasia/features/presentation/state_management/dropdown_incoterm_bloc/dropdown_incoterm_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/dropdown_incoterm_bloc/dropdown_incoterm_event.dart';
+import 'package:mytradeasia/features/presentation/state_management/dropdown_incoterm_bloc/dropdown_incoterm_state.dart';
 import 'package:mytradeasia/features/presentation/widgets/dialog_sheet_widget.dart';
-import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../../../../widgets/country_picker.dart';
 import '../../../../../state_management/rfq_bloc/rfq_bloc.dart';
@@ -59,6 +59,7 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
   @override
   void initState() {
     getUserData();
+    getIncotermData();
     super.initState();
   }
 
@@ -70,6 +71,11 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
     _phoneNumberController.text = _data['phone'] ?? '';
     _countryController.text = _data['country'] ?? '';
     _companyNameController.text = _data['companyName'] ?? '';
+  }
+
+  getIncotermData() {
+    BlocProvider.of<DropdownIncotermBloc>(context)
+        .add(const GetIncotermEvent());
   }
 
   @override
@@ -397,44 +403,61 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                                               padding: const EdgeInsets.only(
                                                   left: size20px,
                                                   right: size20px),
-                                              child: DropdownButtonFormField(
-                                                validator: (value) {
-                                                  if (value == null ||
-                                                      value.isEmpty) {
-                                                    return "Incoterm is empty";
+                                              child: BlocBuilder<
+                                                  DropdownIncotermBloc,
+                                                  DropdownIncotermState>(
+                                                builder: (context, state) {
+                                                  List<DropdownMenuItem>
+                                                      incoterm = [];
+                                                  if (state
+                                                      is DropdownIncotermSuccess) {
+                                                    for (var i = 0;
+                                                        i <
+                                                            state
+                                                                .dropdownIncoterm!
+                                                                .length;
+                                                        i++) {
+                                                      incoterm.add(DropdownMenuItem(
+                                                          value: state
+                                                              .dropdownIncoterm![
+                                                                  i]
+                                                              .incotermName,
+                                                          child: Text(state
+                                                              .dropdownIncoterm![
+                                                                  i]
+                                                              .incotermName)));
+                                                    }
                                                   }
-                                                  return null;
-                                                },
-                                                icon: Image.asset(
-                                                    "assets/images/icon_bottom.png"),
-                                                hint: Text(
-                                                  "Incoterm",
-                                                  style: body1Regular.copyWith(
-                                                      color: greyColor),
-                                                ),
-                                                decoration:
-                                                    const InputDecoration(
-                                                  border: InputBorder.none,
-                                                ),
-                                                style: body1Regular,
-                                                items: const [
-                                                  DropdownMenuItem(
-                                                    value: 'FCA',
-                                                    child: Text('FCA',
-                                                        style: body1Regular),
-                                                  ),
-                                                  DropdownMenuItem(
-                                                    value: 'FOB',
-                                                    child: Text('FOB',
-                                                        style: body1Regular),
-                                                  ),
-                                                ],
-                                                value: _selectedValueIncoterm,
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    _selectedValueIncoterm =
-                                                        value;
-                                                  });
+
+                                                  return DropdownButtonFormField(
+                                                    validator: (value) {
+                                                      if (value == null ||
+                                                          value.isEmpty) {
+                                                        return "Incoterm is empty";
+                                                      }
+                                                      return null;
+                                                    },
+                                                    icon: Image.asset(
+                                                        "assets/images/icon_bottom.png"),
+                                                    hint: Text(
+                                                      "Incoterm",
+                                                      style:
+                                                          body1Regular.copyWith(
+                                                              color: greyColor),
+                                                    ),
+                                                    decoration:
+                                                        const InputDecoration(
+                                                      border: InputBorder.none,
+                                                    ),
+                                                    style: body1Regular,
+                                                    items: incoterm,
+                                                    value:
+                                                        _selectedValueIncoterm,
+                                                    onChanged: (value) {
+                                                      _selectedValueIncoterm =
+                                                          value;
+                                                    },
+                                                  );
                                                 },
                                               ),
                                             ),
