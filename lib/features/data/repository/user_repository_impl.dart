@@ -1,6 +1,7 @@
 import 'package:mytradeasia/features/data/data_sources/firebase/auth_user_firebase.dart';
 import 'package:mytradeasia/features/data/model/all_product_models/all_product_model.dart';
 import 'package:mytradeasia/features/data/model/user_models/user_model.dart';
+import 'package:mytradeasia/features/data/model/user_sales_models/sales_login_response_model.dart';
 import 'package:mytradeasia/features/domain/entities/user_entities/user_credential_entity.dart';
 import 'package:mytradeasia/features/domain/entities/user_entities/user_entity.dart';
 import 'package:mytradeasia/features/domain/repository/user_repository.dart';
@@ -45,6 +46,7 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<dynamic> loginUser(Map<String, String> s) async {
     final response = await _authUserFirebase.postLoginUser(s);
+    print("LOGIN RESPONSE : ${response}");
     if (response is Map) {
       if (response["code"] == "user-not-found") {
         return "user-not-found";
@@ -136,5 +138,11 @@ class UserRepositoryImpl implements UserRepository {
   @override
   void deleteRecentlySeen() {
     _authUserFirebase.deleteRecentlySeen();
+  }
+
+  @override
+  Future<SalesLoginResponse> loginSales(Map<String, String> s) async {
+    final response = await _authUserFirebase.postLoginSales(s);
+    return response;
   }
 }

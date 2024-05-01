@@ -6,8 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
 import 'package:mytradeasia/features/data/model/cart_models/cart_models.dart';
+import 'package:mytradeasia/features/data/model/user_sales_models/sales_login_response_model.dart';
+import 'package:mytradeasia/features/data/model/user_sales_models/user_sales_model.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_entity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../features/domain/entities/user_entities/user_credential_entity.dart';
 
 dynamic parseDoubleToIntegerIfNecessary(double input) {
   String inputString = input.toString();
@@ -179,4 +182,8 @@ void showLinkedinSSOSnackbar(BuildContext context) {
       ],
     ),
   ));
+}
+
+UserCredentialEntity toUserCredentialEntityFromSalesModel(UserSalesModel response) {
+  return UserCredentialEntity(displayName: "${response.firstName} ${response.lastName}", email: response.email,emailVerified: true, phoneNumber: null,photoUrl: null,uid: response.id.toString());
 }

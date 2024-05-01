@@ -14,10 +14,15 @@ abstract class AuthEvent extends Equatable {
 class LoginWithEmail extends AuthEvent {
   final String email;
   final String password;
+  final String role;
+  final String deviceType;
+  final String deviceToken;
   final BuildContext context;
 
-  const LoginWithEmail(this.email, this.password, this.context);
+  const LoginWithEmail(this.email, this.password,this.role,  this.deviceType, this.deviceToken,this.context );
 }
+
+
 
 class RegisterWithEmail extends AuthEvent {
   final UserEntity userData;

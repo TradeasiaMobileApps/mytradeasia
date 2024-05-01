@@ -13,6 +13,7 @@ import 'package:intl/intl.dart';
 import 'package:mytradeasia/features/data/model/all_product_models/all_product_model.dart';
 import 'package:mytradeasia/features/data/model/user_credential_models/user_credential_model.dart';
 import 'package:mytradeasia/features/data/model/user_models/user_model.dart';
+import 'package:mytradeasia/features/data/model/user_sales_models/sales_login_response_model.dart';
 import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -37,10 +38,14 @@ class AuthUserFirebase {
       notificationServices.requestNotificationPermission();
       String? deviceToken = await notificationServices.getDeviceToken();
 
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? role = prefs.getString("role")?.toLowerCase();
+
+
       if (Platform.isAndroid) {
         final headers = {
           "datetime": DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()),
-          "role": "customer",
+          "role": role,
           "device_type": "android",
         };
 
@@ -79,7 +84,6 @@ class AuthUserFirebase {
               "${userData.firstName ?? "user"}_${dateTime.millisecondsSinceEpoch}"
         }}");
 
-        log("SIGNUP RESPONSE : ${response.data}");
 
         if (response.data['status']) {
           status = 'success';
@@ -89,7 +93,7 @@ class AuthUserFirebase {
       } else {
         final headers = {
           "datetime": DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()),
-          "role": "customer",
+          "role": role,
           "device_type": "ios",
         };
 
@@ -163,13 +167,16 @@ class AuthUserFirebase {
 
   Future<dynamic> postLoginUser(Map<String, String> auth) async {
     try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? role = prefs.getString("role")?.toLowerCase();
+
       notificationServices.requestNotificationPermission();
       notificationServices.getDeviceToken().then((value) async {
         if (Platform.isAndroid) {
           final headers = {
             "datetime":
                 DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()),
-            "role": "customer",
+            "role": role,
             "device_type": "android",
           };
 
@@ -191,7 +198,7 @@ class AuthUserFirebase {
           final headers = {
             "datetime":
                 DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()),
-            "role": "customer",
+            "role": role,
             "device_type": "ios",
           };
 
@@ -202,6 +209,9 @@ class AuthUserFirebase {
                 "device_token": value
               },
               options: Options(headers: headers));
+
+          log("LOGIN RESPONSE : ${response.data}");
+
 
           if (response.statusCode != 200) {
             return {
@@ -216,18 +226,80 @@ class AuthUserFirebase {
     }
 
     try {
-      UserCredential _userCredential = await _auth.signInWithEmailAndPassword(
-          email: auth["email"]!, password: auth["password"]!);
-
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString("email", auth["email"]!);
-      await prefs.setBool("isLoggedIn", true);
 
-      return UserCredentialModel.fromUserCredential(_userCredential);
+        UserCredential _userCredential = await _auth.signInWithEmailAndPassword(
+            email: auth["email"]!, password: auth["password"]!);
+
+        await prefs.setString("email", auth["email"]!);
+        await prefs.setBool("isLoggedIn", true);
+
+        return UserCredentialModel.fromUserCredential(_userCredential);
+
+
+
     } on FirebaseAuthException catch (e) {
       return {'code': e.code, 'message': e.message};
     }
   }
+
+  Future<SalesLoginResponse> postLoginSales(Map<String, String> auth) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    try {
+      final headers = {
+        "datetime":
+        DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()),
+        "role": "sales_associate",
+        "device_type": auth['device_type'],
+      };
+
+      final response = await dio.post("https://www.tradeasia.co/api/signin",
+          data: {
+            "email": auth["email"],
+            "password": auth["password"],
+            "device_token": auth['device_token']
+          },
+          options: Options(headers: headers));
+
+
+      UserCredential _userCredential = await _auth.signInWithEmailAndPassword(
+          email: auth["email"]!, password: auth["password"]!);
+
+      print("FB CRED : $_userCredential");
+
+      await prefs.setString("email", auth["email"]!);
+      await prefs.setBool("isLoggedIn", true);
+
+      return SalesLoginResponse.fromJson(response.data);
+    } on DioException catch(e) {
+      return SalesLoginResponse(status: false,message: e.message);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == "user-not-found") {
+        await _auth.createUserWithEmailAndPassword(
+            email: auth["email"]!, password: auth["password"]!);
+
+        String docsId = FirebaseAuth.instance.currentUser!.uid.toString();
+
+        UserModel userData = UserModel(email: auth['email'],password: auth['password'],role: 'Sales',companyName: "",country: "",countryCode: "",firstName: 'Sales',lastName: "",phone: "",profilePicUrl: "");
+        Map<String, dynamic> data = userData.toMap();
+        data["uid"] = docsId;
+        _firestore.collection('biodata').doc(docsId).set(data);
+
+        UserCredential _userCredential = await _auth.signInWithEmailAndPassword(
+            email: auth["email"]!, password: auth["password"]!);
+
+
+        await prefs.setString("email", auth["email"]!);
+        await prefs.setBool("isLoggedIn", true);
+        return SalesLoginResponse(status: false,message: "Sales account created! Please login again");
+      } else {
+        return SalesLoginResponse(status: false,message: e.message);
+      }
+    }
+
+  }
+
 
   Future<dynamic> googleAuth() async {
     try {
