@@ -262,6 +262,9 @@ class AuthUserFirebase {
           },
           options: Options(headers: headers));
 
+      if (response.data['status'] == false) {
+        return SalesLoginResponse(status: false,message: "User not found");
+      }
 
       UserCredential _userCredential = await _auth.signInWithEmailAndPassword(
           email: auth["email"]!, password: auth["password"]!);
