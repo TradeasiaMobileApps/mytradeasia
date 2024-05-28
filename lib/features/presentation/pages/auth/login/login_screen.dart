@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,6 +17,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signin_with_linkedin/signin_with_linkedin.dart';
 
 import '../../../../../config/themes/theme.dart';
+import '../../../../../utils/notification_service.dart';
 import '../../../widgets/loading_overlay_widget.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -63,6 +65,9 @@ class _LoginScreenState extends State<LoginScreen> {
     scope: ['openid', 'profile', 'email'],
   );
   LinkedInUser? linkedInUser;
+
+  NotificationService notificationServices = NotificationService();
+
 
   @override
   void initState() {
@@ -246,15 +251,33 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ),
                               ),
-                              onPressed: () {
+                              onPressed: () async {
+                                final SharedPreferences prefs = await SharedPreferences.getInstance();
+                                String? role = prefs.getString("role")?.toLowerCase();
+
+
+                                String deviceType = Platform.isAndroid ? 'android' : 'ios';
+
+                                // TODOD : ADD PARAMS FOR device token and type to loginwithemail
+
+
+
+
                                 if (_formKey.currentState!.validate()) {
                                   setState(() {
                                     _connection = !_connection;
                                   });
+                                  notificationServices.requestNotificationPermission();
+                                  String? deviceToken = await notificationServices.getDeviceToken();
+
                                   authBloc.add(LoginWithEmail(
                                       _emailController.text,
                                       _phoneNumberController.text,
-                                      context));
+                                      role!,
+                                      deviceType,
+                                    deviceToken,
+                                      context,
+                                      ));
                                   if (state is AuthLoggedInState) {
                                     _connection = !_connection;
                                   }

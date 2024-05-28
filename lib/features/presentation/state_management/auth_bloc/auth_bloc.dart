@@ -3,14 +3,18 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mytradeasia/features/data/model/user_credential_models/user_credential_model.dart';
+import 'package:mytradeasia/features/data/model/user_sales_models/user_sales_model.dart';
 import 'package:mytradeasia/features/domain/entities/user_entities/user_credential_entity.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/delete_account.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_credentials.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/login.dart';
+import 'package:mytradeasia/features/domain/usecases/user_usecases/login_sales.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/logout.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/register.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/sso_register_user.dart';
 import 'package:mytradeasia/features/presentation/widgets/dialog_sheet_widget.dart';
+import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:sendbird_chat_sdk/sendbird_chat_sdk.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -24,6 +28,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final RegisterUser _postRegisterUser;
   final SSORegisterUser _ssoRegisterUser;
   final LoginUser _postLoginUser;
+  final LoginSales _loginSales;
   final LogOutUser _postLogoutUser;
   final DeleteAccount _deleteAccount;
   final GetUserData _geUserData = injections<GetUserData>();
@@ -31,79 +36,129 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       injections<GetUserCredentials>();
 
   AuthBloc(this._postRegisterUser, this._postLoginUser, this._postLogoutUser,
-      this._ssoRegisterUser, this._deleteAccount)
+      this._ssoRegisterUser, this._deleteAccount, this._loginSales)
       : super(const AuthInitState()) {
     on<LoginWithEmail>((event, emit) async {
       BuildContext context = event.context;
 
-      final response = await _postLoginUser
-          .call(param: {"email": event.email, "password": event.password});
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      if (event.role != 'sales') {
+        final response = await _postLoginUser
+            .call(param: {"email": event.email, "password": event.password});
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-      if (response is UserCredentialEntity) {
-        try {
-          var userData = await _geUserData.call();
-          final User user;
+        if (response is UserCredentialEntity) {
+          try {
+            var userData = await _geUserData.call();
+            final User user;
 
-          if (userData["role"] != "Sales") {
-            user = await SendbirdChat.connect(response.uid!,
-                nickname: userData["firstName"]);
-          } else {
-            user = await SendbirdChat.connect("sales");
+            if (userData["role"] != "Sales") {
+              user = await SendbirdChat.connect(response.uid!,
+                  nickname: userData["firstName"]);
+            } else {
+              user = await SendbirdChat.connect("sales");
+            }
+            await prefs.setString("userId", response.uid!);
+            emit(AuthLoggedInState(response, user, userData["role"]));
+            context.go("/home");
+          } catch (e) {
+            log("failed to login with error: $e");
           }
-          await prefs.setString("userId", response.uid!);
-          emit(AuthLoggedInState(response, user, userData["role"]));
-          context.go("/home");
-        } catch (e) {
-          log("failed to login with error: $e");
+        } else {
+          if (response == "user-not-found") {
+            showDialog(
+              context: context,
+              builder: (context) => DialogWidget(
+                  urlIcon: "assets/images/logo_delete_account.png",
+                  title: "Wrong Email",
+                  subtitle: "No user found for that email.",
+                  textForButton: "Go back",
+                  navigatorFunction: () {
+                    context.pop(context);
+                    context.pop(context);
+                  }),
+            );
+          } else if (response == 'wrong-password') {
+            showDialog(
+              context: context,
+              builder: (context) => DialogWidget(
+                  urlIcon: "assets/images/logo_delete_account.png",
+                  title: "Wrong Password",
+                  subtitle: "Wrong password provided for that user.",
+                  textForButton: "Go back",
+                  navigatorFunction: () {
+                    context.pop(context);
+                    context.pop(context);
+                  }),
+            );
+          } else {
+            log('auth code error');
+          }
         }
       } else {
-        if (response == "user-not-found") {
-          showDialog(
-            context: context,
-            builder: (context) => DialogWidget(
-                urlIcon: "assets/images/logo_delete_account.png",
-                title: "Wrong Email",
-                subtitle: "No user found for that email.",
-                textForButton: "Go back",
-                navigatorFunction: () {
-                  context.pop(context);
-                  context.pop(context);
-                }),
-          );
-        } else if (response == 'wrong-password') {
-          showDialog(
-            context: context,
-            builder: (context) => DialogWidget(
-                urlIcon: "assets/images/logo_delete_account.png",
-                title: "Wrong Password",
-                subtitle: "Wrong password provided for that user.",
-                textForButton: "Go back",
-                navigatorFunction: () {
-                  context.pop(context);
-                  context.pop(context);
-                }),
-          );
+        final response = await _loginSales.call(param: {"email": event.email, "password": event.password,"device_type":event.deviceType,"device_token":event.deviceToken});
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        if (response.status!) {
+          final User user;
+          user = await SendbirdChat.connect("sales");
+
+          UserCredentialEntity userCred = await _getUserCredentials.call();
+
+          await prefs.setString("userId", userCred.uid!);
+          emit(AuthLoggedInState(toUserCredentialEntityFromSalesModel(response.salesUserData!.user!), user, "sales"));
+          context.go("/home");
         } else {
-          log('auth code error');
+          showDialog(
+            context: context,
+            builder: (context) => DialogWidget(
+                urlIcon: "assets/images/logo_delete_account.png",
+                title: "Authentication error",
+                subtitle: response.message!,
+                textForButton: "Go back",
+                navigatorFunction: () {
+                  context.pop(context);
+                  context.pop(context);
+                }),
+          );
         }
+
       }
+
+
     });
+
     on<RegisterWithEmail>((event, emit) async {
       BuildContext context = event.context;
 
       final response = await _postRegisterUser.call(param: event.userData);
+      event.stopLoadingFunc();
+
       if (response == "success") {
         log("register success");
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) {
+            return DialogWidget(
+                urlIcon: "assets/images/icon_sukses_reset_password.png",
+                title: "Successful Registration",
+                subtitle:
+                    "Lorem ipsum dolor sit amet consectetur. Egestas porttitor risus enim cursus rutrum molestie tortor",
+                textForButton: "Go to Home",
+                navigatorFunction: () {
+                  /* with go_router */
+                  context.go("/auth/login");
+                });
+          },
+        );
       } else {
         log(response);
         showDialog(
           context: context,
           builder: (context) => DialogWidget(
               urlIcon: "assets/images/logo_delete_account.png",
-              title: "Email already in use",
-              subtitle: "Try another email for registration",
-              textForButton: "Go back",
+              title: "Error",
+              subtitle: "An error occurred, please try again",
+              textForButton: "Try Again",
               navigatorFunction: () {
                 Navigator.pop(context);
               }),

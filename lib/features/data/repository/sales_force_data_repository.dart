@@ -69,11 +69,11 @@ class SalesforceDataRepositoryImpl implements SalesForceDataRepository {
       final response = await _salesforceDataService.createSFAccount(
           token: token, name: name, role: role, company: company, phone: phone);
       if (response.statusCode == HttpStatus.created) {
-        String docsId = FirebaseAuth.instance.currentUser!.uid.toString();
-        await FirebaseFirestore.instance
-            .collection('biodata')
-            .doc(docsId)
-            .update({"idSF": response.data != null ? response.data!.id : ""});
+        // String docsId = FirebaseAuth.instance.currentUser!.uid.toString();
+        // await FirebaseFirestore.instance
+        //     .collection('biodata')
+        //     .doc(docsId)
+        //     .update({"idSF": response.data != null ? response.data!.id : ""});
         return DataSuccess(response.data!);
       } else {
         return DataFailed(DioException(

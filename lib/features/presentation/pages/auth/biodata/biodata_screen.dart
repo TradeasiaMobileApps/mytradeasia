@@ -1,4 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -37,6 +39,7 @@ class _BiodataScreenState extends State<BiodataScreen> {
   String countryCode = '';
 
   bool _passwordVisible = false;
+  bool _isSubmiting = false;
 
   @override
   void initState() {
@@ -77,6 +80,53 @@ class _BiodataScreenState extends State<BiodataScreen> {
     var authBloc = BlocProvider.of<AuthBloc>(context);
     var salesforceBloc = BlocProvider.of<SalesforceDataBloc>(context);
 
+    handleSubmit() async {
+      setState(() {
+        _isSubmiting = true;
+      });
+      final SharedPreferences prefs =
+          await SharedPreferences.getInstance();
+      final role = prefs.getString("role") ?? "";
+      final tokenSF = prefs.getString("tokenSF") ?? "";
+      if (_formKey.currentState!.validate()) {
+
+        salesforceBloc.add(CreateSFAccount(
+            token: tokenSF,
+            salesforceCreateAccountForm: SalesforceCreateAccountForm(
+                name:
+                "${_firstNameController.text} ${_lastNameController.text}",
+                phone: widget.phone,
+                role: role,
+                company: _companyNameController.text)));
+
+        authBloc.add(RegisterWithEmail(
+          UserEntity(
+            companyName: _companyNameController.text,
+            country: _countryController.text,
+            email: widget.email,
+            firstName: _firstNameController.text,
+            lastName: _lastNameController.text,
+            password: _passwordController.text,
+            phone: widget.phone,
+            role: role,
+            countryCode: countryCode == '' ? "+62" : countryCode,
+          ),
+          context,
+            () {
+              log("isSubmitting before : $_isSubmiting");
+
+              setState(() {
+              _isSubmiting = false;
+            });
+            log("isSubmitting after : $_isSubmiting");
+
+            }
+        ));
+
+
+      }
+    }
+
     return Scaffold(
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 20),
@@ -95,59 +145,20 @@ class _BiodataScreenState extends State<BiodataScreen> {
                       ),
                     ),
                   ),
-                  onPressed: () async {
-                    final SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                    final role = prefs.getString("role") ?? "";
-                    final tokenSF = prefs.getString("tokenSF") ?? "";
-                    if (_formKey.currentState!.validate()) {
-                      authBloc.add(RegisterWithEmail(
-                        UserEntity(
-                          companyName: _companyNameController.text,
-                          country: _countryController.text,
-                          email: widget.email,
-                          firstName: _firstNameController.text,
-                          lastName: _lastNameController.text,
-                          password: _passwordController.text,
-                          phone: widget.phone,
-                          role: role,
-                          countryCode: countryCode == '' ? "ID" : countryCode,
-                        ),
-                        context,
-                      ));
-
-                      salesforceBloc.add(CreateSFAccount(
-                          token: tokenSF,
-                          salesforceCreateAccountForm: SalesforceCreateAccountForm(
-                              name:
-                                  "${_firstNameController.text} ${_lastNameController.text}",
-                              phone: widget.phone,
-                              role: role,
-                              company: _companyNameController.text)));
-
-                      await showDialog(
-                        barrierDismissible: false,
-                        context: context,
-                        builder: (context) {
-                          return DialogWidget(
-                              urlIcon:
-                                  "assets/images/icon_sukses_reset_password.png",
-                              title: "Successful Registration",
-                              subtitle:
-                                  "Lorem ipsum dolor sit amet consectetur. Egestas porttitor risus enim cursus rutrum molestie tortor",
-                              textForButton: "Go to Home",
-                              navigatorFunction: () {
-                                /* with go_router */
-                                context.go("/auth/login");
-                              });
-                        },
-                      );
-                    }
+                  onPressed: () {
+                    _isSubmiting ? null : handleSubmit();
                   },
-                  child: Text(
+                  child: _isSubmiting
+                      ? const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                    ),
+                  )
+                      : Text(
                     "Create Account",
                     style: text16.copyWith(color: whiteColor),
                   ),
+
                 ),
               ),
             ),
@@ -307,8 +318,10 @@ class _BiodataScreenState extends State<BiodataScreen> {
                           suffixIcon: CountryPicker(
                             suffixIconMode: true,
                             onChanged: (value) {
-                              countryCode = value.codeCountry!;
-                              _countryController.text = value.name!;
+                              setState(() {
+                                countryCode = value.phoneCode!;
+                                _countryController.text = value.name!;
+                              });
                             },
                           ),
                         ),
