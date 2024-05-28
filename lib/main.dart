@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:mytradeasia/features/presentation/state_management/category_bloc/category_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/chat_handler/channel_list_bloc.dart/channel_list_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/countries_bloc/countries_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/dropdown_currency_bloc/dropdown_currency_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/dropdown_incoterm_bloc/dropdown_incoterm_bloc.dart';
@@ -108,7 +109,7 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(create: (_) => injections<SalesforceLoginBloc>()),
         BlocProvider(create: (_) => injections<SalesforceDataBloc>()),
         BlocProvider(create: (_) => injections<SalesforceDetailBloc>()),
-        // BlocProvider(create: (_) => ChannelListBloc()),
+        BlocProvider(create: (_) => ChannelListBloc()),
         BlocProvider(create: (_) => injections<SearatesRouteBloc>()),
         BlocProvider(create: (_) => injections<SearatesBLBloc>()),
         BlocProvider(create: (_) => injections<RecentlySeenBloc>()),

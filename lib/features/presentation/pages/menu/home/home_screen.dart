@@ -112,8 +112,9 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Center(
           child: RefreshIndicator(
             onRefresh: () async {
-              BlocProvider.of<TopProductBloc>(context)
-                  .add(const GetTopProduct());
+              context.read<TopProductBloc>().add(const GetTopProduct());
+              // BlocProvider.of<TopProductBloc>(context)
+              //     .add(const GetTopProduct());
             },
             color: primaryColor1,
             child: SingleChildScrollView(
