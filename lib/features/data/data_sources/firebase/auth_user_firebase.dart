@@ -142,6 +142,7 @@ class AuthUserFirebase {
   String getCurrentUId() => _auth.currentUser!.uid;
 
   Future<dynamic> postLoginUser(Map<String, String> auth) async {
+    print("LOGINnnnnnnnnnnnnnn");
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       String? role = prefs.getString("role")?.toLowerCase();
@@ -163,7 +164,7 @@ class AuthUserFirebase {
                 "device_token": value
               },
               options: Options(headers: headers));
-
+          // log("LOGIN RESPONSE : ${response.statusMessage}");
           if (response.statusCode != 200) {
             return {
               'code': response.statusCode,
@@ -171,6 +172,7 @@ class AuthUserFirebase {
             };
           }
         } else {
+          print("IOS");
           final headers = {
             "datetime":
                 DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()),
@@ -186,8 +188,6 @@ class AuthUserFirebase {
               },
               options: Options(headers: headers));
 
-          log("LOGIN RESPONSE : ${response.data}");
-
           if (response.statusCode != 200) {
             return {
               'code': response.statusCode,
@@ -196,22 +196,22 @@ class AuthUserFirebase {
           }
         }
       });
+      // try {
+      //   final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      //   UserCredential _userCredential = await _auth.signInWithEmailAndPassword(
+      //       email: auth["email"]!, password: auth["password"]!);
+
+      //   await prefs.setString("email", auth["email"]!);
+      //   await prefs.setBool("isLoggedIn", true);
+
+      //   return UserCredentialModel.fromUserCredential(_userCredential);
+      // } on FirebaseAuthException catch (e) {
+      //   return {'code': e.code, 'message': e.message};
+      // }
     } on DioException catch (e) {
+      log("error RESPONSE : ${e.response!.data}");
       return {'code': e.response?.statusCode, 'message': e.message};
-    }
-
-    try {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-      UserCredential _userCredential = await _auth.signInWithEmailAndPassword(
-          email: auth["email"]!, password: auth["password"]!);
-
-      await prefs.setString("email", auth["email"]!);
-      await prefs.setBool("isLoggedIn", true);
-
-      return UserCredentialModel.fromUserCredential(_userCredential);
-    } on FirebaseAuthException catch (e) {
-      return {'code': e.code, 'message': e.message};
     }
   }
 

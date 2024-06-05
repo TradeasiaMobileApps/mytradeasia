@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -78,6 +80,12 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     checkConnection();
+    try {
+      print("PLATFORM IS ANDROID: ${Platform.isAndroid}");
+    } catch (e) {
+      print(e);
+    }
+
     super.initState();
   }
 
