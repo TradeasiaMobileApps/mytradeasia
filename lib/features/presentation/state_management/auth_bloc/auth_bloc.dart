@@ -13,6 +13,7 @@ import 'package:mytradeasia/features/domain/usecases/user_usecases/login_sales.d
 import 'package:mytradeasia/features/domain/usecases/user_usecases/logout.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/register.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/sso_register_user.dart';
+import 'package:mytradeasia/features/domain/usecases/user_usecases/user_usecase_index.dart';
 import 'package:mytradeasia/features/presentation/widgets/dialog_sheet_widget.dart';
 import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:sendbird_chat_sdk/sendbird_chat_sdk.dart';
@@ -25,30 +26,24 @@ import 'auth_event.dart';
 import 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final RegisterUser _postRegisterUser;
-  final SSORegisterUser _ssoRegisterUser;
-  final LoginUser _postLoginUser;
-  final LoginSales _loginSales;
-  final LogOutUser _postLogoutUser;
-  final DeleteAccount _deleteAccount;
-  final GetUserData _geUserData = injections<GetUserData>();
-  final GetUserCredentials _getUserCredentials =
-      injections<GetUserCredentials>();
+  final UserUsecaseIndex _userUseCase;
 
-  AuthBloc(this._postRegisterUser, this._postLoginUser, this._postLogoutUser,
-      this._ssoRegisterUser, this._deleteAccount, this._loginSales)
-      : super(const AuthInitState()) {
+  AuthBloc(this._userUseCase) : super(const AuthInitState()) {
     on<LoginWithEmail>((event, emit) async {
       BuildContext context = event.context;
 
       if (event.role != 'sales') {
-        final response = await _postLoginUser
-            .call(param: {"email": event.email, "password": event.password});
+        // final response = await _postLoginUser
+        //     .call(param: {"email": event.email, "password": event.password});
+        final response = await _userUseCase.loginUser(loginCredential: {
+          "email": event.email,
+          "password": event.password
+        });
         final SharedPreferences prefs = await SharedPreferences.getInstance();
 
         if (response is UserCredentialEntity) {
           try {
-            var userData = await _geUserData.call();
+            var userData = await _userUseCase.getUserData();
             final User user;
 
             if (userData["role"] != "Sales") {
@@ -95,16 +90,26 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           }
         }
       } else {
-        final response = await _loginSales.call(param: {"email": event.email, "password": event.password,"device_type":event.deviceType,"device_token":event.deviceToken});
+        final response = await _userUseCase.loginSales(sales: {
+          "email": event.email,
+          "password": event.password,
+          "device_type": event.deviceType,
+          "device_token": event.deviceToken
+        });
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         if (response.status!) {
           final User user;
           user = await SendbirdChat.connect("sales");
 
-          UserCredentialEntity userCred = await _getUserCredentials.call();
+          UserCredentialEntity userCred =
+              await _userUseCase.getUserCredentials();
 
           await prefs.setString("userId", userCred.uid!);
-          emit(AuthLoggedInState(toUserCredentialEntityFromSalesModel(response.salesUserData!.user!), user, "sales"));
+          emit(AuthLoggedInState(
+              toUserCredentialEntityFromSalesModel(
+                  response.salesUserData!.user!),
+              user,
+              "sales"));
           context.go("/home");
         } else {
           showDialog(
@@ -120,16 +125,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
                 }),
           );
         }
-
       }
-
-
     });
 
     on<RegisterWithEmail>((event, emit) async {
       BuildContext context = event.context;
 
-      final response = await _postRegisterUser.call(param: event.userData);
+      final response = await _userUseCase.registerUser(user: event.userData);
       event.stopLoadingFunc();
 
       if (response == "success") {
@@ -151,13 +153,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           },
         );
       } else {
-        log(response);
         showDialog(
           context: context,
           builder: (context) => DialogWidget(
               urlIcon: "assets/images/logo_delete_account.png",
-              title: "Error",
-              subtitle: "An error occurred, please try again",
+              title: response,
+              subtitle: "",
               textForButton: "Try Again",
               navigatorFunction: () {
                 Navigator.pop(context);
@@ -169,7 +170,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<SSORegisterWithEmail>((event, emit) async {
       BuildContext context = event.context;
 
-      final response = await _ssoRegisterUser.call(param: event.userData);
+      final response = await _userUseCase.ssoRegisterUser(user: event.userData);
       if (response == "success") {
         log("register success");
       } else {
@@ -202,7 +203,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       } else {
         user = await SendbirdChat.connect("sales");
       }
-      emit(AuthLoggedInState(await _getUserCredentials.call(), user, role));
+      emit(AuthLoggedInState(
+          await _userUseCase.getUserCredentials(), user, role));
     });
 
     on<LogOut>((event, emit) async {
@@ -210,7 +212,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       prefs.setBool("isLoggedIn", false);
       prefs.setString("userId", "");
       prefs.clear();
-      _postLogoutUser.call();
+      _userUseCase.logoutUser();
       emit(const AuthInitState());
     });
 
@@ -219,7 +221,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       prefs.setBool("isLoggedIn", false);
       prefs.setString("userId", "");
       prefs.clear();
-      _deleteAccount.call();
+      _userUseCase.deleteAccount();
     });
   }
 }

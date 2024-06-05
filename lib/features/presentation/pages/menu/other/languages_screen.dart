@@ -431,25 +431,43 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
                           height: size20px + 30.0,
                           width: MediaQuery.of(context).size.width,
                           color: whiteColor,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: size20px + 8,
-                                vertical: size20px / 4.0),
-                            child: Row(
-                              children: [
-                                Image.asset(
-                                  "assets/images/logo_indonesia.png",
-                                ),
-                                const Padding(
-                                  padding: EdgeInsets.only(
-                                      left: size20px + 3.0,
-                                      right: size20px / 5),
-                                  child: Text("Indonesia", style: body1Regular),
-                                ),
-                                Text("(+62)",
-                                    style: body1Regular.copyWith(
-                                        color: greyColor2)),
-                              ],
+                          child: InkWell(
+                            onTap: () {
+                              widget.country.value = CountryEntity(
+                                  name: "Indonesia",
+                                  codeCountry: "ID",
+                                  flagUrl: "https://flagcdn.com/w320/id.png",
+                                  phoneCode: "+62");
+                              if (widget.onChanged != null) {
+                                widget.onChanged!(CountryEntity(
+                                    name: "Indonesia",
+                                    codeCountry: "ID",
+                                    flagUrl: "https://flagcdn.com/w320/id.png",
+                                    phoneCode: "+62"));
+                              }
+                              Navigator.of(context).pop();
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: size20px + 8,
+                                  vertical: size20px / 4.0),
+                              child: Row(
+                                children: [
+                                  Image.asset(
+                                    "assets/images/logo_indonesia.png",
+                                  ),
+                                  const Padding(
+                                    padding: EdgeInsets.only(
+                                        left: size20px + 3.0,
+                                        right: size20px / 5),
+                                    child:
+                                        Text("Indonesia", style: body1Regular),
+                                  ),
+                                  Text("(+62)",
+                                      style: body1Regular.copyWith(
+                                          color: greyColor2)),
+                                ],
+                              ),
                             ),
                           ),
                         );
@@ -570,6 +588,7 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
                                   child: Text("empty"),
                                 );
                         } else {
+                          print(state.error);
                           return const Center(
                             child: Text("error occured"),
                           );

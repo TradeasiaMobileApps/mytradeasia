@@ -84,46 +84,43 @@ class _BiodataScreenState extends State<BiodataScreen> {
       setState(() {
         _isSubmiting = true;
       });
-      final SharedPreferences prefs =
-          await SharedPreferences.getInstance();
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
       final role = prefs.getString("role") ?? "";
       final tokenSF = prefs.getString("tokenSF") ?? "";
       if (_formKey.currentState!.validate()) {
-
         salesforceBloc.add(CreateSFAccount(
             token: tokenSF,
             salesforceCreateAccountForm: SalesforceCreateAccountForm(
                 name:
-                "${_firstNameController.text} ${_lastNameController.text}",
+                    "${_firstNameController.text} ${_lastNameController.text}",
                 phone: widget.phone,
                 role: role,
                 company: _companyNameController.text)));
 
         authBloc.add(RegisterWithEmail(
-          UserEntity(
-            companyName: _companyNameController.text,
-            country: _countryController.text,
-            email: widget.email,
-            firstName: _firstNameController.text,
-            lastName: _lastNameController.text,
-            password: _passwordController.text,
-            phone: widget.phone,
-            role: role,
-            countryCode: countryCode == '' ? "+62" : countryCode,
-          ),
-          context,
-            () {
-              log("isSubmitting before : $_isSubmiting");
+            UserEntity(
+              companyName: _companyNameController.text,
+              country: _countryController.text,
+              email: widget.email,
+              firstName: _firstNameController.text,
+              lastName: _lastNameController.text,
+              password: _passwordController.text,
+              phone: widget.phone,
+              role: role,
+              countryCode: countryCode == '' ? "+62" : countryCode,
+            ),
+            context, () {
+          log("isSubmitting before : $_isSubmiting");
 
-              setState(() {
-              _isSubmiting = false;
-            });
-            log("isSubmitting after : $_isSubmiting");
-
-            }
-        ));
-
-
+          setState(() {
+            _isSubmiting = false;
+          });
+          log("isSubmitting after : $_isSubmiting");
+        }));
+      } else {
+        setState(() {
+          _isSubmiting = false;
+        });
       }
     }
 
@@ -150,15 +147,14 @@ class _BiodataScreenState extends State<BiodataScreen> {
                   },
                   child: _isSubmiting
                       ? const Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                    ),
-                  )
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                          ),
+                        )
                       : Text(
-                    "Create Account",
-                    style: text16.copyWith(color: whiteColor),
-                  ),
-
+                          "Create Account",
+                          style: text16.copyWith(color: whiteColor),
+                        ),
                 ),
               ),
             ),

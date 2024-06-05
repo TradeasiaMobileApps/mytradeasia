@@ -110,6 +110,7 @@ import 'package:mytradeasia/features/domain/usecases/user_usecases/send_reset_pa
 import 'package:mytradeasia/features/domain/usecases/user_usecases/sso_register_user.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/update_email.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/update_profile.dart';
+import 'package:mytradeasia/features/domain/usecases/user_usecases/user_usecase_index.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/verify_otp.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/cart_bloc/cart_bloc.dart';
@@ -276,6 +277,8 @@ Future<void> initializeDependencies() async {
   injections
       .registerSingleton<GetCurrencyUsecase>(GetCurrencyUsecase(injections()));
   injections.registerSingleton<GetUomUsecase>(GetUomUsecase(injections()));
+  injections
+      .registerSingleton<UserUsecaseIndex>(UserUsecaseIndex(injections()));
 
   //Bloc
   injections
@@ -297,8 +300,7 @@ Future<void> initializeDependencies() async {
       injections(), injections(), injections(), injections(), injections()));
   injections.registerFactory<SalesforceDetailBloc>(
       () => SalesforceDetailBloc(injections()));
-  injections.registerFactory<AuthBloc>(() => AuthBloc(
-      injections(), injections(), injections(), injections(), injections(),injections()));
+  injections.registerFactory<AuthBloc>(() => AuthBloc(injections()));
   injections.registerFactory<CartBloc>(
       () => CartBloc(injections(), injections(), injections(), injections()));
   // injections

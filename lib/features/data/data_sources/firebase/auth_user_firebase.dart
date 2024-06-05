@@ -41,84 +41,60 @@ class AuthUserFirebase {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       String? role = prefs.getString("role")?.toLowerCase();
 
-
+      final headers;
+      final Response<dynamic> response;
       if (Platform.isAndroid) {
-        final headers = {
+        headers = {
           "datetime": DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()),
           "role": role,
           "device_type": "android",
         };
-
-        final response = await dio.post("https://www.tradeasia.co/api/signup",
-            data: {
-              "first_name": userData.firstName,
-              "last_name": userData.lastName,
-              "company_name": userData.companyName,
-              "country": userData.country,
-              "dialing_code": userData.countryCode,
-              "mobile_number": userData.phone,
-              "email": userData.email,
-              "password": userData.password,
-              "timezone": dateTime.timeZoneName,
-              "device_token": deviceToken,
-              "login_type": "by_form",
-              "comet_chat_user_id":
-                  "${userData.firstName ?? "user"}_${dateTime.millisecondsSinceEpoch}"
-                      .toLowerCase()
-            },
-            options: Options(headers: headers));
-
-        log("SIGNUP RESPONSE DATA : ${{
-          "first_name": userData.firstName,
-          "last_name": userData.lastName,
-          "company_name": userData.companyName,
-          "country": userData.country,
-          "dialing_code": getIntegerFromDialingCode(userData.countryCode!),
-          "mobile_number": userData.phone,
-          "email": userData.email,
-          "password": userData.password,
-          "timezone": dateTime.timeZoneName,
-          "device_token": deviceToken,
-          "login_type": "by_form",
-          "comet_chat_user_id":
-              "${userData.firstName ?? "user"}_${dateTime.millisecondsSinceEpoch}"
-        }}");
-
-
-        if (response.data['status']) {
-          status = 'success';
-        }
-
-        // return response.statusCode.toString();
       } else {
-        final headers = {
+        headers = {
           "datetime": DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()),
           "role": role,
           "device_type": "ios",
         };
+      }
+      response = await dio.post("https://www.tradeasia.co/api/signup",
+          data: {
+            "first_name": userData.firstName,
+            "last_name": userData.lastName,
+            "company_name": userData.companyName,
+            "country": userData.country,
+            "dialing_code": userData.countryCode,
+            "mobile_number": userData.phone,
+            "email": userData.email,
+            "password": userData.password,
+            "timezone": dateTime.timeZoneName,
+            "device_token": deviceToken,
+            "login_type": "by_form",
+            "comet_chat_user_id":
+                "${userData.firstName ?? "user"}_${dateTime.millisecondsSinceEpoch}"
+                    .toLowerCase()
+          },
+          options: Options(headers: headers));
 
-        final response = await dio.post("https://www.tradeasia.co/api/signup",
-            data: {
-              "first_name": userData.firstName,
-              "last_name": userData.lastName,
-              "company_name": userData.companyName,
-              "country": userData.country,
-              "dialing_code": getIntegerFromDialingCode(userData.countryCode!),
-              "mobile_number": userData.phone,
-              "email": userData.email,
-              "password": userData.password,
-              "timezone": dateTime.timeZoneName,
-              "device_token": deviceToken,
-              "login_type": "by_form",
-              "comet_chat_user_id":
-                  "${userData.firstName ?? "user"}_${dateTime.millisecondsSinceEpoch}"
-                      .toLowerCase()
-            },
-            options: Options(headers: headers));
+      // log("SIGNUP RESPONSE DATA : ${{
+      //   "first_name": userData.firstName,
+      //   "last_name": userData.lastName,
+      //   "company_name": userData.companyName,
+      //   "country": userData.country,
+      //   "dialing_code": getIntegerFromDialingCode(userData.countryCode!),
+      //   "mobile_number": userData.phone,
+      //   "email": userData.email,
+      //   "password": userData.password,
+      //   "timezone": dateTime.timeZoneName,
+      //   "device_token": deviceToken,
+      //   "login_type": "by_form",
+      //   "comet_chat_user_id":
+      //       "${userData.firstName ?? "user"}_${dateTime.millisecondsSinceEpoch}"
+      // }}");
 
-        if (response.data['status']) {
-          status = 'success';
-        }
+      if (response.data['status']) {
+        status = 'success';
+      } else {
+        status = response.data["message"];
       }
     } on DioException catch (e) {
       status = e.response!.statusCode.toString();
@@ -212,7 +188,6 @@ class AuthUserFirebase {
 
           log("LOGIN RESPONSE : ${response.data}");
 
-
           if (response.statusCode != 200) {
             return {
               'code': response.statusCode,
@@ -228,16 +203,13 @@ class AuthUserFirebase {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-        UserCredential _userCredential = await _auth.signInWithEmailAndPassword(
-            email: auth["email"]!, password: auth["password"]!);
+      UserCredential _userCredential = await _auth.signInWithEmailAndPassword(
+          email: auth["email"]!, password: auth["password"]!);
 
-        await prefs.setString("email", auth["email"]!);
-        await prefs.setBool("isLoggedIn", true);
+      await prefs.setString("email", auth["email"]!);
+      await prefs.setBool("isLoggedIn", true);
 
-        return UserCredentialModel.fromUserCredential(_userCredential);
-
-
-
+      return UserCredentialModel.fromUserCredential(_userCredential);
     } on FirebaseAuthException catch (e) {
       return {'code': e.code, 'message': e.message};
     }
@@ -248,8 +220,7 @@ class AuthUserFirebase {
 
     try {
       final headers = {
-        "datetime":
-        DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()),
+        "datetime": DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()),
         "role": "sales_associate",
         "device_type": auth['device_type'],
       };
@@ -263,7 +234,7 @@ class AuthUserFirebase {
           options: Options(headers: headers));
 
       if (response.data['status'] == false) {
-        return SalesLoginResponse(status: false,message: "User not found");
+        return SalesLoginResponse(status: false, message: "User not found");
       }
 
       UserCredential _userCredential = await _auth.signInWithEmailAndPassword(
@@ -275,8 +246,8 @@ class AuthUserFirebase {
       await prefs.setBool("isLoggedIn", true);
 
       return SalesLoginResponse.fromJson(response.data);
-    } on DioException catch(e) {
-      return SalesLoginResponse(status: false,message: e.message);
+    } on DioException catch (e) {
+      return SalesLoginResponse(status: false, message: e.message);
     } on FirebaseAuthException catch (e) {
       if (e.code == "user-not-found") {
         await _auth.createUserWithEmailAndPassword(
@@ -284,7 +255,17 @@ class AuthUserFirebase {
 
         String docsId = FirebaseAuth.instance.currentUser!.uid.toString();
 
-        UserModel userData = UserModel(email: auth['email'],password: auth['password'],role: 'Sales',companyName: "",country: "",countryCode: "",firstName: 'Sales',lastName: "",phone: "",profilePicUrl: "");
+        UserModel userData = UserModel(
+            email: auth['email'],
+            password: auth['password'],
+            role: 'Sales',
+            companyName: "",
+            country: "",
+            countryCode: "",
+            firstName: 'Sales',
+            lastName: "",
+            phone: "",
+            profilePicUrl: "");
         Map<String, dynamic> data = userData.toMap();
         data["uid"] = docsId;
         _firestore.collection('biodata').doc(docsId).set(data);
@@ -292,17 +273,16 @@ class AuthUserFirebase {
         UserCredential _userCredential = await _auth.signInWithEmailAndPassword(
             email: auth["email"]!, password: auth["password"]!);
 
-
         await prefs.setString("email", auth["email"]!);
         await prefs.setBool("isLoggedIn", true);
-        return SalesLoginResponse(status: false,message: "Sales account created! Please login again");
+        return SalesLoginResponse(
+            status: false,
+            message: "Sales account created! Please login again");
       } else {
-        return SalesLoginResponse(status: false,message: e.message);
+        return SalesLoginResponse(status: false, message: e.message);
       }
     }
-
   }
-
 
   Future<dynamic> googleAuth() async {
     try {
