@@ -41,25 +41,25 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         });
         final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-        if (response is UserCredentialEntity) {
+        if (response["code"] is UserCredentialEntity) {
           try {
             var userData = await _userUseCase.getUserData();
             final User user;
-
+            UserCredentialEntity userCredential = response["code"];
             if (userData["role"] != "Sales") {
-              user = await SendbirdChat.connect(response.uid!,
+              user = await SendbirdChat.connect(userCredential.uid!,
                   nickname: userData["firstName"]);
             } else {
               user = await SendbirdChat.connect("sales");
             }
-            await prefs.setString("userId", response.uid!);
-            emit(AuthLoggedInState(response, user, userData["role"]));
+            await prefs.setString("userId", userCredential.uid!);
+            emit(AuthLoggedInState(userCredential, user, userData["role"]));
             context.go("/home");
           } catch (e) {
             log("failed to login with error: $e");
           }
         } else {
-          if (response == "user-not-found") {
+          if (response["code"] == "user-not-found") {
             showDialog(
               context: context,
               builder: (context) => DialogWidget(
@@ -72,7 +72,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
                     context.pop(context);
                   }),
             );
-          } else if (response == 'wrong-password') {
+          } else if (response["code"] == 'wrong-password') {
             showDialog(
               context: context,
               builder: (context) => DialogWidget(
@@ -86,7 +86,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
                   }),
             );
           } else {
-            log('auth code error');
+            showDialog(
+              context: context,
+              builder: (context) => DialogWidget(
+                  urlIcon: "assets/images/logo_delete_account.png",
+                  title: "Authentication error",
+                  subtitle: response["message"],
+                  textForButton: "Go back",
+                  navigatorFunction: () {
+                    context.pop(context);
+                    context.pop(context);
+                  }),
+            );
           }
         }
       } else {

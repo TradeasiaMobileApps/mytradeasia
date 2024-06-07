@@ -775,15 +775,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                       child: Text("Last Seen Products",
                                           style: text18),
                                     ),
-                                    BlocBuilder<RecentlySeenBloc,
-                                        RecentlySeenState>(
+                                    BlocBuilder<HomeBloc, HomeState>(
                                       builder: (context, state) {
-                                        if (state is RecentlySeenInit) {
+                                        if (state is HomeLoading) {
                                           return const Center(
                                               child: CircularProgressIndicator
                                                   .adaptive());
-                                        } else if (state.products == null ||
-                                            state.products!.isEmpty) {
+                                        } else if (state
+                                                    .homeData!.recentlySeen ==
+                                                null ||
+                                            state.homeData!.recentlySeen!
+                                                .isEmpty) {
                                           return const Center(
                                               child: Text("Tidak ada product"));
                                         } else {
@@ -800,11 +802,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                                           mainAxisSpacing: 15,
                                                           childAspectRatio:
                                                               0.7),
-                                                  itemCount:
-                                                      state.products!.length < 4
-                                                          ? state
-                                                              .products!.length
-                                                          : recentSeenLimit,
+                                                  itemCount: state
+                                                              .homeData!
+                                                              .recentlySeen!
+                                                              .length <
+                                                          4
+                                                      ? state.homeData!
+                                                          .recentlySeen!.length
+                                                      : recentSeenLimit,
                                                   shrinkWrap: true,
                                                   padding: EdgeInsets.zero,
                                                   physics:
@@ -814,16 +819,24 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     return ProductCard(
                                                       product: ProductEntity(
                                                         productname: state
-                                                            .products![index]
+                                                            .homeData!
+                                                            .recentlySeen![
+                                                                index]
                                                             .productname,
                                                         productimage: state
-                                                            .products![index]
+                                                            .homeData!
+                                                            .recentlySeen![
+                                                                index]
                                                             .productimage,
                                                         casNumber: state
-                                                            .products![index]
+                                                            .homeData!
+                                                            .recentlySeen![
+                                                                index]
                                                             .casNumber,
                                                         hsCode: state
-                                                            .products![index]
+                                                            .homeData!
+                                                            .recentlySeen![
+                                                                index]
                                                             .hsCode,
                                                       ),
                                                       isNotRecentSeenCard:
@@ -833,9 +846,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 ),
                                               ),
                                               /* Button See More */
-                                              state.products!.length > 4 &&
+                                              state.homeData!.recentlySeen!
+                                                              .length >
+                                                          4 &&
                                                       recentSeenLimit <
-                                                          state.products!.length
+                                                          state
+                                                              .homeData!
+                                                              .recentlySeen!
+                                                              .length
                                                   ? Center(
                                                       child: Container(
                                                         decoration:
@@ -851,7 +869,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         child: InkWell(
                                                           onTap: () {
                                                             increaseRecentSeenLimit(
-                                                                state.products!
+                                                                state
+                                                                    .homeData!
+                                                                    .recentlySeen!
                                                                     .length);
                                                           },
                                                           child: Padding(

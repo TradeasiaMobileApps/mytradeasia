@@ -141,77 +141,61 @@ class AuthUserFirebase {
 
   String getCurrentUId() => _auth.currentUser!.uid;
 
-  Future<dynamic> postLoginUser(Map<String, String> auth) async {
-    print("LOGINnnnnnnnnnnnnnn");
+  Future<Map<String, dynamic>> postLoginUser(Map<String, String> auth) async {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       String? role = prefs.getString("role")?.toLowerCase();
+      Map<String, String?> headers;
 
       notificationServices.requestNotificationPermission();
-      notificationServices.getDeviceToken().then((value) async {
-        if (Platform.isAndroid) {
-          final headers = {
-            "datetime":
-                DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()),
-            "role": role,
-            "device_type": "android",
-          };
+      var deviceToken = await notificationServices.getDeviceToken();
 
-          final response = await dio.post("https://www.tradeasia.co/api/signin",
-              data: {
-                "email": auth["email"],
-                "password": auth["password"],
-                "device_token": value
-              },
-              options: Options(headers: headers));
-          // log("LOGIN RESPONSE : ${response.statusMessage}");
-          if (response.statusCode != 200) {
-            return {
-              'code': response.statusCode,
-              'message': response.statusMessage
-            };
-          }
-        } else {
-          print("IOS");
-          final headers = {
-            "datetime":
-                DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()),
-            "role": role,
-            "device_type": "ios",
-          };
+      if (Platform.isAndroid) {
+        headers = {
+          "datetime": DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()),
+          "role": role,
+          "device_type": "android",
+        };
+      } else if (Platform.isIOS) {
+        headers = {
+          "datetime": DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()),
+          "role": role,
+          "device_type": "ios",
+        };
+      } else {
+        headers = {
+          "datetime": DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()),
+          "role": role,
+          "device_type": "undefined",
+        };
+      }
 
-          final response = await dio.post("https://www.tradeasia.co/api/signin",
-              data: {
-                "email": auth["email"],
-                "password": auth["password"],
-                "device_token": value
-              },
-              options: Options(headers: headers));
+      final response = await dio.post("https://www.tradeasia.co/api/signin",
+          data: {
+            "email": auth["email"],
+            "password": auth["password"],
+            "device_token": deviceToken
+          },
+          options: Options(headers: headers));
+      if (response.statusCode != 200) {
+        return {'code': response.statusCode, 'message': response.statusMessage};
+      } else {
+        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+            email: auth["email"]!, password: auth["password"]!);
 
-          if (response.statusCode != 200) {
-            return {
-              'code': response.statusCode,
-              'message': response.statusMessage
-            };
-          }
-        }
-      });
-      // try {
-      //   final SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString("email", auth["email"]!);
+        await prefs.setString("token", response.data['data']['user']['token']);
+        await prefs.setBool("isLoggedIn", true);
 
-      //   UserCredential _userCredential = await _auth.signInWithEmailAndPassword(
-      //       email: auth["email"]!, password: auth["password"]!);
-
-      //   await prefs.setString("email", auth["email"]!);
-      //   await prefs.setBool("isLoggedIn", true);
-
-      //   return UserCredentialModel.fromUserCredential(_userCredential);
-      // } on FirebaseAuthException catch (e) {
-      //   return {'code': e.code, 'message': e.message};
-      // }
+        return {'code': UserCredentialModel.fromUserCredential(userCredential)};
+      }
     } on DioException catch (e) {
       log("error RESPONSE : ${e.response!.data}");
       return {'code': e.response?.statusCode, 'message': e.message};
+    } on FirebaseAuthException catch (e) {
+      return {'code': e.code, 'message': e.message};
+    } catch (e) {
+      return {'code': 400, 'message': 'client error'};
     }
   }
 

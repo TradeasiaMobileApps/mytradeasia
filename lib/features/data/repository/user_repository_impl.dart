@@ -46,15 +46,6 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<dynamic> loginUser(Map<String, String> s) async {
     final response = await _authUserFirebase.postLoginUser(s);
-    print("LOGIN RESPONSE : ${response}");
-    if (response is Map) {
-      if (response["code"] == "user-not-found") {
-        return "user-not-found";
-      }
-      if (response["code"] == 'wrong-password') {
-        return "wrong-password";
-      }
-    }
     return response;
   }
 
