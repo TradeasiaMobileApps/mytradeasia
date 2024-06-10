@@ -1,15 +1,11 @@
 import 'package:dio/dio.dart';
-import 'package:equatable/equatable.dart';
 import 'package:mytradeasia/features/domain/entities/home_entities/home_entity.dart';
 
-abstract class HomeState extends Equatable {
+abstract class HomeState {
   final HomeEntity? homeData;
   final DioException? error;
 
   const HomeState({this.homeData, this.error});
-
-  @override
-  List<Object> get props => [homeData!, error!];
 }
 
 class HomeLoading extends HomeState {

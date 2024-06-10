@@ -68,8 +68,6 @@ class _HomeScreenState extends State<HomeScreen> {
           .add(const LoginSalesforce());
 
       BlocProvider.of<CartBloc>(context).add(const GetCartItems());
-      BlocProvider.of<RecentlySeenBloc>(context)
-          .add(const GetRecentlySeenEvent());
     });
   }
 
@@ -113,8 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: RefreshIndicator(
             onRefresh: () async {
               context.read<TopProductBloc>().add(const GetTopProduct());
-              // BlocProvider.of<TopProductBloc>(context)
-              //     .add(const GetTopProduct());
+              context.read<HomeBloc>().add(const GetHomeDataEvent());
             },
             color: primaryColor1,
             child: SingleChildScrollView(

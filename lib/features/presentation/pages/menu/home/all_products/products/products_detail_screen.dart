@@ -13,6 +13,8 @@ import 'package:mytradeasia/features/domain/entities/product_entities/product_to
 import 'package:mytradeasia/features/presentation/state_management/cart_bloc/cart_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/cart_bloc/cart_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/cart_bloc/cart_state.dart';
+import 'package:mytradeasia/features/presentation/state_management/home_bloc/home_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/home_bloc/home_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/detail_product_bloc/detail_product_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/detail_product_bloc/detail_product_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/detail_product_bloc/detail_product_state.dart';
@@ -147,6 +149,8 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                                 children: [
                                   InkWell(
                                     onTap: () {
+                                      BlocProvider.of<HomeBloc>(context)
+                                          .add(const GetHomeDataEvent());
                                       context.pop();
                                     },
                                     child: Image.asset(

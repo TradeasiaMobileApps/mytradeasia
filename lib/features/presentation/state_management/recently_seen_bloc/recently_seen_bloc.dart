@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mytradeasia/core/resources/data_state.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/delete_recently_seen.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_recently_seen.dart';
 
@@ -26,8 +27,18 @@ class RecentlySeenBloc extends Bloc<RecentlySeenEvent, RecentlySeenState> {
       _addRecentlySeen.call(param: data);
     });
     on<GetRecentlySeenEvent>((event, emit) async {
-      var recentSeen = await _getRecentlySeen.call();
-      emit(RecentlySeenDone(recentSeen));
+      var dataState = await _getRecentlySeen.call();
+      if (dataState.data!.isEmpty) {
+        emit(const RecentlySeenDone([]));
+      }
+
+      if (dataState is DataSuccess && dataState.data!.isNotEmpty) {
+        emit(RecentlySeenDone(dataState.data!));
+      }
+
+      if (dataState is DataFailed) {
+        emit(RecentlySeenError(dataState.error!));
+      }
     });
 
     on<DeleteRecentlySeenEvent>((event, emit) {

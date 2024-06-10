@@ -12,6 +12,7 @@ import 'package:mytradeasia/features/data/data_sources/remote/home_service.dart'
 import 'package:mytradeasia/features/data/data_sources/remote/list_product_service.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/quote_service.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/otp_service.dart';
+import 'package:mytradeasia/features/data/data_sources/remote/recently_seen_product_service.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/rfq_service.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/sales_force_data_service.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/sales_force_detail_service.dart';
@@ -162,6 +163,8 @@ Future<void> initializeDependencies() async {
   injections.registerSingleton<HomeService>(HomeService());
   injections.registerSingleton<OtpService>(OtpService());
   injections.registerSingleton<DropdownService>(DropdownService());
+  injections.registerSingleton<RecentlySeenProductService>(
+      RecentlySeenProductService());
 
   //Repositories Dependencies
   injections.registerSingleton<DetailProductRepository>(
@@ -183,8 +186,8 @@ Future<void> initializeDependencies() async {
       SearchProductRepositoryImpl(injections()));
   injections.registerSingleton<TopProductRepository>(
       TopProductRepositoryImpl(injections()));
-  injections
-      .registerSingleton<UserRepository>(UserRepositoryImpl(injections()));
+  injections.registerSingleton<UserRepository>(
+      UserRepositoryImpl(injections(), injections()));
   injections.registerSingleton<RfqRepository>(RfqRepositoryImpl(injections()));
   injections
       .registerSingleton<CartRepository>(CartRepositoryImpl(injections()));

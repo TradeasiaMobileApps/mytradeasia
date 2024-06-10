@@ -1,4 +1,9 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
+import 'package:mytradeasia/core/resources/data_state.dart';
 import 'package:mytradeasia/features/data/data_sources/firebase/auth_user_firebase.dart';
+import 'package:mytradeasia/features/data/data_sources/remote/recently_seen_product_service.dart';
 import 'package:mytradeasia/features/data/model/all_product_models/all_product_model.dart';
 import 'package:mytradeasia/features/data/model/user_models/user_model.dart';
 import 'package:mytradeasia/features/data/model/user_sales_models/sales_login_response_model.dart';
@@ -8,8 +13,9 @@ import 'package:mytradeasia/features/domain/repository/user_repository.dart';
 
 class UserRepositoryImpl implements UserRepository {
   final AuthUserFirebase _authUserFirebase;
+  final RecentlySeenProductService _seenProductService;
 
-  UserRepositoryImpl(this._authUserFirebase);
+  UserRepositoryImpl(this._authUserFirebase, this._seenProductService);
 
   @override
   Future<String> registerUser(UserEntity s) async {
@@ -68,8 +74,22 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<List<AllProductModel>> getRecentlySeen() async {
-    return _authUserFirebase.getRecentlySeen();
+  Future<DataState<List<AllProductModel>>> getRecentlySeen() async {
+    try {
+      final response = await _seenProductService.getRecentlySeen();
+      if (response.statusCode == HttpStatus.ok) {
+        return DataSuccess(response.data!);
+      } else {
+        return DataFailed(DioException(
+          error: response.statusMessage,
+          response: response,
+          type: DioExceptionType.badResponse,
+          requestOptions: response.requestOptions,
+        ));
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
   }
 
   @override

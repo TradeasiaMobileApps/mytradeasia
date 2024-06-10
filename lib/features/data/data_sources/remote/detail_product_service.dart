@@ -27,7 +27,6 @@ class DetailProductService {
         options: Options(headers: {
           "datetime": full_date,
           "device_type": device_type,
-          "role": "customer",
           "Authorization": "Bearer $token"
         }));
 

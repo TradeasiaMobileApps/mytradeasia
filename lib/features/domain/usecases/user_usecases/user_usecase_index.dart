@@ -1,3 +1,4 @@
+import 'package:mytradeasia/core/resources/data_state.dart';
 import 'package:mytradeasia/features/data/model/user_sales_models/sales_login_response_model.dart';
 import 'package:mytradeasia/features/domain/entities/all_product_entities/all_product_entity.dart';
 import 'package:mytradeasia/features/domain/entities/user_entities/user_credential_entity.dart';
@@ -68,7 +69,7 @@ class UserUsecaseIndex {
     AddRecentlySeen(userRepository).call(param: item);
   }
 
-  Future<List<AllProductEntities>> getRecentlySeen() {
+  Future<DataState<List<AllProductEntities>>> getRecentlySeen() {
     return GetRecentlySeen(userRepository).call();
   }
 

@@ -1,3 +1,4 @@
+import 'package:mytradeasia/core/resources/data_state.dart';
 import 'package:mytradeasia/features/data/model/user_sales_models/sales_login_response_model.dart';
 import 'package:mytradeasia/features/domain/entities/all_product_entities/all_product_entity.dart';
 // import 'package:mytradeasia/features/domain/entities/product_entities/all_product_entity.dart';
@@ -17,7 +18,7 @@ abstract class UserRepository {
   Future<Map<String, dynamic>> getUserData();
   Future<String> getCurrentUserId();
   void addRecentlySeen(Map<String, dynamic> s);
-  Future<List<AllProductEntities>> getRecentlySeen();
+  Future<DataState<List<AllProductEntities>>> getRecentlySeen();
   void deleteRecentlySeen();
   Future<UserCredentialEntity> getUserCredentials();
   Future<String> updateProfile(Map<String, dynamic> data);
