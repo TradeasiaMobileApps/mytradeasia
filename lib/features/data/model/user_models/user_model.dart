@@ -68,4 +68,16 @@ class UserModel extends UserEntity {
               : "",
     );
   }
+
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel(
+        role: json['role'],
+        companyName: json['company_name'],
+        country: json['country'],
+        countryCode: json['dialing_code'],
+        firstName: json['first_name'],
+        lastName: json['last_name'],
+        phone: json['mobile_number'],
+        profilePicUrl: json['profile_pic']);
+  }
 }

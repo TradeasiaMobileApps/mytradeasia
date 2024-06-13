@@ -14,6 +14,7 @@ abstract class UserRepository {
   Future<SalesLoginResponse> loginSales(Map<String, String> s);
   Future<dynamic> googleAuth();
   void logoutUser();
+  Future<DataState<UserEntity>> getUserProfile();
   Stream<Map<String, dynamic>> getUserSnapshot();
   Future<Map<String, dynamic>> getUserData();
   Future<String> getCurrentUserId();

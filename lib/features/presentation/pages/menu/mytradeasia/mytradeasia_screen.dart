@@ -5,8 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:mytradeasia/config/themes/theme.dart';
+import 'package:mytradeasia/features/domain/entities/user_entities/user_entity.dart';
 import 'package:mytradeasia/features/domain/usecases/rfq_usecases/get_rfq_list.dart';
-import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_snapshot.dart';
+import 'package:mytradeasia/features/domain/usecases/user_usecases/user_usecase_index.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_event.dart';
 import 'package:mytradeasia/features/presentation/widgets/dialog_sheet_widget.dart';
@@ -25,9 +26,9 @@ class MyTradeAsiaScreen extends StatefulWidget {
 }
 
 class _MyTradeAsiaScreenState extends State<MyTradeAsiaScreen> {
-  final GetUserSnapshot _getUserSnapshot = injections<GetUserSnapshot>();
   final GetRfqList _getRfqList = injections<GetRfqList>();
   final SendOTP _sendOTP = injections<SendOTP>();
+  final UserUsecaseIndex _user = injections<UserUsecaseIndex>();
   final _auth = FirebaseAuth.instance;
 
   @override
@@ -48,10 +49,27 @@ class _MyTradeAsiaScreenState extends State<MyTradeAsiaScreen> {
       body: Center(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
-          child: StreamBuilder(
-              stream: _getUserSnapshot.call(),
-              builder: (context, AsyncSnapshot streamSnapshot) {
-                return streamSnapshot.connectionState == ConnectionState.waiting
+          child: FutureBuilder(
+              future: _user.getUserProfile(),
+              builder:
+                  (context, AsyncSnapshot<DataState<UserEntity>> snapshot) {
+                final UserEntity? profileData = snapshot.data is DataSuccess
+                    ? snapshot.data!.data
+                    : const UserEntity();
+                if (snapshot.data is DataFailed) {
+                  showAdaptiveDialog(
+                      context: context,
+                      builder: (context) => DialogWidget(
+                          urlIcon: "assets/images/logo_delete_account.png",
+                          title: "Something went wrong",
+                          subtitle: "",
+                          textForButton: "Close",
+                          navigatorFunction: () {
+                            context.pop(context);
+                            context.pop(context);
+                          }));
+                }
+                return snapshot.connectionState == ConnectionState.waiting
                     ? const CircularProgressIndicator.adaptive(
                         backgroundColor: primaryColor1,
                       )
@@ -66,10 +84,8 @@ class _MyTradeAsiaScreenState extends State<MyTradeAsiaScreen> {
                               child: Row(
                                 children: [
                                   // Image
-                                  streamSnapshot.data["profilePicUrl"] == "" ||
-                                          streamSnapshot
-                                                  .data["profilePicUrl"] ==
-                                              null
+                                  profileData?.profilePicUrl == "" ||
+                                          profileData?.profilePicUrl == null
                                       ? Container(
                                           decoration: BoxDecoration(
                                             border:
@@ -93,8 +109,8 @@ class _MyTradeAsiaScreenState extends State<MyTradeAsiaScreen> {
                                           ),
                                           margin: EdgeInsets.only(right: 3),
                                           child: CachedNetworkImage(
-                                            imageUrl: streamSnapshot
-                                                .data["profilePicUrl"],
+                                            imageUrl:
+                                                profileData!.profilePicUrl!,
                                             width: size20px * 3.6,
                                             placeholder: (context, url) =>
                                                 const Center(
@@ -119,12 +135,11 @@ class _MyTradeAsiaScreenState extends State<MyTradeAsiaScreen> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  "${streamSnapshot.data['firstName'] == "" ? "new" : streamSnapshot.data['firstName']} ${streamSnapshot.data['lastName'] == "" ? "user" : streamSnapshot.data['lastName']}",
+                                                  "${profileData?.firstName == "" ? "new" : profileData!.firstName} ${profileData?.lastName == "" ? "user" : profileData!.lastName}",
                                                   style: text16,
                                                 ),
                                                 Text(
-                                                  streamSnapshot.data[
-                                                          'companyName'] ??
+                                                  profileData?.companyName ??
                                                       "",
                                                   style: text15.copyWith(
                                                       fontWeight:
@@ -255,7 +270,7 @@ class _MyTradeAsiaScreenState extends State<MyTradeAsiaScreen> {
                                 }),
 
                             // my cart menu
-                            streamSnapshot.data['role'] == "Sales"
+                            profileData?.role == "Sales"
                                 ? Container()
                                 : MyTradeAsiaWidget(
                                     nama: "My Cart",
@@ -270,7 +285,7 @@ class _MyTradeAsiaScreenState extends State<MyTradeAsiaScreen> {
                                 urlIcon: "assets/images/icon_quotation.png",
                                 onPressedFunction: () {
                                   _getRfqList();
-                                  if (streamSnapshot.data['role'] == "Sales") {
+                                  if (profileData?.role == "Sales") {
                                     context.go("/mytradeasia/sales_quotations");
                                   } else {
                                     context.go("/mytradeasia/quotations");

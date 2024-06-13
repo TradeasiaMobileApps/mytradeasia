@@ -11,6 +11,7 @@ import 'package:mytradeasia/features/domain/usecases/user_usecases/get_current_u
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_recently_seen.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_credentials.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_data.dart';
+import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_profile.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_snapshot.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/google_auth.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/login.dart';
@@ -104,5 +105,9 @@ class UserUsecaseIndex {
 
   void deleteAccount() {
     DeleteAccount(userRepository).call();
+  }
+
+  Future<DataState<UserEntity>> getUserProfile() {
+    return GetUserProfile(userRepository).call();
   }
 }

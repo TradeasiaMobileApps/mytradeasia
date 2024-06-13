@@ -3,25 +3,14 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mytradeasia/features/data/model/user_credential_models/user_credential_model.dart';
-import 'package:mytradeasia/features/data/model/user_sales_models/user_sales_model.dart';
 import 'package:mytradeasia/features/domain/entities/user_entities/user_credential_entity.dart';
-import 'package:mytradeasia/features/domain/usecases/user_usecases/delete_account.dart';
-import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_credentials.dart';
-import 'package:mytradeasia/features/domain/usecases/user_usecases/login.dart';
-import 'package:mytradeasia/features/domain/usecases/user_usecases/login_sales.dart';
-import 'package:mytradeasia/features/domain/usecases/user_usecases/logout.dart';
-import 'package:mytradeasia/features/domain/usecases/user_usecases/register.dart';
-import 'package:mytradeasia/features/domain/usecases/user_usecases/sso_register_user.dart';
+
 import 'package:mytradeasia/features/domain/usecases/user_usecases/user_usecase_index.dart';
 import 'package:mytradeasia/features/presentation/widgets/dialog_sheet_widget.dart';
 import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:sendbird_chat_sdk/sendbird_chat_sdk.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../../helper/injections_container.dart';
-
-import '../../../domain/usecases/user_usecases/get_user_data.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:mytradeasia/core/resources/data_state.dart';
 import 'package:mytradeasia/features/data/data_sources/firebase/auth_user_firebase.dart';
+import 'package:mytradeasia/features/data/data_sources/remote/auth_service.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/recently_seen_product_service.dart';
 import 'package:mytradeasia/features/data/model/all_product_models/all_product_model.dart';
 import 'package:mytradeasia/features/data/model/user_models/user_model.dart';
@@ -14,8 +15,10 @@ import 'package:mytradeasia/features/domain/repository/user_repository.dart';
 class UserRepositoryImpl implements UserRepository {
   final AuthUserFirebase _authUserFirebase;
   final RecentlySeenProductService _seenProductService;
+  final AuthService _authService;
 
-  UserRepositoryImpl(this._authUserFirebase, this._seenProductService);
+  UserRepositoryImpl(
+      this._authUserFirebase, this._seenProductService, this._authService);
 
   @override
   Future<String> registerUser(UserEntity s) async {
@@ -155,5 +158,24 @@ class UserRepositoryImpl implements UserRepository {
   Future<SalesLoginResponse> loginSales(Map<String, String> s) async {
     final response = await _authUserFirebase.postLoginSales(s);
     return response;
+  }
+
+  @override
+  Future<DataState<UserEntity>> getUserProfile() async {
+    try {
+      final response = await _authService.getUserProfile();
+      if (response.statusCode == HttpStatus.ok) {
+        return DataSuccess(response.data!);
+      } else {
+        return DataFailed(DioException(
+          error: response.statusMessage,
+          response: response,
+          type: DioExceptionType.badResponse,
+          requestOptions: response.requestOptions,
+        ));
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
   }
 }
