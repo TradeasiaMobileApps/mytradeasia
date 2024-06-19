@@ -43,6 +43,7 @@ class MessageScreenState extends State<MessageScreen>
         ..order = GroupChannelListQueryOrder.latestLastMessage,
       handler: this,
     )..loadMore();
+    channelBloc.add(RefreshChannels(collection.channelList));
   }
 
   @override
