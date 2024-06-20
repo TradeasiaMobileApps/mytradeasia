@@ -137,10 +137,10 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
                     _imageFile = await imagePicked!.readAsBytes();
                     setState(() {});
                   },
-                  child: SizedBox(
+                  child: const SizedBox(
                     height: 50,
                     child: Row(
-                      children: const [
+                      children: [
                         Icon(Icons.photo_camera),
                         Text(' Take picture from Camera '),
                       ],
@@ -156,10 +156,10 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
                     _imageFile = await imagePicked!.readAsBytes();
                     setState(() {});
                   },
-                  child: SizedBox(
+                  child: const SizedBox(
                     height: 50,
                     child: Row(
-                      children: const [
+                      children: [
                         Icon(Icons.photo_library),
                         Text(' Browse from gallery '),
                       ],
@@ -230,10 +230,10 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
                                             decoration: BoxDecoration(
                                               border:
                                                   Border.all(color: greyColor3),
-                                              borderRadius: BorderRadius.all(
+                                              borderRadius: const BorderRadius.all(
                                                   Radius.circular(15)),
                                             ),
-                                            padding: EdgeInsets.all(2),
+                                            padding: const EdgeInsets.all(2),
                                             child: Image.asset(
                                               "assets/images/profile_picture.png",
                                               width: size20px * 3.6,
@@ -244,10 +244,10 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
                                             decoration: BoxDecoration(
                                               border:
                                                   Border.all(color: greyColor3),
-                                              borderRadius: BorderRadius.all(
+                                              borderRadius: const BorderRadius.all(
                                                   Radius.circular(15)),
                                             ),
-                                            margin: EdgeInsets.only(right: 3),
+                                            margin: const EdgeInsets.only(right: 3),
                                             child: CachedNetworkImage(
                                               imageUrl: streamSnapshot
                                                   .data["profilePicUrl"],
@@ -265,10 +265,10 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
                                     Container(
                                         decoration: BoxDecoration(
                                           border: Border.all(color: greyColor3),
-                                          borderRadius: BorderRadius.all(
+                                          borderRadius: const BorderRadius.all(
                                               Radius.circular(15)),
                                         ),
-                                        padding: EdgeInsets.all(2),
+                                        padding: const EdgeInsets.all(2),
                                         child: Image(
                                           image: MemoryImage(_imageFile!),
                                           width: size20px * 3.6,
@@ -277,7 +277,7 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
                                     child: Material(
                                       color: Colors.transparent,
                                       child: InkWell(
-                                        borderRadius: BorderRadius.all(
+                                        borderRadius: const BorderRadius.all(
                                             Radius.circular(15)),
                                         onTap: () {
                                           _takeImage();
@@ -442,7 +442,7 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
                                                           // optional. aligns the flag and the Text left
                                                           // alignLeft: false,
                                                           padding:
-                                                              EdgeInsets.only(
+                                                              const EdgeInsets.only(
                                                                   left: 5),
                                                         ),
                                                       ),

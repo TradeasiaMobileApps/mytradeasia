@@ -89,7 +89,7 @@ class SalesQuotationData extends StatelessWidget {
                     child: Text("Error on retrieving quotation data"),
                   );
           }
-          return SizedBox();
+          return const SizedBox();
         },
       );
     } else {

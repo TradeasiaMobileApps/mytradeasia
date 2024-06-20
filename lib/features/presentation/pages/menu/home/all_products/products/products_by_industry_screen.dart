@@ -244,7 +244,7 @@ class _ProductByIndustryScreenState extends State<ProductByIndustryScreen> {
                                                       },
                                                     );
                                                   }
-                                                  return SizedBox();
+                                                  return const SizedBox();
                                                 },
                                               ),
                                               SizedBox(

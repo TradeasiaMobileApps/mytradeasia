@@ -63,7 +63,7 @@ class SalesBubleChat extends StatelessWidget {
                                 children: [
                                   // first row
                                   Padding(
-                                    padding: EdgeInsets.only(
+                                    padding: const EdgeInsets.only(
                                         top: size20px, bottom: size20px / 2.0),
                                     child: Row(
                                       mainAxisAlignment:
@@ -98,7 +98,7 @@ class SalesBubleChat extends StatelessWidget {
                                   // second row
                                   Padding(
                                     padding:
-                                        EdgeInsets.only(bottom: size20px + 5.0),
+                                        const EdgeInsets.only(bottom: size20px + 5.0),
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,

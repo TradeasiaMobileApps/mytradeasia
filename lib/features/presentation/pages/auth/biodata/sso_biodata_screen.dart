@@ -29,6 +29,8 @@ class _SSOBiodataScreenState extends State<SSOBiodataScreen> {
   final TextEditingController _companyNameController = TextEditingController();
   final TextEditingController _countryController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  // final UserCredentialEntity _userCredential =
+  //     injections<UserCredentialEntity>();
   final auth = FirebaseAuth.instance;
   String countryName = '';
 
@@ -151,7 +153,7 @@ class _SSOBiodataScreenState extends State<SSOBiodataScreen> {
                   height: 50.48,
                 ),
                 const Text(
-                  "Input Your Account Data",
+                  "Input Your Account Data SSO",
                   style: heading1,
                 ),
                 const SizedBox(

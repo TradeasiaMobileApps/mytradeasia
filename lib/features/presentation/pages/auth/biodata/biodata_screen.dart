@@ -34,7 +34,6 @@ class _BiodataScreenState extends State<BiodataScreen> {
   final TextEditingController _countryController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  // final auth = FirebaseAuth.instance;
   String countryName = '';
   String countryCode = '';
 

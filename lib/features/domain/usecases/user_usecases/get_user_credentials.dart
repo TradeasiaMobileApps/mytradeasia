@@ -3,7 +3,7 @@ import 'package:mytradeasia/features/domain/entities/user_entities/user_credenti
 import 'package:mytradeasia/features/domain/repository/user_repository.dart';
 
 class GetUserCredentials implements UseCase<UserCredentialEntity, void> {
-  UserRepository _userRepository;
+  final UserRepository _userRepository;
 
   GetUserCredentials(this._userRepository);
 

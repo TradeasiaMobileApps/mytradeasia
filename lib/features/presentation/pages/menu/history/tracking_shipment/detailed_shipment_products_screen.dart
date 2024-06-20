@@ -70,7 +70,7 @@ class _DetailedShipmentProductsScreenState
   Widget shipmentMap() {
     return BlocBuilder<SearatesRouteBloc, SearatesRouteState>(
       builder: (context, state) {
-        log("ROUTE STATE : ${state}");
+        // log("ROUTE STATE : ${state}");
         if (state is SearatesRouteLoading) {
           return const Center(
             child: CircularProgressIndicator(),

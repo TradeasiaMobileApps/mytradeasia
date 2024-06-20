@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:mytradeasia/config/themes/theme.dart';
+import 'package:mytradeasia/features/domain/entities/user_entities/user_credential_entity.dart';
 import 'package:mytradeasia/features/domain/entities/user_entities/user_entity.dart';
 import 'package:mytradeasia/features/domain/usecases/rfq_usecases/get_rfq_list.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/user_usecase_index.dart';
@@ -29,7 +30,21 @@ class _MyTradeAsiaScreenState extends State<MyTradeAsiaScreen> {
   final GetRfqList _getRfqList = injections<GetRfqList>();
   final SendOTP _sendOTP = injections<SendOTP>();
   final UserUsecaseIndex _user = injections<UserUsecaseIndex>();
-  final _auth = FirebaseAuth.instance;
+  // final _auth = FirebaseAuth.instance;
+  late UserCredentialEntity _userCredential;
+
+  
+  @override
+  void initState() {
+    
+    super.initState();
+    getUserCredentials();
+  }
+
+
+  void getUserCredentials() async{
+    _userCredential = await _user.getUserCredentials();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -194,7 +209,7 @@ class _MyTradeAsiaScreenState extends State<MyTradeAsiaScreen> {
 
                                       try {
                                         var result = await _sendOTP.call(
-                                            param: _auth.currentUser!.email!);
+                                            param: _userCredential.email!, );
 
                                         if (result is DataSuccess) {
                                           ScaffoldMessenger.of(context)
@@ -205,7 +220,7 @@ class _MyTradeAsiaScreenState extends State<MyTradeAsiaScreen> {
                                                   milliseconds: 500),
                                               backgroundColor: Colors.green,
                                               content: Text(
-                                                "OTP code sent to : ${_auth.currentUser!.email!}",
+                                                "OTP code sent to : ${_userCredential.email!}",
                                                 style: body1Regular.copyWith(
                                                     color: Colors.white,
                                                     fontSize: 12,
@@ -216,7 +231,7 @@ class _MyTradeAsiaScreenState extends State<MyTradeAsiaScreen> {
                                           );
                                           context.go(
                                               "/mytradeasia/change_password_otp",
-                                              extra: _auth.currentUser!.email!);
+                                              extra: _userCredential.email!);
                                         } else {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(

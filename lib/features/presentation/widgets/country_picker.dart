@@ -75,7 +75,7 @@ class _CountryPickerState extends State<CountryPicker> {
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
                         clipBehavior: Clip.antiAliasWithSaveLayer,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                         ),
                         child: CachedNetworkImage(

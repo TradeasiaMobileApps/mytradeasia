@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
 import 'package:mytradeasia/features/data/model/cart_models/cart_models.dart';
-import 'package:mytradeasia/features/data/model/user_sales_models/sales_login_response_model.dart';
 import 'package:mytradeasia/features/data/model/user_sales_models/user_sales_model.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_entity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -136,7 +135,7 @@ void showGoogleSSOSnackbar(BuildContext context) {
               width: 30,
               height: 30),
         ),
-        SizedBox(
+        const SizedBox(
           width: 20,
         ),
         Text(
@@ -170,7 +169,7 @@ void showLinkedinSSOSnackbar(BuildContext context) {
               width: 30,
               height: 30),
         ),
-        SizedBox(
+        const SizedBox(
           width: 20,
         ),
         Text(

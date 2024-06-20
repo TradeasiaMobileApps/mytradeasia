@@ -400,7 +400,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   log('Auth token data: ${tokenData.toJson()}');
                                   log('LinkedIn User: ${user.toJson()}');
                                   setState(() => linkedInUser = user);
-                                  final url =
+                                  const url =
                                       'https://linkedin-firebase-auth-integrator.vercel.app/token';
 
                                   final headers = {

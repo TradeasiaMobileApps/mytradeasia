@@ -147,7 +147,7 @@ class QuotationDetailScreen extends StatelessWidget {
         );
         break;
       default:
-        editBtn = SizedBox();
+        editBtn = const SizedBox();
         salesQuote = SalesQuotationData(
           status: status,
         );

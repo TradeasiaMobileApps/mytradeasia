@@ -55,8 +55,6 @@ class _EmailChangeOtpScreenState extends State<EmailChangeOtpScreen> {
     super.dispose();
   }
 
-  //TODO:masih pake firebase
-  // final _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {

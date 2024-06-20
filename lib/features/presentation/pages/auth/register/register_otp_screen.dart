@@ -59,8 +59,6 @@ class _RegisterOtpScreenState extends State<RegisterOtpScreen> {
     super.dispose();
   }
 
-  //TODO:masih pake firebase
-  // final _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -510,7 +508,7 @@ class _RegisterOtpScreenState extends State<RegisterOtpScreen> {
                           build: (BuildContext context, double time) => Text(
                               parseDoubleToIntegerIfNecessary(time).toString(),
                               style: text14.copyWith(color: secondaryColor1)),
-                          interval: Duration(milliseconds: 1000),
+                          interval: const Duration(milliseconds: 1000),
                           onFinished: () {
                             setState(() {
                               canResend = true;

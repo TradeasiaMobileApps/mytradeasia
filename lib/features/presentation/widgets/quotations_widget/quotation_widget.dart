@@ -98,7 +98,7 @@ class QuotationsWidget extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(bottom: size20px / 2),
+                  padding: const EdgeInsets.only(bottom: size20px / 2),
                   child: Text(
                     rfqEntity.products!.productName!,
                     style: text15,

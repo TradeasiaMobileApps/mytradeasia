@@ -362,7 +362,7 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
                       bottom: size20px),
 
                   /** Searchbar */
-                  child: Container(
+                  child: SizedBox(
                     height: 50,
                     child: TextFormField(
                       // onChanged: (value) {
@@ -433,13 +433,13 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
                           color: whiteColor,
                           child: InkWell(
                             onTap: () {
-                              widget.country.value = CountryEntity(
+                              widget.country.value = const CountryEntity(
                                   name: "Indonesia",
                                   codeCountry: "ID",
                                   flagUrl: "https://flagcdn.com/w320/id.png",
                                   phoneCode: "+62");
                               if (widget.onChanged != null) {
-                                widget.onChanged!(CountryEntity(
+                                widget.onChanged!(const CountryEntity(
                                     name: "Indonesia",
                                     codeCountry: "ID",
                                     flagUrl: "https://flagcdn.com/w320/id.png",
@@ -515,7 +515,7 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
                                           Navigator.of(context).pop();
                                         },
                                         // splashColor: Colors.black,
-                                        child: Container(
+                                        child: SizedBox(
                                           height: size20px + 30.0,
                                           width:
                                               MediaQuery.of(context).size.width,
@@ -530,7 +530,7 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
                                                   clipBehavior: Clip
                                                       .antiAliasWithSaveLayer,
                                                   width: 60,
-                                                  decoration: BoxDecoration(
+                                                  decoration: const BoxDecoration(
                                                       shape: BoxShape.circle),
                                                   child: CachedNetworkImage(
                                                     // fit: BoxFit.fill,

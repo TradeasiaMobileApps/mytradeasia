@@ -34,8 +34,8 @@ class LoadingOverlay extends StatelessWidget {
             width: 100,
             decoration: BoxDecoration(
                 color: Colors.white, borderRadius: BorderRadius.circular(10)),
-            child: Padding(
-              padding: const EdgeInsets.all(25.0),
+            child: const Padding(
+              padding: EdgeInsets.all(25.0),
               child: SpinKitFadingCircle(color: primaryColor1),
             ),
           ),

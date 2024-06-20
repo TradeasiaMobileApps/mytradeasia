@@ -89,7 +89,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   const SizedBox(height: size20px),
                   BlocBuilder<SalesforceDataBloc, SalesforceDataState>(
                       builder: (context, state) {
-                    log("STATE IS ${state}");
+                    // log("STATE IS ${state}");
                     if (state is SalesforceCPDone) {
                       if (state.cpEntity!.totalSize! < 1) {
                         return const Center(

@@ -165,7 +165,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               child: Container(
                                 decoration: BoxDecoration(
                                   border: Border.all(color: greyColor3),
-                                  borderRadius: BorderRadius.all(
+                                  borderRadius: const BorderRadius.all(
                                     Radius.circular(10),
                                   ),
                                 ),
