@@ -136,7 +136,7 @@ class _RoleUserScreenState extends State<RoleUserScreen> {
             height: 50.0,
             child: ElevatedButton(
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                backgroundColor: WidgetStateProperty.resolveWith<Color>(
                   (states) {
                     if (roleUser.any((role) => role.isSelected == true)) {
                       // If any container is selected, return primaryColor1
@@ -147,7 +147,7 @@ class _RoleUserScreenState extends State<RoleUserScreen> {
                     }
                   },
                 ),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(7.0),
                   ),

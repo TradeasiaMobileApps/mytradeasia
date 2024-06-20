@@ -15,14 +15,11 @@ import 'package:mytradeasia/features/presentation/state_management/cart_bloc/car
 import 'package:mytradeasia/features/presentation/state_management/home_bloc/home_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/home_bloc/home_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/home_bloc/home_state.dart';
-import 'package:mytradeasia/features/presentation/state_management/recently_seen_bloc/recently_seen_bloc.dart';
-import 'package:mytradeasia/features/presentation/state_management/recently_seen_bloc/recently_seen_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_login/salesforce_login_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_login/salesforce_login_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_login/salesforce_login_state.dart';
 import 'package:mytradeasia/features/presentation/state_management/top_products_bloc/top_products_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/top_products_bloc/top_products_event.dart';
-import 'package:mytradeasia/features/presentation/state_management/top_products_bloc/top_products_state.dart';
 import 'package:mytradeasia/features/presentation/widgets/cart_button.dart';
 import 'package:mytradeasia/features/presentation/widgets/product_card.dart';
 import 'package:mytradeasia/helper/helper_functions.dart';
@@ -32,7 +29,6 @@ import 'package:mytradeasia/config/themes/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../../../state_management/recently_seen_bloc/recently_seen_state.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

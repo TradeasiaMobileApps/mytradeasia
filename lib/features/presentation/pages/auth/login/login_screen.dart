@@ -242,9 +242,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             builder: (_, state) => ElevatedButton(
                               style: ButtonStyle(
                                 backgroundColor:
-                                    MaterialStateProperty.all<Color>(
+                                    WidgetStateProperty.all<Color>(
                                         primaryColor1),
-                                shape: MaterialStateProperty.all<
+                                shape: WidgetStateProperty.all<
                                     RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(7.0),
@@ -292,8 +292,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         : ElevatedButton(
                             style: ButtonStyle(
                               backgroundColor:
-                                  MaterialStateProperty.all<Color>(greyColor),
-                              shape: MaterialStateProperty.all<
+                                  WidgetStateProperty.all<Color>(greyColor),
+                              shape: WidgetStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(7.0),
@@ -334,8 +334,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: ElevatedButton(
                             style: ButtonStyle(
                               backgroundColor:
-                                  MaterialStateProperty.all<Color>(whiteColor),
-                              shape: MaterialStateProperty.all<
+                                  WidgetStateProperty.all<Color>(whiteColor),
+                              shape: WidgetStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(7.0),
@@ -379,8 +379,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: ElevatedButton(
                             style: ButtonStyle(
                               backgroundColor:
-                                  MaterialStateProperty.all<Color>(whiteColor),
-                              shape: MaterialStateProperty.all<
+                                  WidgetStateProperty.all<Color>(whiteColor),
+                              shape: WidgetStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(7.0),

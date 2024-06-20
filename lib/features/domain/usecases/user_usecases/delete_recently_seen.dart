@@ -2,7 +2,7 @@ import 'package:mytradeasia/core/usecase/usecase.dart';
 import 'package:mytradeasia/features/domain/repository/user_repository.dart';
 
 class DeleteRecentlySeen implements UseCase<void, void> {
-  UserRepository _userRepository;
+  final UserRepository _userRepository;
 
   DeleteRecentlySeen(this._userRepository);
 

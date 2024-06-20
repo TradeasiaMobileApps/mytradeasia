@@ -119,16 +119,16 @@ class ProductCard extends StatelessWidget {
                           child: ElevatedButton(
                               style: ButtonStyle(
                                   backgroundColor:
-                                      MaterialStateProperty.all<Color>(
+                                      WidgetStateProperty.all<Color>(
                                           primaryColor1),
-                                  shape: MaterialStateProperty.all<
+                                  shape: WidgetStateProperty.all<
                                       RoundedRectangleBorder>(
                                     RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(7.0),
                                     ),
                                   ),
                                   padding:
-                                      MaterialStateProperty.all<EdgeInsets>(
+                                      WidgetStateProperty.all<EdgeInsets>(
                                           EdgeInsets.zero)),
                               onPressed: onPressed,
                               child: Text(

@@ -328,9 +328,9 @@ class _PasswordChangeOtpScreenState extends State<PasswordChangeOtpScreen> {
                     ? ElevatedButton(
                         style: ButtonStyle(
                           backgroundColor:
-                              MaterialStateProperty.all<Color>(greyColor),
+                              WidgetStateProperty.all<Color>(greyColor),
                           shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                              WidgetStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(7.0),
                             ),
@@ -346,9 +346,9 @@ class _PasswordChangeOtpScreenState extends State<PasswordChangeOtpScreen> {
                     : ElevatedButton(
                         style: ButtonStyle(
                           backgroundColor:
-                              MaterialStateProperty.all<Color>(primaryColor1),
+                              WidgetStateProperty.all<Color>(primaryColor1),
                           shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                              WidgetStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(7.0),
                             ),

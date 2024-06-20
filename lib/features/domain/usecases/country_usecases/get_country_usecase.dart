@@ -6,7 +6,7 @@ import '../../entities/country_entities/country_entity.dart';
 
 class GetCountryUsecase
     implements UseCase<DataState<List<CountryEntity>>, void> {
-  CountryRepository _countryRepository;
+  final CountryRepository _countryRepository;
 
   GetCountryUsecase(this._countryRepository);
 

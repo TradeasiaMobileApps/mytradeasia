@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:getwidget/components/accordion/gf_accordion.dart';
-// import 'package:mytradeasia/modelview/provider/faq_provider.dart';
 import 'package:mytradeasia/features/presentation/state_management/faq_bloc/faq_event.dart';
-// import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../../../../../../config/themes/theme.dart';

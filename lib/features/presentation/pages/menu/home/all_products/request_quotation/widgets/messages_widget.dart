@@ -60,11 +60,11 @@ class MessagesWidget extends StatelessWidget {
                   width: MediaQuery.of(context).size.width,
                   child: ElevatedButton(
                       style: ButtonStyle(
-                        elevation: const MaterialStatePropertyAll<double>(0.0),
+                        elevation: const WidgetStatePropertyAll<double>(0.0),
                         backgroundColor:
-                            MaterialStateProperty.all<Color>(whiteColor),
+                            WidgetStateProperty.all<Color>(whiteColor),
                         shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                            WidgetStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             side: const BorderSide(color: greyColor3),
                             borderRadius: BorderRadius.circular(2.0),
@@ -89,11 +89,11 @@ class MessagesWidget extends StatelessWidget {
                     child: ElevatedButton(
                         style: ButtonStyle(
                           elevation:
-                              const MaterialStatePropertyAll<double>(0.0),
+                              const WidgetStatePropertyAll<double>(0.0),
                           backgroundColor:
-                              MaterialStateProperty.all<Color>(whiteColor),
+                              WidgetStateProperty.all<Color>(whiteColor),
                           shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                              WidgetStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
                               side: const BorderSide(color: greyColor3),
                               borderRadius: BorderRadius.circular(2.0),
@@ -117,11 +117,11 @@ class MessagesWidget extends StatelessWidget {
                   width: MediaQuery.of(context).size.width,
                   child: ElevatedButton(
                       style: ButtonStyle(
-                        elevation: const MaterialStatePropertyAll<double>(0.0),
+                        elevation: const WidgetStatePropertyAll<double>(0.0),
                         backgroundColor:
-                            MaterialStateProperty.all<Color>(whiteColor),
+                            WidgetStateProperty.all<Color>(whiteColor),
                         shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                            WidgetStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             side: const BorderSide(color: greyColor3),
                             borderRadius: BorderRadius.circular(2.0),

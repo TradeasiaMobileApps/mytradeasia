@@ -17,9 +17,9 @@ class SubmittedNavbar extends StatelessWidget {
             child: ElevatedButton(
               style: ButtonStyle(
                 backgroundColor:
-                    MaterialStateProperty.all<Color>(inactivatedBtn),
-                elevation: MaterialStateProperty.all<double>(0.0),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    WidgetStateProperty.all<Color>(inactivatedBtn),
+                elevation: WidgetStateProperty.all<double>(0.0),
+                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(7.0),
                         side: const BorderSide(color: greyColor))),
@@ -38,9 +38,9 @@ class SubmittedNavbar extends StatelessWidget {
               child: ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor:
-                      MaterialStateProperty.all<Color>(inactivatedBtn),
-                  elevation: MaterialStateProperty.all<double>(0.0),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      WidgetStateProperty.all<Color>(inactivatedBtn),
+                  elevation: WidgetStateProperty.all<double>(0.0),
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(7.0),
                           side: const BorderSide(color: greyColor))),
@@ -59,9 +59,9 @@ class SubmittedNavbar extends StatelessWidget {
             child: ElevatedButton(
               onPressed: null,
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(greyColor),
-                elevation: MaterialStateProperty.all<double>(0.0),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                backgroundColor: WidgetStateProperty.all<Color>(greyColor),
+                elevation: WidgetStateProperty.all<double>(0.0),
+                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(7.0),
                 )),

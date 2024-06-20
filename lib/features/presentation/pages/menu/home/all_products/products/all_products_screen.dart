@@ -271,10 +271,10 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                                                       child: ElevatedButton(
                                                         style: ButtonStyle(
                                                             backgroundColor:
-                                                                MaterialStateProperty
+                                                                WidgetStateProperty
                                                                     .all<Color>(
                                                                         primaryColor1),
-                                                            shape: MaterialStateProperty
+                                                            shape: WidgetStateProperty
                                                                 .all<
                                                                     RoundedRectangleBorder>(
                                                               RoundedRectangleBorder(
@@ -284,7 +284,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                                                                             7.0),
                                                               ),
                                                             ),
-                                                            padding: MaterialStateProperty
+                                                            padding: WidgetStateProperty
                                                                 .all<EdgeInsets>(
                                                                     EdgeInsets
                                                                         .zero)),

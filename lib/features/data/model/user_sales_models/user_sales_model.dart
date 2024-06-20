@@ -1,6 +1,5 @@
 import 'package:mytradeasia/features/domain/entities/user_entities/user_sales_entity.dart';
 
-import '../../../domain/entities/user_entities/user_credential_entity.dart';
 
 class UserSalesModel extends UserSalesEntity {
      UserSalesModel(

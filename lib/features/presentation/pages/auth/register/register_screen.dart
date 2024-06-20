@@ -285,9 +285,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             _phoneNumberController.text.isNotEmpty
                         ? ElevatedButton(
                             style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
+                              backgroundColor: WidgetStateProperty.all<Color>(
                                   primaryColor1),
-                              shape: MaterialStateProperty.all<
+                              shape: WidgetStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(7.0),
@@ -371,10 +371,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                               phone:
                                                   "$countryNum${_phoneNumberController.text}",
                                               email: _emailController.text);
-                                      BiodataParameter param2 = BiodataParameter(
-                                          email: _emailController.text,
-                                          phone:
-                                              "$countryNum${_phoneNumberController.text}");
+                                      // BiodataParameter param2 = BiodataParameter(
+                                      //     email: _emailController.text,
+                                      //     phone:
+                                      //         "$countryNum${_phoneNumberController.text}");
                                       //TODO: captcha OTP
                                       // ignore: use_build_context_synchronously
                                       // showDialog(
@@ -435,8 +435,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         : ElevatedButton(
                             style: ButtonStyle(
                               backgroundColor:
-                                  MaterialStateProperty.all<Color>(greyColor),
-                              shape: MaterialStateProperty.all<
+                                  WidgetStateProperty.all<Color>(greyColor),
+                              shape: WidgetStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(7.0),
@@ -482,8 +482,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           child: ElevatedButton(
                             style: ButtonStyle(
                               backgroundColor:
-                                  MaterialStateProperty.all<Color>(whiteColor),
-                              shape: MaterialStateProperty.all<
+                                  WidgetStateProperty.all<Color>(whiteColor),
+                              shape: WidgetStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(7.0),
@@ -531,8 +531,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           child: ElevatedButton(
                             style: ButtonStyle(
                               backgroundColor:
-                                  MaterialStateProperty.all<Color>(whiteColor),
-                              shape: MaterialStateProperty.all<
+                                  WidgetStateProperty.all<Color>(whiteColor),
+                              shape: WidgetStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(7.0),
@@ -552,7 +552,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   log('Auth token data: ${tokenData.toJson()}');
                                   log('LinkedIn User: ${user.toJson()}');
                                   setState(() => linkedInUser = user);
-                                  final url =
+                                  const url =
                                       'https://linkedin-firebase-auth-integrator.vercel.app/token';
 
                                   final headers = {

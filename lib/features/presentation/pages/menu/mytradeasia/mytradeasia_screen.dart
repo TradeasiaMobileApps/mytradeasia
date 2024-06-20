@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -105,10 +104,10 @@ class _MyTradeAsiaScreenState extends State<MyTradeAsiaScreen> {
                                           decoration: BoxDecoration(
                                             border:
                                                 Border.all(color: greyColor3),
-                                            borderRadius: BorderRadius.all(
+                                            borderRadius: const BorderRadius.all(
                                                 Radius.circular(15)),
                                           ),
-                                          padding: EdgeInsets.all(2),
+                                          padding: const EdgeInsets.all(2),
                                           child: Image.asset(
                                             "assets/images/profile_picture.png",
                                             width: size20px * 3.6,
@@ -119,10 +118,10 @@ class _MyTradeAsiaScreenState extends State<MyTradeAsiaScreen> {
                                           decoration: BoxDecoration(
                                             border:
                                                 Border.all(color: greyColor3),
-                                            borderRadius: BorderRadius.all(
+                                            borderRadius: const BorderRadius.all(
                                                 Radius.circular(15)),
                                           ),
-                                          margin: EdgeInsets.only(right: 3),
+                                          margin: const EdgeInsets.only(right: 3),
                                           child: CachedNetworkImage(
                                             imageUrl:
                                                 profileData!.profilePicUrl!,
@@ -367,9 +366,9 @@ class _MyTradeAsiaScreenState extends State<MyTradeAsiaScreen> {
                                 child: ElevatedButton(
                                   style: ButtonStyle(
                                     backgroundColor:
-                                        MaterialStateProperty.all<Color>(
+                                        WidgetStateProperty.all<Color>(
                                             primaryColor1),
-                                    shape: MaterialStateProperty.all<
+                                    shape: WidgetStateProperty.all<
                                         RoundedRectangleBorder>(
                                       RoundedRectangleBorder(
                                         borderRadius:

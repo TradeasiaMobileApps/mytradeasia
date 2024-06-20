@@ -53,8 +53,8 @@ class DialogWidget extends StatelessWidget {
             child: ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor:
-                      MaterialStateProperty.all<Color>(primaryColor1),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      WidgetStateProperty.all<Color>(primaryColor1),
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(7.0),
                     ),
@@ -131,9 +131,9 @@ class DialogWidgetYesNo extends StatelessWidget {
                   child: ElevatedButton(
                       style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.all<Color>(whiteColor),
+                            WidgetStateProperty.all<Color>(whiteColor),
                         shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                            WidgetStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(7.0),
                               side: const BorderSide(color: primaryColor1)),
@@ -155,9 +155,9 @@ class DialogWidgetYesNo extends StatelessWidget {
                   child: ElevatedButton(
                       style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.all<Color>(primaryColor1),
+                            WidgetStateProperty.all<Color>(primaryColor1),
                         shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                            WidgetStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(7.0),
                           ),

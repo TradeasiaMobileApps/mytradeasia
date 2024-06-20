@@ -333,10 +333,10 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                                               child: ElevatedButton(
                                                   style: ButtonStyle(
                                                     backgroundColor:
-                                                        MaterialStateProperty
+                                                        WidgetStateProperty
                                                             .all<Color>(
                                                                 primaryColor1),
-                                                    shape: MaterialStateProperty
+                                                    shape: WidgetStateProperty
                                                         .all<
                                                             RoundedRectangleBorder>(
                                                       RoundedRectangleBorder(
@@ -366,10 +366,10 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                                               child: ElevatedButton(
                                                 style: ButtonStyle(
                                                   backgroundColor:
-                                                      MaterialStateProperty.all<
+                                                      WidgetStateProperty.all<
                                                           Color>(primaryColor1),
                                                   shape:
-                                                      MaterialStateProperty.all<
+                                                      WidgetStateProperty.all<
                                                           RoundedRectangleBorder>(
                                                     RoundedRectangleBorder(
                                                       borderRadius:
@@ -500,9 +500,9 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                                     child: ElevatedButton(
                                       style: ButtonStyle(
                                         backgroundColor:
-                                            MaterialStateProperty.all<Color>(
+                                            WidgetStateProperty.all<Color>(
                                                 thirdColor1),
-                                        shape: MaterialStateProperty.all<
+                                        shape: WidgetStateProperty.all<
                                             RoundedRectangleBorder>(
                                           RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(
@@ -648,9 +648,9 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                               ElevatedButton(
                                   style: ButtonStyle(
                                     backgroundColor:
-                                        MaterialStateProperty.all<Color>(
+                                        WidgetStateProperty.all<Color>(
                                             primaryColor1),
-                                    shape: MaterialStateProperty.all<
+                                    shape: WidgetStateProperty.all<
                                         RoundedRectangleBorder>(
                                       RoundedRectangleBorder(
                                           borderRadius:
@@ -659,7 +659,7 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                                               color: greyColor3)),
                                     ),
                                     elevation:
-                                        MaterialStateProperty.all<double>(0.0),
+                                        WidgetStateProperty.all<double>(0.0),
                                   ),
                                   onPressed: () {
                                     setState(() {});
@@ -671,9 +671,9 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                               ElevatedButton(
                                   style: ButtonStyle(
                                     backgroundColor:
-                                        MaterialStateProperty.all<Color>(
+                                        WidgetStateProperty.all<Color>(
                                             primaryColor1),
-                                    shape: MaterialStateProperty.all<
+                                    shape: WidgetStateProperty.all<
                                         RoundedRectangleBorder>(
                                       RoundedRectangleBorder(
                                           borderRadius:
@@ -682,7 +682,7 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                                               color: greyColor3)),
                                     ),
                                     elevation:
-                                        MaterialStateProperty.all<double>(0.0),
+                                        WidgetStateProperty.all<double>(0.0),
                                   ),
                                   onPressed: () {
                                     context.pop();
@@ -722,9 +722,9 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                                       return ElevatedButton(
                                         style: ButtonStyle(
                                           backgroundColor:
-                                              MaterialStateProperty.all<Color>(
+                                              WidgetStateProperty.all<Color>(
                                                   whiteColor),
-                                          shape: MaterialStateProperty.all<
+                                          shape: WidgetStateProperty.all<
                                               RoundedRectangleBorder>(
                                             RoundedRectangleBorder(
                                                 borderRadius:
@@ -733,7 +733,7 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                                                     color: greyColor3)),
                                           ),
                                           elevation:
-                                              MaterialStateProperty.all<double>(
+                                              WidgetStateProperty.all<double>(
                                                   0.0),
                                         ),
                                         onPressed: () async {
@@ -829,9 +829,9 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                                     return ElevatedButton(
                                       style: ButtonStyle(
                                         backgroundColor:
-                                            MaterialStateProperty.all<Color>(
+                                            WidgetStateProperty.all<Color>(
                                                 whiteColor),
-                                        shape: MaterialStateProperty.all<
+                                        shape: WidgetStateProperty.all<
                                             RoundedRectangleBorder>(
                                           RoundedRectangleBorder(
                                               borderRadius:
@@ -840,7 +840,7 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                                                   color: greyColor3)),
                                         ),
                                         elevation:
-                                            MaterialStateProperty.all<double>(
+                                            WidgetStateProperty.all<double>(
                                                 0.0),
                                       ),
                                       onPressed: () {},
@@ -854,9 +854,9 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                                     return ElevatedButton(
                                       style: ButtonStyle(
                                         backgroundColor:
-                                            MaterialStateProperty.all<Color>(
+                                            WidgetStateProperty.all<Color>(
                                                 whiteColor),
-                                        shape: MaterialStateProperty.all<
+                                        shape: WidgetStateProperty.all<
                                             RoundedRectangleBorder>(
                                           RoundedRectangleBorder(
                                               borderRadius:
@@ -865,7 +865,7 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                                                   color: greyColor3)),
                                         ),
                                         elevation:
-                                            MaterialStateProperty.all<double>(
+                                            WidgetStateProperty.all<double>(
                                                 0.0),
                                       ),
                                       onPressed: () {
@@ -1165,8 +1165,8 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                                                                       style:
                                                                           ButtonStyle(
                                                                         backgroundColor:
-                                                                            MaterialStateProperty.all<Color>(primaryColor1),
-                                                                        shape: MaterialStateProperty.all<
+                                                                            WidgetStateProperty.all<Color>(primaryColor1),
+                                                                        shape: WidgetStateProperty.all<
                                                                             RoundedRectangleBorder>(
                                                                           RoundedRectangleBorder(
                                                                             borderRadius:
@@ -1256,9 +1256,9 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                               child: ElevatedButton(
                                   style: ButtonStyle(
                                     backgroundColor:
-                                        MaterialStateProperty.all<Color>(
+                                        WidgetStateProperty.all<Color>(
                                             primaryColor1),
-                                    shape: MaterialStateProperty.all<
+                                    shape: WidgetStateProperty.all<
                                         RoundedRectangleBorder>(
                                       RoundedRectangleBorder(
                                           borderRadius:
@@ -1267,7 +1267,7 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                                               color: greyColor3)),
                                     ),
                                     elevation:
-                                        MaterialStateProperty.all<double>(0.0),
+                                        WidgetStateProperty.all<double>(0.0),
                                   ),
                                   onPressed: () {
                                     List<ProductToRfq> products = [];

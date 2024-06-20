@@ -59,7 +59,6 @@ class _RegisterOtpScreenState extends State<RegisterOtpScreen> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -326,9 +325,9 @@ class _RegisterOtpScreenState extends State<RegisterOtpScreen> {
                     ? ElevatedButton(
                         style: ButtonStyle(
                           backgroundColor:
-                              MaterialStateProperty.all<Color>(greyColor),
+                              WidgetStateProperty.all<Color>(greyColor),
                           shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                              WidgetStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(7.0),
                             ),
@@ -343,7 +342,7 @@ class _RegisterOtpScreenState extends State<RegisterOtpScreen> {
                       )
                     : ElevatedButton(
                         style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
+                          backgroundColor: WidgetStateProperty.all<Color>(
                               _digit1Controller.text.isNotEmpty &&
                                       _digit2Controller.text.isNotEmpty &&
                                       _digit3Controller.text.isNotEmpty &&
@@ -353,7 +352,7 @@ class _RegisterOtpScreenState extends State<RegisterOtpScreen> {
                                   ? primaryColor1
                                   : greyColor),
                           shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                              WidgetStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(7.0),
                             ),
@@ -493,10 +492,10 @@ class _RegisterOtpScreenState extends State<RegisterOtpScreen> {
                           child: isSendingOTP
                               ? const Center(
                                   child: SizedBox(
-                                    child: Center(
-                                        child: CircularProgressIndicator()),
                                     height: 10.0,
                                     width: 10.0,
+                                    child: Center(
+                                        child: CircularProgressIndicator()),
                                   ),
                                 )
                               : Text("Resend",

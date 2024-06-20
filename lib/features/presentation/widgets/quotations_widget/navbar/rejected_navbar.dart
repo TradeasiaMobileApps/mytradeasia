@@ -17,9 +17,9 @@ class RejectedNavbar extends StatelessWidget {
           print("rejected");
         },
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all<Color>(primaryColor1),
-          elevation: MaterialStateProperty.all<double>(0.0),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          backgroundColor: WidgetStateProperty.all<Color>(primaryColor1),
+          elevation: WidgetStateProperty.all<double>(0.0),
+          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(7.0),
           )),

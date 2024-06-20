@@ -1,4 +1,3 @@
-import 'package:equatable/equatable.dart';
 
 class UserSalesEntity {
    int? id;
@@ -56,7 +55,6 @@ class UserSalesEntity {
         this.cometChatUserId,
         this.token});
 
-  @override
   List<Object?> get props {
     return [
       id,
