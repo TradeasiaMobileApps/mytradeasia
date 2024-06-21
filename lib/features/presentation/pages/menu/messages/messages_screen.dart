@@ -81,6 +81,10 @@ class MessageScreenState extends State<MessageScreen>
 
     return Scaffold(
       backgroundColor: whiteColor,
+      appBar: AppBar(
+        elevation: 0,
+        toolbarHeight: 0,
+      ),
       body: SingleChildScrollView(
         child: SafeArea(
           child: Padding(

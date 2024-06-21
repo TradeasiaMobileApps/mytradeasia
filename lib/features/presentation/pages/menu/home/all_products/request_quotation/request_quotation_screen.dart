@@ -15,6 +15,8 @@ import 'package:mytradeasia/features/presentation/state_management/dropdown_inco
 import 'package:mytradeasia/features/presentation/widgets/dialog_sheet_widget.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
 
+import '../../../../../../domain/entities/user_entities/user_credential_entity.dart';
+import '../../../../../../domain/usecases/user_usecases/user_usecase_index.dart';
 import '../../../../../widgets/country_picker.dart';
 import '../../../../../state_management/rfq_bloc/rfq_bloc.dart';
 import '../../../../../state_management/rfq_bloc/rfq_event.dart';
@@ -51,8 +53,10 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
   final ScrollController _scrollController = ScrollController();
 
   String? _selectedValueIncoterm;
+  // final UserUsecaseIndex _user = injections<UserUsecaseIndex>();
+  late UserCredentialEntity _userCredential;
 
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  // final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   Map<String, dynamic> _data = {};
 
@@ -62,6 +66,10 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
     getIncotermData();
     super.initState();
   }
+
+  // void getUserCredentials() async {
+  //   _userCredential = await _user.getUserCredentials();
+  // }
 
   getUserData() async {
     _data = await _geUserData();
@@ -101,7 +109,7 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
         child: StreamBuilder(
             stream: _firestore
                 .collection('biodata')
-                .where('uid', isEqualTo: _auth.currentUser!.uid.toString())
+                .where('uid', isEqualTo: _userCredential.uid.toString())
                 .snapshots(),
             builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
               return streamSnapshot.connectionState == ConnectionState.waiting

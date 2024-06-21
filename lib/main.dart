@@ -141,12 +141,16 @@ class _MyAppState extends State<MyApp> {
             routerConfig: Routes().router,
             builder: (context, child) {
               checkConnection();
-              return Stack(
-                children: [
-                  child!,
-                  _connection ? const SizedBox() : const LoadingOverlay(),
-                ],
-              );
+              return AnnotatedRegion<SystemUiOverlayStyle>(
+                  value: SystemUiOverlayStyle(
+                    statusBarColor: Colors.transparent,
+                  ),
+                  child: Stack(
+                    children: [
+                      child!,
+                      _connection ? const SizedBox() : const LoadingOverlay(),
+                    ],
+                  ));
             },
           );
         },

@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:mytradeasia/config/themes/theme.dart';
-import 'package:mytradeasia/features/domain/entities/user_entities/user_credential_entity.dart';
+// import 'package:mytradeasia/features/domain/entities/user_entities/user_credential_entity.dart';
 import 'package:mytradeasia/features/domain/entities/user_entities/user_entity.dart';
 import 'package:mytradeasia/features/domain/usecases/rfq_usecases/get_rfq_list.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/user_usecase_index.dart';
@@ -16,7 +16,7 @@ import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
 
 import '../../../../../core/resources/data_state.dart';
-import '../../../../domain/usecases/otp_usecases/send_otp.dart';
+// import '../../../../domain/usecases/otp_usecases/send_otp.dart';
 
 class MyTradeAsiaScreen extends StatefulWidget {
   const MyTradeAsiaScreen({super.key});
@@ -27,23 +27,22 @@ class MyTradeAsiaScreen extends StatefulWidget {
 
 class _MyTradeAsiaScreenState extends State<MyTradeAsiaScreen> {
   final GetRfqList _getRfqList = injections<GetRfqList>();
-  final SendOTP _sendOTP = injections<SendOTP>();
+  // final SendOTP _sendOTP = injections<SendOTP>();
   final UserUsecaseIndex _user = injections<UserUsecaseIndex>();
-  // final _auth = FirebaseAuth.instance;
-  late UserCredentialEntity _userCredential;
+  // late UserCredentialEntity _userCredential;
 
   
-  @override
-  void initState() {
+  // @override
+  // void initState() {
     
-    super.initState();
-    getUserCredentials();
-  }
+  //   super.initState();
+  //   getUserCredentials();
+  // }
 
 
-  void getUserCredentials() async{
-    _userCredential = await _user.getUserCredentials();
-  }
+  // void getUserCredentials() async{
+  //   _userCredential = await _user.getUserCredentials();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -206,63 +205,63 @@ class _MyTradeAsiaScreenState extends State<MyTradeAsiaScreen> {
                                                 CircularProgressIndicator()), // Loading indicator
                                       );
 
-                                      try {
-                                        var result = await _sendOTP.call(
-                                            param: _userCredential.email!, );
+                                      // try {
+                                      //   var result = await _sendOTP.call(
+                                      //       param: _userCredential.email!, );
 
-                                        if (result is DataSuccess) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                              duration: const Duration(
-                                                  seconds: 2,
-                                                  milliseconds: 500),
-                                              backgroundColor: Colors.green,
-                                              content: Text(
-                                                "OTP code sent to : ${_userCredential.email!}",
-                                                style: body1Regular.copyWith(
-                                                    color: Colors.white,
-                                                    fontSize: 12,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ),
-                                          );
-                                          context.go(
-                                              "/mytradeasia/change_password_otp",
-                                              extra: _userCredential.email!);
-                                        } else {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                              duration: const Duration(
-                                                  seconds: 2,
-                                                  milliseconds: 500),
-                                              backgroundColor: Colors.red,
-                                              content: Text(
-                                                "Failed to send OTP. Please try again.",
-                                                style: body1Regular.copyWith(
-                                                    color: Colors.white,
-                                                    fontSize: 12,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                      } catch (e) {
-                                        // Navigator.of(context).pop();
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                            content: Text("Error occurred: $e"),
-                                          ),
-                                        );
-                                      } finally {
-                                        Navigator.of(context,
-                                                rootNavigator: true)
-                                            .pop();
-                                      }
+                                      //   if (result is DataSuccess) {
+                                      //     ScaffoldMessenger.of(context)
+                                      //         .showSnackBar(
+                                      //       SnackBar(
+                                      //         duration: const Duration(
+                                      //             seconds: 2,
+                                      //             milliseconds: 500),
+                                      //         backgroundColor: Colors.green,
+                                      //         content: Text(
+                                      //           "OTP code sent to : ${_userCredential.email!}",
+                                      //           style: body1Regular.copyWith(
+                                      //               color: Colors.white,
+                                      //               fontSize: 12,
+                                      //               fontWeight:
+                                      //                   FontWeight.bold),
+                                      //         ),
+                                      //       ),
+                                      //     );
+                                      //     context.go(
+                                      //         "/mytradeasia/change_password_otp",
+                                      //         extra: _userCredential.email!);
+                                      //   } else {
+                                      //     ScaffoldMessenger.of(context)
+                                      //         .showSnackBar(
+                                      //       SnackBar(
+                                      //         duration: const Duration(
+                                      //             seconds: 2,
+                                      //             milliseconds: 500),
+                                      //         backgroundColor: Colors.red,
+                                      //         content: Text(
+                                      //           "Failed to send OTP. Please try again.",
+                                      //           style: body1Regular.copyWith(
+                                      //               color: Colors.white,
+                                      //               fontSize: 12,
+                                      //               fontWeight:
+                                      //                   FontWeight.bold),
+                                      //         ),
+                                      //       ),
+                                      //     );
+                                      //   }
+                                      // } catch (e) {
+                                      //   // Navigator.of(context).pop();
+                                      //   ScaffoldMessenger.of(context)
+                                      //       .showSnackBar(
+                                      //     SnackBar(
+                                      //       content: Text("Error occurred: $e"),
+                                      //     ),
+                                      //   );
+                                      // } finally {
+                                      //   Navigator.of(context,
+                                      //           rootNavigator: true)
+                                      //       .pop();
+                                      // }
                                     },
                                   );
                                 }),

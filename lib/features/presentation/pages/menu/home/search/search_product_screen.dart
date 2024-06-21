@@ -55,13 +55,16 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     final searchProd = BlocProvider.of<SearchProductBloc>(context);
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        toolbarHeight: 0,
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: size20px),
         child: Column(
           children: [
             Padding(
-              padding:
-                  const EdgeInsets.only(top: size20px * 3, bottom: size20px),
+              padding: const EdgeInsets.only(top: size20px, bottom: size20px),
               child: Row(
                 children: [
                   InkWell(

@@ -2,7 +2,6 @@ import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:country_code_picker/country_code_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -17,6 +16,8 @@ import 'package:mytradeasia/features/presentation/state_management/auth_bloc/aut
 import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
 
+import '../../../../../../domain/entities/user_entities/user_credential_entity.dart';
+import '../../../../../../domain/usecases/user_usecases/user_usecase_index.dart';
 import '../../../../../widgets/dialog_sheet_widget.dart';
 import '../../../../../widgets/text_editing_widget.dart';
 
@@ -44,7 +45,14 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
   final GetUserSnapshot _getUserSnapshot = injections<GetUserSnapshot>();
   final UpdateProfile _updateProfile = injections<UpdateProfile>();
   final SendOTP _sendOTP = injections<SendOTP>();
-  final _auth = FirebaseAuth.instance;
+  final UserUsecaseIndex _user = injections<UserUsecaseIndex>();
+  late UserCredentialEntity _userCredential;
+
+  @override
+  void initState() {
+    super.initState();
+    getUserCredentials();
+  }
 
   @override
   void dispose() {
@@ -54,6 +62,10 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
     _companyNameController.dispose();
     _emailController.dispose();
     super.dispose();
+  }
+
+  void getUserCredentials() async {
+    _userCredential = await _user.getUserCredentials();
   }
 
   void _updateMyProfile(
@@ -230,8 +242,9 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
                                             decoration: BoxDecoration(
                                               border:
                                                   Border.all(color: greyColor3),
-                                              borderRadius: const BorderRadius.all(
-                                                  Radius.circular(15)),
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(15)),
                                             ),
                                             padding: const EdgeInsets.all(2),
                                             child: Image.asset(
@@ -244,10 +257,12 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
                                             decoration: BoxDecoration(
                                               border:
                                                   Border.all(color: greyColor3),
-                                              borderRadius: const BorderRadius.all(
-                                                  Radius.circular(15)),
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(15)),
                                             ),
-                                            margin: const EdgeInsets.only(right: 3),
+                                            margin:
+                                                const EdgeInsets.only(right: 3),
                                             child: CachedNetworkImage(
                                               imageUrl: streamSnapshot
                                                   .data["profilePicUrl"],
@@ -442,7 +457,8 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
                                                           // optional. aligns the flag and the Text left
                                                           // alignLeft: false,
                                                           padding:
-                                                              const EdgeInsets.only(
+                                                              const EdgeInsets
+                                                                  .only(
                                                                   left: 5),
                                                         ),
                                                       ),
@@ -560,7 +576,7 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
                                                       hintText: state.user !=
                                                               null
                                                           ? state.user!.email!
-                                                          : _auth.currentUser!
+                                                          : _userCredential
                                                               .email!);
                                                 }
                                                 return TextEditingWithIconSuffix(
@@ -568,8 +584,7 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
                                                   controller: _emailController,
                                                   hintText: state.user != null
                                                       ? state.user!.email!
-                                                      : _auth
-                                                          .currentUser!.email!,
+                                                      : _userCredential.email!,
                                                   imageUrl:
                                                       "assets/images/icon_forward.png",
                                                   navigationPage: () async {
@@ -586,9 +601,9 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
                                                     try {
                                                       var result =
                                                           await _sendOTP.call(
-                                                              param: _auth
-                                                                  .currentUser!
-                                                                  .email!);
+                                                              param:
+                                                                  _userCredential
+                                                                      .email!);
 
                                                       if (result
                                                           is DataSuccess) {
@@ -604,7 +619,7 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
                                                             backgroundColor:
                                                                 Colors.green,
                                                             content: Text(
-                                                              "OTP code sent to : ${_auth.currentUser!.email!}",
+                                                              "OTP code sent to : ${_userCredential.email!}",
                                                               style: body1Regular.copyWith(
                                                                   color: Colors
                                                                       .white,
@@ -617,9 +632,9 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
                                                         );
                                                         context.go(
                                                             "/mytradeasia/personal_data/change_email_otp",
-                                                            extra: _auth
-                                                                .currentUser!
-                                                                .email!);
+                                                            extra:
+                                                                _userCredential
+                                                                    .email!);
                                                       } else {
                                                         ScaffoldMessenger.of(
                                                                 context)

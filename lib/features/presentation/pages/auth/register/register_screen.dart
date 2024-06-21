@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-// import 'package:linkedin_login/linkedin_login.dart';
 import 'package:mytradeasia/core/resources/data_state.dart';
 import 'package:mytradeasia/features/domain/usecases/otp_usecases/send_otp.dart';
 import 'package:mytradeasia/features/presentation/widgets/country_picker.dart';
@@ -34,12 +33,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   //     injections<PhoneAuthentication>();
 
   final dio = Dio();
-
   final _formKey = GlobalKey<FormState>();
-
-  final _auth = FirebaseAuth.instance;
-
   final SendOTP _sendOTP = injections<SendOTP>();
+  final _auth = FirebaseAuth.instance;
 
   UserObject? user;
   bool logoutUser = false;
@@ -172,7 +168,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 child: CountryPicker(
                                   onChanged: (value) {
                                     countryNum = value.phoneCode!;
-                                    print(countryNum);
+                                    // print(countryNum);
                                   },
                                 ),
                                 // child: CountryCodePicker(
@@ -285,8 +281,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             _phoneNumberController.text.isNotEmpty
                         ? ElevatedButton(
                             style: ButtonStyle(
-                              backgroundColor: WidgetStateProperty.all<Color>(
-                                  primaryColor1),
+                              backgroundColor:
+                                  WidgetStateProperty.all<Color>(primaryColor1),
                               shape: WidgetStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
@@ -300,7 +296,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     List<String> userSignInMethods =
                                         await _auth.fetchSignInMethodsForEmail(
                                             _emailController.text);
-                                    print(userSignInMethods);
+                                    // print(userSignInMethods);
                                     if (userSignInMethods.isNotEmpty) {
                                       if (userSignInMethods.first !=
                                           "password") {

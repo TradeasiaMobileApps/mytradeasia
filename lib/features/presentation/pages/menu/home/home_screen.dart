@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/config/routes/parameters.dart';
@@ -28,7 +29,6 @@ import 'package:mytradeasia/utils/sales_force_screen.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
-
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -101,274 +101,261 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: RefreshIndicator(
-            onRefresh: () async {
-              context.read<TopProductBloc>().add(const GetTopProduct());
-              context.read<HomeBloc>().add(const GetHomeDataEvent());
-            },
-            color: primaryColor1,
-            child: SingleChildScrollView(
-              child: StreamBuilder(
-                  stream: _getUserSnapshot.call(),
-                  builder: (context, AsyncSnapshot streamSnapshot) {
-                    if (streamSnapshot.connectionState ==
-                        ConnectionState.waiting) {
-                      return const CircularProgressIndicator.adaptive(
-                        backgroundColor: primaryColor1,
-                      );
-                    }
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+        value: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light,
+        ),
+        child: Scaffold(
+          body: Center(
+            child: RefreshIndicator(
+              onRefresh: () async {
+                context.read<TopProductBloc>().add(const GetTopProduct());
+                context.read<HomeBloc>().add(const GetHomeDataEvent());
+              },
+              color: primaryColor1,
+              child: SingleChildScrollView(
+                child: StreamBuilder(
+                    stream: _getUserSnapshot.call(),
+                    builder: (context, AsyncSnapshot streamSnapshot) {
+                      if (streamSnapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return const CircularProgressIndicator.adaptive(
+                          backgroundColor: primaryColor1,
+                        );
+                      }
 
-                    if (streamSnapshot.hasError) {
-                      return const CircularProgressIndicator.adaptive(
-                        backgroundColor: primaryColor1,
-                      );
-                    }
+                      if (streamSnapshot.hasError) {
+                        return const CircularProgressIndicator.adaptive(
+                          backgroundColor: primaryColor1,
+                        );
+                      }
 
-                    if (streamSnapshot.hasData) {
-                      // var docsData =
-                      //     streamSnapshot.data as Map<String, dynamic>;
+                      if (streamSnapshot.hasData) {
+                        // var docsData =
+                        //     streamSnapshot.data as Map<String, dynamic>;
 
-                      return Column(
-                        children: [
-                          Column(
-                            children: [
-                              // Appbar
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                height: size20px * 9,
-                                decoration: const BoxDecoration(
-                                  color: primaryColor1,
-                                ),
-                                child: Stack(
-                                  children: [
-                                    SizedBox(
-                                        width: double.infinity,
-                                        child: Image.asset(
-                                            "assets/images/background.png",
-                                            fit: BoxFit.cover)),
-                                    Column(
-                                      children: [
-                                        const SizedBox(
-                                          height: size20px * 1.5,
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: size20px),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text("Welcome Back,",
-                                                      style: text12.copyWith(
-                                                          color: whiteColor)),
-                                                  const SizedBox(
-                                                      height: size20px / 5),
-                                                  SizedBox(
-                                                    height: 30,
-                                                    width: size20px * 10,
-                                                    child: Text(
-                                                      "${streamSnapshot.data['firstName'] == "" ? "new" : streamSnapshot.data['firstName']} ${streamSnapshot.data['lastName'] == "" ? "user" : streamSnapshot.data['lastName']}",
-                                                      style: text16.copyWith(
-                                                          color: whiteColor,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Container(
-                                                    height: 40.0,
-                                                    width: 40.0,
-                                                    decoration: const BoxDecoration(
-                                                        color: secondaryColor1,
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    5.0))),
-                                                    child: IconButton(
-                                                      onPressed: () {
-                                                        /* With go_router */
-                                                        context.go(
-                                                            "/home/notification");
-                                                      },
-                                                      icon: Image.asset(
-                                                          "assets/images/icon_notification.png",
-                                                          width: 24,
-                                                          height: 24),
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                      width: size20px / 2),
-                                                  streamSnapshot.data['role'] ==
-                                                              "Agent" ||
-                                                          streamSnapshot.data[
-                                                                  'role'] ==
-                                                              "Customer"
-                                                      ? Container(
-                                                          height: 40.0,
-                                                          width: 40.0,
-                                                          decoration:
-                                                              const BoxDecoration(
-                                                            color:
-                                                                secondaryColor1,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .all(Radius
-                                                                        .circular(
-                                                                            5.0)),
-                                                          ),
-                                                          child:
-                                                              const CartButton(),
-                                                        )
-                                                      : Container()
-                                                ],
-                                              )
-                                            ],
+                        return Column(
+                          children: [
+                            Column(
+                              children: [
+                                // Appbar
+                                Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: size20px * 9,
+                                  decoration: const BoxDecoration(
+                                    color: primaryColor1,
+                                  ),
+                                  child: Stack(
+                                    children: [
+                                      SizedBox(
+                                          width: double.infinity,
+                                          child: Image.asset(
+                                              "assets/images/background.png",
+                                              fit: BoxFit.cover)),
+                                      Column(
+                                        children: [
+                                          const SizedBox(
+                                            height: size20px * 1.5,
                                           ),
-                                        ),
-                                        const SizedBox(height: size20px / 1.5),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 20.0),
-                                          child: SizedBox(
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            height: size20px * 2.5,
-                                            child: Form(
-                                              child: TextFormField(
-                                                readOnly: true,
-                                                onTap: () =>
-                                                    /* With go_router */
-                                                    context.go("/home/search"),
-                                                decoration: InputDecoration(
-                                                  border: InputBorder.none,
-                                                  enabledBorder:
-                                                      const OutlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        color: greyColor3),
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                      Radius.circular(
-                                                          size20px / 2),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: size20px),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text("Welcome Back,",
+                                                        style: text12.copyWith(
+                                                            color: whiteColor)),
+                                                    const SizedBox(
+                                                        height: size20px / 5),
+                                                    SizedBox(
+                                                      height: 30,
+                                                      width: size20px * 10,
+                                                      child: Text(
+                                                        "${streamSnapshot.data['firstName'] == "" ? "new" : streamSnapshot.data['firstName']} ${streamSnapshot.data['lastName'] == "" ? "user" : streamSnapshot.data['lastName']}",
+                                                        style: text16.copyWith(
+                                                            color: whiteColor,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                      ),
                                                     ),
-                                                  ),
-                                                  focusedBorder:
-                                                      const OutlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        color: greyColor3),
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                      Radius.circular(
-                                                          size20px / 2),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Container(
+                                                      height: 40.0,
+                                                      width: 40.0,
+                                                      decoration: const BoxDecoration(
+                                                          color:
+                                                              secondaryColor1,
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          5.0))),
+                                                      child: IconButton(
+                                                        onPressed: () {
+                                                          /* With go_router */
+                                                          context.go(
+                                                              "/home/notification");
+                                                        },
+                                                        icon: Image.asset(
+                                                            "assets/images/icon_notification.png",
+                                                            width: 24,
+                                                            height: 24),
+                                                      ),
                                                     ),
-                                                  ),
-                                                  filled: true,
-                                                  fillColor: whiteColor,
-                                                  prefixIcon: Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 20,
-                                                            right: 15.0),
-                                                    child: Image.asset(
-                                                      "assets/images/icon_search.png",
-                                                      width: 24.0,
-                                                      height: 24.0,
+                                                    const SizedBox(
+                                                        width: size20px / 2),
+                                                    streamSnapshot.data[
+                                                                    'role'] ==
+                                                                "Agent" ||
+                                                            streamSnapshot.data[
+                                                                    'role'] ==
+                                                                "Customer"
+                                                        ? Container(
+                                                            height: 40.0,
+                                                            width: 40.0,
+                                                            decoration:
+                                                                const BoxDecoration(
+                                                              color:
+                                                                  secondaryColor1,
+                                                              borderRadius: BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          5.0)),
+                                                            ),
+                                                            child:
+                                                                const CartButton(),
+                                                          )
+                                                        : Container()
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                              height: size20px / 1.5),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 20.0),
+                                            child: SizedBox(
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              height: size20px * 2.5,
+                                              child: Form(
+                                                child: TextFormField(
+                                                  readOnly: true,
+                                                  onTap: () =>
+                                                      /* With go_router */
+                                                      context
+                                                          .go("/home/search"),
+                                                  decoration: InputDecoration(
+                                                    border: InputBorder.none,
+                                                    enabledBorder:
+                                                        const OutlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color: greyColor3),
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                        Radius.circular(
+                                                            size20px / 2),
+                                                      ),
                                                     ),
+                                                    focusedBorder:
+                                                        const OutlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color: greyColor3),
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                        Radius.circular(
+                                                            size20px / 2),
+                                                      ),
+                                                    ),
+                                                    filled: true,
+                                                    fillColor: whiteColor,
+                                                    prefixIcon: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 20,
+                                                              right: 15.0),
+                                                      child: Image.asset(
+                                                        "assets/images/icon_search.png",
+                                                        width: 24.0,
+                                                        height: 24.0,
+                                                      ),
+                                                    ),
+                                                    hintText:
+                                                        "What do you want to search?",
+                                                    hintStyle:
+                                                        body1Regular.copyWith(
+                                                            color: greyColor),
                                                   ),
-                                                  hintText:
-                                                      "What do you want to search?",
-                                                  hintStyle:
-                                                      body1Regular.copyWith(
-                                                          color: greyColor),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ],
+                                          )
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              // End of AppBar
+                                // End of AppBar
 
-                              // Main Content
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: size20px,
-                                    vertical: size20px - 5.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    /* 4 Menu Section */
-                                    streamSnapshot.data != null
-                                        ? streamSnapshot.data['role'] == "Sales"
-                                            ? BlocBuilder<SalesforceLoginBloc,
-                                                    SalesforceLoginState>(
-                                                builder: (context, state) {
-                                                if (state
-                                                    is SalesforceLoginLoading) {
-                                                  return Shimmer.fromColors(
-                                                    baseColor: greyColor,
-                                                    highlightColor: greyColor4,
-                                                    child: Column(
-                                                      children: [
-                                                        Row(
-                                                          children: [
-                                                            Expanded(
-                                                              flex: 5,
-                                                              child: Container(
-                                                                height: 60,
-                                                                width: 160,
-                                                                decoration: const BoxDecoration(
-                                                                    borderRadius:
-                                                                        BorderRadius.all(Radius.circular(
-                                                                            10)),
-                                                                    color:
-                                                                        whiteColor),
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                                width: 15.0),
-                                                            Expanded(
-                                                              flex: 5,
-                                                              child: Container(
-                                                                height: 60,
-                                                                width: 160,
-                                                                decoration: const BoxDecoration(
-                                                                    borderRadius:
-                                                                        BorderRadius.all(Radius.circular(
-                                                                            10)),
-                                                                    color:
-                                                                        whiteColor),
-                                                              ),
-                                                            )
-                                                          ],
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .only(
-                                                                  top:
-                                                                      size20px *
-                                                                          0.75,
-                                                                  bottom:
-                                                                      size20px),
-                                                          child: Row(
+                                // Main Content
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: size20px,
+                                      vertical: size20px - 5.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      /* 4 Menu Section */
+                                      streamSnapshot.data != null
+                                          ? streamSnapshot.data['role'] ==
+                                                  "Sales"
+                                              ? BlocBuilder<SalesforceLoginBloc,
+                                                      SalesforceLoginState>(
+                                                  builder: (context, state) {
+                                                  if (state
+                                                      is SalesforceLoginLoading) {
+                                                    return Shimmer.fromColors(
+                                                      baseColor: greyColor,
+                                                      highlightColor:
+                                                          greyColor4,
+                                                      child: Column(
+                                                        children: [
+                                                          Row(
                                                             children: [
-                                                              // ALL PRODUCTS
+                                                              Expanded(
+                                                                flex: 5,
+                                                                child:
+                                                                    Container(
+                                                                  height: 60,
+                                                                  width: 160,
+                                                                  decoration: const BoxDecoration(
+                                                                      borderRadius:
+                                                                          BorderRadius.all(Radius.circular(
+                                                                              10)),
+                                                                      color:
+                                                                          whiteColor),
+                                                                ),
+                                                              ),
+                                                              const SizedBox(
+                                                                  width: 15.0),
                                                               Expanded(
                                                                 flex: 5,
                                                                 child:
@@ -385,210 +372,214 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               )
                                                             ],
                                                           ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  );
-                                                }
+                                                          Padding(
+                                                            padding: const EdgeInsets
+                                                                .only(
+                                                                top: size20px *
+                                                                    0.75,
+                                                                bottom:
+                                                                    size20px),
+                                                            child: Row(
+                                                              children: [
+                                                                // ALL PRODUCTS
+                                                                Expanded(
+                                                                  flex: 5,
+                                                                  child:
+                                                                      Container(
+                                                                    height: 60,
+                                                                    width: 160,
+                                                                    decoration: const BoxDecoration(
+                                                                        borderRadius:
+                                                                            BorderRadius.all(Radius.circular(
+                                                                                10)),
+                                                                        color:
+                                                                            whiteColor),
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  }
 
-                                                if (state
-                                                    is SalesforceLoginDone) {
-                                                  return MenuGridWidgetSales(
-                                                    accessToken: state
-                                                        .loginEntity!
-                                                        .accessToken!,
-                                                  );
-                                                }
+                                                  if (state
+                                                      is SalesforceLoginDone) {
+                                                    return MenuGridWidgetSales(
+                                                      accessToken: state
+                                                          .loginEntity!
+                                                          .accessToken!,
+                                                    );
+                                                  }
 
-                                                return Container();
-                                              })
-                                            : const MenuGridWidget()
-                                        : Container(),
-                                    /* End 4 Menu Section */
+                                                  return Container();
+                                                })
+                                              : const MenuGridWidget()
+                                          : Container(),
+                                      /* End 4 Menu Section */
 
-                                    /* Top Product Section */
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Text("Our Top Products",
-                                            style: text18),
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            color: secondaryColor5,
-                                            borderRadius: BorderRadius.circular(
-                                                size20px * 5),
-                                          ),
-                                          child: InkWell(
-                                            onTap: () {
-                                              var topProductBloc = BlocProvider
-                                                  .of<TopProductBloc>(context);
+                                      /* Top Product Section */
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          const Text("Our Top Products",
+                                              style: text18),
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              color: secondaryColor5,
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      size20px * 5),
+                                            ),
+                                            child: InkWell(
+                                              onTap: () {
+                                                var topProductBloc =
+                                                    BlocProvider.of<
+                                                            TopProductBloc>(
+                                                        context);
 
-                                              topProductBloc
-                                                  .add(const GetTopProduct());
+                                                topProductBloc
+                                                    .add(const GetTopProduct());
 
-                                              /* With go_router */
-                                              context.go("/home/top_products");
-                                            },
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: size20px / 2,
-                                                      vertical: size20px / 5),
-                                              child: Text(
-                                                "See More",
-                                                style: text12.copyWith(
-                                                    color: secondaryColor1),
+                                                /* With go_router */
+                                                context
+                                                    .go("/home/top_products");
+                                              },
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal:
+                                                            size20px / 2,
+                                                        vertical: size20px / 5),
+                                                child: Text(
+                                                  "See More",
+                                                  style: text12.copyWith(
+                                                      color: secondaryColor1),
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          bottom: size20px / 2, top: size20px),
-                                      child: BlocBuilder<HomeBloc, HomeState>(
-                                          builder: (context, state) {
-                                        if (state is HomeLoading) {
-                                          return Shimmer.fromColors(
-                                            baseColor: greyColor3,
-                                            highlightColor: greyColor,
-                                            child: GridView.builder(
+                                        ],
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            bottom: size20px / 2,
+                                            top: size20px),
+                                        child: BlocBuilder<HomeBloc, HomeState>(
+                                            builder: (context, state) {
+                                          if (state is HomeLoading) {
+                                            return Shimmer.fromColors(
+                                              baseColor: greyColor3,
+                                              highlightColor: greyColor,
+                                              child: GridView.builder(
+                                                gridDelegate:
+                                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                                        crossAxisCount: 2,
+                                                        crossAxisSpacing: 15,
+                                                        mainAxisSpacing: 15,
+                                                        childAspectRatio: 0.62),
+                                                itemCount: 4,
+                                                shrinkWrap: true,
+                                                padding: EdgeInsets.zero,
+                                                physics:
+                                                    const NeverScrollableScrollPhysics(),
+                                                itemBuilder: (context, index) =>
+                                                    const Card(),
+                                              ),
+                                            );
+                                          } else if (state is HomeDone) {
+                                            // for (var i = 0;
+                                            //     i <
+                                            //         state.homeData!.byIndustry!
+                                            //             .detailIndustry!.length;
+                                            //     i++) {
+                                            //   if (i == 7) {
+                                            //     print("all industry");
+                                            //   } else {
+                                            //     print(state
+                                            //         .homeData!
+                                            //         .byIndustry!
+                                            //         .detailIndustry![i]
+                                            //         .industryName);
+                                            //   }
+                                            // }
+
+                                            return GridView.builder(
                                               gridDelegate:
                                                   const SliverGridDelegateWithFixedCrossAxisCount(
                                                       crossAxisCount: 2,
                                                       crossAxisSpacing: 15,
                                                       mainAxisSpacing: 15,
-                                                      childAspectRatio: 0.62),
-                                              itemCount: 4,
+                                                      childAspectRatio: 0.6),
+                                              itemCount: state.homeData!
+                                                      .topProduct!.isNotEmpty
+                                                  ? 4
+                                                  : 0,
                                               shrinkWrap: true,
                                               padding: EdgeInsets.zero,
                                               physics:
                                                   const NeverScrollableScrollPhysics(),
-                                              itemBuilder: (context, index) =>
-                                                  const Card(),
-                                            ),
-                                          );
-                                        } else if (state is HomeDone) {
-                                          // for (var i = 0;
-                                          //     i <
-                                          //         state.homeData!.byIndustry!
-                                          //             .detailIndustry!.length;
-                                          //     i++) {
-                                          //   if (i == 7) {
-                                          //     print("all industry");
-                                          //   } else {
-                                          //     print(state
-                                          //         .homeData!
-                                          //         .byIndustry!
-                                          //         .detailIndustry![i]
-                                          //         .industryName);
-                                          //   }
-                                          // }
+                                              itemBuilder: (context, index) {
+                                                return InkWell(
+                                                  onTap: () async {
+                                                    context.pushNamed("product",
+                                                        pathParameters: {
+                                                          'productId': state
+                                                              .homeData!
+                                                              .topProduct![
+                                                                  index]
+                                                              .productId!
+                                                              .toString()
+                                                        });
 
-                                          return GridView.builder(
-                                            gridDelegate:
-                                                const SliverGridDelegateWithFixedCrossAxisCount(
-                                                    crossAxisCount: 2,
-                                                    crossAxisSpacing: 15,
-                                                    mainAxisSpacing: 15,
-                                                    childAspectRatio: 0.6),
-                                            itemCount: state.homeData!
-                                                    .topProduct!.isNotEmpty
-                                                ? 4
-                                                : 0,
-                                            shrinkWrap: true,
-                                            padding: EdgeInsets.zero,
-                                            physics:
-                                                const NeverScrollableScrollPhysics(),
-                                            itemBuilder: (context, index) {
-                                              return InkWell(
-                                                onTap: () async {
-                                                  context.pushNamed("product",
-                                                      pathParameters: {
-                                                        'productId': state
-                                                            .homeData!
-                                                            .topProduct![index]
-                                                            .productId!
-                                                            .toString()
-                                                      });
+                                                    Map<String, dynamic> data =
+                                                        {
+                                                      "productId": state
+                                                          .homeData!
+                                                          .topProduct![index]
+                                                          .productId,
+                                                      "productName": state
+                                                          .homeData!
+                                                          .topProduct![index]
+                                                          .productname,
+                                                      "casNumber": state
+                                                          .homeData!
+                                                          .topProduct![index]
+                                                          .casNumber,
+                                                      "hsCode": state
+                                                          .homeData!
+                                                          .topProduct![index]
+                                                          .hsCode,
+                                                      "productImage": state
+                                                          .homeData!
+                                                          .topProduct![index]
+                                                          .productimage
+                                                    };
 
-                                                  Map<String, dynamic> data = {
-                                                    "productId": state
-                                                        .homeData!
-                                                        .topProduct![index]
-                                                        .productId,
-                                                    "productName": state
-                                                        .homeData!
-                                                        .topProduct![index]
-                                                        .productname,
-                                                    "casNumber": state
-                                                        .homeData!
-                                                        .topProduct![index]
-                                                        .casNumber,
-                                                    "hsCode": state
-                                                        .homeData!
-                                                        .topProduct![index]
-                                                        .hsCode,
-                                                    "productImage": state
-                                                        .homeData!
-                                                        .topProduct![index]
-                                                        .productimage
-                                                  };
+                                                    await _addRecentlySeen(
+                                                        param: data);
+                                                  },
+                                                  //product cards
 
-                                                  await _addRecentlySeen(
-                                                      param: data);
-                                                },
-                                                //product cards
-
-                                                child: streamSnapshot
-                                                            .data['role'] !=
-                                                        "Sales"
-                                                    ? ProductCard(
-                                                        product: ProductEntity(
-                                                          productId: state
-                                                              .homeData!
-                                                              .topProduct![
-                                                                  index]
-                                                              .productId,
-                                                          productname: state
-                                                              .homeData!
-                                                              .topProduct![
-                                                                  index]
-                                                              .productname,
-                                                          productimage: state
-                                                              .homeData!
-                                                              .topProduct![
-                                                                  index]
-                                                              .productimage!,
-                                                          hsCode: state
-                                                              .homeData!
-                                                              .topProduct![
-                                                                  index]
-                                                              .hsCode!,
-                                                          casNumber: state
-                                                              .homeData!
-                                                              .topProduct![
-                                                                  index]
-                                                              .casNumber!,
-                                                        ),
-                                                        onPressed: () {
-                                                          List<ProductToRfq>
-                                                              products = [];
-                                                          ProductToRfq product =
-                                                              ProductToRfq(
+                                                  child: streamSnapshot
+                                                              .data['role'] !=
+                                                          "Sales"
+                                                      ? ProductCard(
+                                                          product:
+                                                              ProductEntity(
                                                             productId: state
                                                                 .homeData!
                                                                 .topProduct![
                                                                     index]
-                                                                .productId!,
-                                                            productName: state
+                                                                .productId,
+                                                            productname: state
                                                                 .homeData!
                                                                 .topProduct![
                                                                     index]
-                                                                .productname!,
-                                                            productImage: state
+                                                                .productname,
+                                                            productimage: state
                                                                 .homeData!
                                                                 .topProduct![
                                                                     index]
@@ -603,149 +594,86 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                 .topProduct![
                                                                     index]
                                                                 .casNumber!,
-                                                          );
-                                                          products.add(product);
-
-                                                          RequestQuotationParameter
-                                                              param =
-                                                              RequestQuotationParameter(
-                                                            products: products,
-                                                          );
-                                                          context.go(
-                                                              "/home/request_quotation",
-                                                              extra: param);
-                                                        })
-                                                    : ProductCard(
-                                                        product: ProductEntity(
-                                                          productId: state
-                                                              .homeData!
-                                                              .topProduct![
-                                                                  index]
-                                                              .productId,
-                                                          productname: state
-                                                              .homeData!
-                                                              .topProduct![
-                                                                  index]
-                                                              .productname,
-                                                          productimage: state
-                                                              .homeData!
-                                                              .topProduct![
-                                                                  index]
-                                                              .productimage!,
-                                                          hsCode: state
-                                                              .homeData!
-                                                              .topProduct![
-                                                                  index]
-                                                              .hsCode!,
-                                                          casNumber: state
-                                                              .homeData!
-                                                              .topProduct![
-                                                                  index]
-                                                              .casNumber!,
-                                                        ),
-                                                        isNotRecentSeenCard:
-                                                            false,
-                                                      ),
-                                              );
-                                            },
-                                          );
-                                        } else {
-                                          return Center(
-                                            child: Text(
-                                              "Error",
-                                              style: heading1.copyWith(
-                                                  color: redColor1),
-                                            ),
-                                          );
-                                        }
-                                      }),
-                                    ),
-                                    /* End Top Product Section */
-
-                                    /* Industry Section */
-                                    const Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: size20px),
-                                        child: Text("Industry", style: text18)),
-                                    SizedBox(
-                                      height: MediaQuery.of(context)
-                                                  .size
-                                                  .height <
-                                              600
-                                          ? MediaQuery.of(context).size.height *
-                                              0.3
-                                          : MediaQuery.of(context).size.height *
-                                              0.24,
-                                      width: MediaQuery.of(context).size.width,
-                                      child: BlocBuilder<HomeBloc, HomeState>(
-                                        builder: (context, state) {
-                                          if (state is HomeLoading) {
-                                            return const Center(
-                                              child: CircularProgressIndicator
-                                                  .adaptive(),
-                                            );
-                                          } else if (state is HomeDone) {
-                                            return GridView(
-                                              padding: EdgeInsets.zero,
-                                              physics:
-                                                  const NeverScrollableScrollPhysics(),
-                                              shrinkWrap: true,
-                                              clipBehavior: Clip.none,
-                                              gridDelegate:
-                                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                                      crossAxisCount: 4,
-                                                      crossAxisSpacing: 5,
-                                                      mainAxisSpacing: 5,
-                                                      childAspectRatio: 0.9),
-                                              children: [
-                                                for (var i = 0;
-                                                    i <
-                                                        state
-                                                            .homeData!
-                                                            .byIndustry!
-                                                            .detailIndustry!
-                                                            .length;
-                                                    i++)
-                                                  i == 7
-                                                      ? TopIndustryWidget(
-                                                          icon:
-                                                              "assets/images/icon_all_industry.png",
+                                                          ),
                                                           onPressed: () {
-                                                            context.go(
-                                                                "/home/all_industry");
-                                                          },
-                                                          topIndustryName:
-                                                              "All Industries")
-                                                      : TopIndustryWidget(
-                                                          icon: state
-                                                              .homeData!
-                                                              .byIndustry!
-                                                              .detailIndustry![
-                                                                  i]
-                                                              .industryImage!,
-                                                          onPressed: () {
-                                                            ProductsIndustryParameter
+                                                            List<ProductToRfq>
+                                                                products = [];
+                                                            ProductToRfq
+                                                                product =
+                                                                ProductToRfq(
+                                                              productId: state
+                                                                  .homeData!
+                                                                  .topProduct![
+                                                                      index]
+                                                                  .productId!,
+                                                              productName: state
+                                                                  .homeData!
+                                                                  .topProduct![
+                                                                      index]
+                                                                  .productname!,
+                                                              productImage: state
+                                                                  .homeData!
+                                                                  .topProduct![
+                                                                      index]
+                                                                  .productimage!,
+                                                              hsCode: state
+                                                                  .homeData!
+                                                                  .topProduct![
+                                                                      index]
+                                                                  .hsCode!,
+                                                              casNumber: state
+                                                                  .homeData!
+                                                                  .topProduct![
+                                                                      index]
+                                                                  .casNumber!,
+                                                            );
+                                                            products
+                                                                .add(product);
+
+                                                            RequestQuotationParameter
                                                                 param =
-                                                                ProductsIndustryParameter(
-                                                                    index: i,
-                                                                    industryName: state
-                                                                        .homeData!
-                                                                        .byIndustry!
-                                                                        .detailIndustry![
-                                                                            i]
-                                                                        .industryName!);
-
-                                                            context.push(
-                                                                "/home/all_industry/products_industry",
+                                                                RequestQuotationParameter(
+                                                              products:
+                                                                  products,
+                                                            );
+                                                            context.go(
+                                                                "/home/request_quotation",
                                                                 extra: param);
-                                                          },
-                                                          topIndustryName: state
-                                                              .homeData!
-                                                              .byIndustry!
-                                                              .detailIndustry![
-                                                                  i]
-                                                              .industryName!)
-                                              ],
+                                                          })
+                                                      : ProductCard(
+                                                          product:
+                                                              ProductEntity(
+                                                            productId: state
+                                                                .homeData!
+                                                                .topProduct![
+                                                                    index]
+                                                                .productId,
+                                                            productname: state
+                                                                .homeData!
+                                                                .topProduct![
+                                                                    index]
+                                                                .productname,
+                                                            productimage: state
+                                                                .homeData!
+                                                                .topProduct![
+                                                                    index]
+                                                                .productimage!,
+                                                            hsCode: state
+                                                                .homeData!
+                                                                .topProduct![
+                                                                    index]
+                                                                .hsCode!,
+                                                            casNumber: state
+                                                                .homeData!
+                                                                .topProduct![
+                                                                    index]
+                                                                .casNumber!,
+                                                          ),
+                                                          isNotRecentSeenCard:
+                                                              false,
+                                                        ),
+                                                );
+                                              },
                                             );
                                           } else {
                                             return Center(
@@ -756,162 +684,269 @@ class _HomeScreenState extends State<HomeScreen> {
                                               ),
                                             );
                                           }
-                                        },
+                                        }),
                                       ),
-                                    ),
-                                    /* End Industry Section */
+                                      /* End Top Product Section */
 
-                                    /* Last seen Section */
-                                    const Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 8.0),
-                                      child: Text("Last Seen Products",
-                                          style: text18),
-                                    ),
-                                    BlocBuilder<HomeBloc, HomeState>(
-                                      builder: (context, state) {
-                                        if (state is HomeLoading) {
-                                          return const Center(
-                                              child: CircularProgressIndicator
-                                                  .adaptive());
-                                        } else if (state
-                                                    .homeData!.recentlySeen ==
-                                                null ||
-                                            state.homeData!.recentlySeen!
-                                                .isEmpty) {
-                                          return const Center(
-                                              child: Text("Tidak ada product"));
-                                        } else {
-                                          return Column(
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    bottom: size20px),
-                                                child: GridView.builder(
-                                                  gridDelegate:
-                                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                                          crossAxisCount: 2,
-                                                          crossAxisSpacing: 15,
-                                                          mainAxisSpacing: 15,
-                                                          childAspectRatio:
-                                                              0.7),
-                                                  itemCount: state
-                                                              .homeData!
-                                                              .recentlySeen!
-                                                              .length <
-                                                          4
-                                                      ? state.homeData!
-                                                          .recentlySeen!.length
-                                                      : recentSeenLimit,
-                                                  shrinkWrap: true,
-                                                  padding: EdgeInsets.zero,
-                                                  physics:
-                                                      const NeverScrollableScrollPhysics(),
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    return ProductCard(
-                                                      product: ProductEntity(
-                                                        productname: state
-                                                            .homeData!
-                                                            .recentlySeen![
-                                                                index]
-                                                            .productname,
-                                                        productimage: state
-                                                            .homeData!
-                                                            .recentlySeen![
-                                                                index]
-                                                            .productimage,
-                                                        casNumber: state
-                                                            .homeData!
-                                                            .recentlySeen![
-                                                                index]
-                                                            .casNumber,
-                                                        hsCode: state
-                                                            .homeData!
-                                                            .recentlySeen![
-                                                                index]
-                                                            .hsCode,
-                                                      ),
-                                                      isNotRecentSeenCard:
-                                                          false,
-                                                    );
-                                                  },
-                                                ),
-                                              ),
-                                              /* Button See More */
-                                              state.homeData!.recentlySeen!
-                                                              .length >
-                                                          4 &&
-                                                      recentSeenLimit <
+                                      /* Industry Section */
+                                      const Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: size20px),
+                                          child:
+                                              Text("Industry", style: text18)),
+                                      SizedBox(
+                                        height: MediaQuery.of(context)
+                                                    .size
+                                                    .height <
+                                                600
+                                            ? MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.3
+                                            : MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.24,
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        child: BlocBuilder<HomeBloc, HomeState>(
+                                          builder: (context, state) {
+                                            if (state is HomeLoading) {
+                                              return const Center(
+                                                child: CircularProgressIndicator
+                                                    .adaptive(),
+                                              );
+                                            } else if (state is HomeDone) {
+                                              return GridView(
+                                                padding: EdgeInsets.zero,
+                                                physics:
+                                                    const NeverScrollableScrollPhysics(),
+                                                shrinkWrap: true,
+                                                clipBehavior: Clip.none,
+                                                gridDelegate:
+                                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                                        crossAxisCount: 4,
+                                                        crossAxisSpacing: 5,
+                                                        mainAxisSpacing: 5,
+                                                        childAspectRatio: 0.9),
+                                                children: [
+                                                  for (var i = 0;
+                                                      i <
                                                           state
                                                               .homeData!
-                                                              .recentlySeen!
-                                                              .length
-                                                  ? Center(
-                                                      child: Container(
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color:
-                                                              secondaryColor5,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      size20px *
-                                                                          5),
+                                                              .byIndustry!
+                                                              .detailIndustry!
+                                                              .length;
+                                                      i++)
+                                                    i == 7
+                                                        ? TopIndustryWidget(
+                                                            icon:
+                                                                "assets/images/icon_all_industry.png",
+                                                            onPressed: () {
+                                                              context.go(
+                                                                  "/home/all_industry");
+                                                            },
+                                                            topIndustryName:
+                                                                "All Industries")
+                                                        : TopIndustryWidget(
+                                                            icon: state
+                                                                .homeData!
+                                                                .byIndustry!
+                                                                .detailIndustry![
+                                                                    i]
+                                                                .industryImage!,
+                                                            onPressed: () {
+                                                              ProductsIndustryParameter
+                                                                  param =
+                                                                  ProductsIndustryParameter(
+                                                                      index: i,
+                                                                      industryName: state
+                                                                          .homeData!
+                                                                          .byIndustry!
+                                                                          .detailIndustry![
+                                                                              i]
+                                                                          .industryName!);
+
+                                                              context.push(
+                                                                  "/home/all_industry/products_industry",
+                                                                  extra: param);
+                                                            },
+                                                            topIndustryName: state
+                                                                .homeData!
+                                                                .byIndustry!
+                                                                .detailIndustry![
+                                                                    i]
+                                                                .industryName!)
+                                                ],
+                                              );
+                                            } else {
+                                              return Center(
+                                                child: Text(
+                                                  "Error",
+                                                  style: heading1.copyWith(
+                                                      color: redColor1),
+                                                ),
+                                              );
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                      /* End Industry Section */
+
+                                      /* Last seen Section */
+                                      const Padding(
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 8.0),
+                                        child: Text("Last Seen Products",
+                                            style: text18),
+                                      ),
+                                      BlocBuilder<HomeBloc, HomeState>(
+                                        builder: (context, state) {
+                                          if (state is HomeLoading) {
+                                            return const Center(
+                                                child: CircularProgressIndicator
+                                                    .adaptive());
+                                          } else if (state
+                                                      .homeData!.recentlySeen ==
+                                                  null ||
+                                              state.homeData!.recentlySeen!
+                                                  .isEmpty) {
+                                            return const Center(
+                                                child:
+                                                    Text("Tidak ada product"));
+                                          } else {
+                                            return Column(
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          bottom: size20px),
+                                                  child: GridView.builder(
+                                                    gridDelegate:
+                                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                                            crossAxisCount: 2,
+                                                            crossAxisSpacing:
+                                                                15,
+                                                            mainAxisSpacing: 15,
+                                                            childAspectRatio:
+                                                                0.7),
+                                                    itemCount: state
+                                                                .homeData!
+                                                                .recentlySeen!
+                                                                .length <
+                                                            4
+                                                        ? state
+                                                            .homeData!
+                                                            .recentlySeen!
+                                                            .length
+                                                        : recentSeenLimit,
+                                                    shrinkWrap: true,
+                                                    padding: EdgeInsets.zero,
+                                                    physics:
+                                                        const NeverScrollableScrollPhysics(),
+                                                    itemBuilder:
+                                                        (context, index) {
+                                                      return ProductCard(
+                                                        product: ProductEntity(
+                                                          productname: state
+                                                              .homeData!
+                                                              .recentlySeen![
+                                                                  index]
+                                                              .productname,
+                                                          productimage: state
+                                                              .homeData!
+                                                              .recentlySeen![
+                                                                  index]
+                                                              .productimage,
+                                                          casNumber: state
+                                                              .homeData!
+                                                              .recentlySeen![
+                                                                  index]
+                                                              .casNumber,
+                                                          hsCode: state
+                                                              .homeData!
+                                                              .recentlySeen![
+                                                                  index]
+                                                              .hsCode,
                                                         ),
-                                                        child: InkWell(
-                                                          onTap: () {
-                                                            increaseRecentSeenLimit(
-                                                                state
-                                                                    .homeData!
-                                                                    .recentlySeen!
-                                                                    .length);
-                                                          },
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .symmetric(
-                                                                    horizontal:
-                                                                        size20px /
-                                                                            2,
-                                                                    vertical:
-                                                                        size20px /
+                                                        isNotRecentSeenCard:
+                                                            false,
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                                /* Button See More */
+                                                state.homeData!.recentlySeen!
+                                                                .length >
+                                                            4 &&
+                                                        recentSeenLimit <
+                                                            state
+                                                                .homeData!
+                                                                .recentlySeen!
+                                                                .length
+                                                    ? Center(
+                                                        child: Container(
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color:
+                                                                secondaryColor5,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        size20px *
                                                                             5),
-                                                            child: Text(
-                                                              "Load More",
-                                                              style: text12
-                                                                  .copyWith(
-                                                                      color:
-                                                                          secondaryColor1),
+                                                          ),
+                                                          child: InkWell(
+                                                            onTap: () {
+                                                              increaseRecentSeenLimit(
+                                                                  state
+                                                                      .homeData!
+                                                                      .recentlySeen!
+                                                                      .length);
+                                                            },
+                                                            child: Padding(
+                                                              padding: const EdgeInsets
+                                                                  .symmetric(
+                                                                  horizontal:
+                                                                      size20px /
+                                                                          2,
+                                                                  vertical:
+                                                                      size20px /
+                                                                          5),
+                                                              child: Text(
+                                                                "Load More",
+                                                                style: text12
+                                                                    .copyWith(
+                                                                        color:
+                                                                            secondaryColor1),
+                                                              ),
                                                             ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    )
-                                                  : const SizedBox(),
-                                              /* End Button See More */
-                                            ],
-                                          );
-                                        }
-                                        /* End Lastseen Section */
-                                      },
-                                    )
-                                  ],
-                                ),
-                              )
-                              // End of Main Content
-                            ],
-                          ),
-                        ],
-                      );
-                    }
-                    return Container();
-                  }),
+                                                      )
+                                                    : const SizedBox(),
+                                                /* End Button See More */
+                                              ],
+                                            );
+                                          }
+                                          /* End Lastseen Section */
+                                        },
+                                      )
+                                    ],
+                                  ),
+                                )
+                                // End of Main Content
+                              ],
+                            ),
+                          ],
+                        );
+                      }
+                      return Container();
+                    }),
+              ),
             ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 }
 

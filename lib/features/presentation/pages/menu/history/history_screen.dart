@@ -47,6 +47,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: whiteColor,
+        appBar: AppBar(
+          elevation: 0,
+          toolbarHeight: 0,
+        ),
         body: SingleChildScrollView(
           child: SafeArea(
             child: Padding(

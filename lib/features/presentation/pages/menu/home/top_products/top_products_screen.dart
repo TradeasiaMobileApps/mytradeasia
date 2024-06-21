@@ -33,6 +33,10 @@ class _TopProductsScreenState extends State<TopProductsScreen> {
   Widget build(BuildContext context) {
     var topProductBloc = BlocProvider.of<TopProductBloc>(context);
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        toolbarHeight: 0,
+      ),
       body: RefreshIndicator(
         onRefresh: () async {
           return topProductBloc.add(const GetTopProduct());

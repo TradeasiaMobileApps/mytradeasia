@@ -56,11 +56,15 @@ class _ProductByIndustryScreenState extends State<ProductByIndustryScreen> {
   }
 
   Widget _buildBody(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: () async {},
-      edgeOffset: size20px * 3.5,
-      color: primaryColor1,
-      child: SafeArea(
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        toolbarHeight: 0,
+      ),
+      body: RefreshIndicator(
+        onRefresh: () async {},
+        edgeOffset: size20px * 3.5,
+        color: primaryColor1,
         child: Padding(
           padding:
               const EdgeInsets.only(right: size20px, left: size20px, top: 8.0),
@@ -256,8 +260,7 @@ class _ProductByIndustryScreenState extends State<ProductByIndustryScreen> {
                                                   style: ButtonStyle(
                                                       backgroundColor:
                                                           WidgetStateProperty
-                                                              .all<
-                                                                      Color>(
+                                                              .all<Color>(
                                                                   primaryColor1),
                                                       shape: WidgetStateProperty
                                                           .all<

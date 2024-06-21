@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/config/routes/parameters.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
+import 'package:mytradeasia/features/data/model/cart_models/cart_models.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_entity.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_to_rfq_entity.dart';
 import 'package:mytradeasia/features/presentation/state_management/cart_bloc/cart_bloc.dart';
@@ -23,6 +24,9 @@ import 'package:mytradeasia/features/presentation/widgets/product_card.dart';
 import 'package:sendbird_chat_sdk/sendbird_chat_sdk.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../../../../../../helper/injections_container.dart';
+import '../../../../../../domain/entities/user_entities/user_credential_entity.dart';
+import '../../../../../../domain/usecases/user_usecases/user_usecase_index.dart';
 import '../../../../../state_management/auth_bloc/auth_bloc.dart';
 import '../../../../../state_management/auth_bloc/auth_state.dart';
 import '../../../../../widgets/tabbar_content/tabbar_detail_content_widget.dart';
@@ -57,8 +61,6 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
 
   String? _selectedValueUnit;
 
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-
   void addToCart(
       {required String productId,
       required String productName,
@@ -66,20 +68,32 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
       required String hsCode,
       required String productImage}) async {
     BlocProvider.of<CartBloc>(context).add(const GetCartItems());
-    String docsId = _auth.currentUser!.uid.toString();
+    // BlocProvider.of<CartBloc>(context).add(const AddToCart());
+    // String docsId = _userCredential.uid.toString();
 
-    Map<String, dynamic> data = {
-      "productId": productId,
-      "productName": productName,
-      "casNumber": casNumber,
-      "hsCode": hsCode,
-      "productImage": productImage,
-      "quantity": double.tryParse(_quantityController.text),
-      "unit": _selectedValueUnit
-    };
-    await FirebaseFirestore.instance.collection('biodata').doc(docsId).update({
-      "cart": FieldValue.arrayUnion([data])
-    });
+    final dataCart = CartModel(
+      productId: productId,
+      productName: productName,
+      casNumber: casNumber,
+      hsCode: hsCode,
+      productImage: productImage,
+      quantity: double.tryParse(_quantityController.text),
+      unit: _selectedValueUnit,
+    );
+
+    BlocProvider.of<CartBloc>(context).add(AddToCart(dataCart));
+    // Map<String, dynamic> data = {
+    //   "productId": productId,
+    //   "productName": productName,
+    //   "casNumber": casNumber,
+    //   "hsCode": hsCode,
+    //   "productImage": productImage,
+    //   "quantity": double.tryParse(_quantityController.text),
+    //   "unit": _selectedValueUnit
+    // };
+    // await FirebaseFirestore.instance.collection('biodata').doc(docsId).update({
+    //   "cart": FieldValue.arrayUnion([data])
+    // });
   }
 
   @override
@@ -113,24 +127,20 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                   state.detailProductData != null) {
                 return Stack(
                   children: [
-                    Column(
-                      children: [
-                        Container(
-                          color: greyColor3,
-                          width: MediaQuery.of(context).size.width,
-                          height: size20px * 15.0,
-                          child: CachedNetworkImage(
-                            imageUrl: state.detailProductData!.detailProduct!
-                                .productimage!,
-                            fit: BoxFit.fill,
-                            placeholder: (context, url) => const Center(
-                              child: CircularProgressIndicator.adaptive(),
-                            ),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
-                          ),
+                    Container(
+                      color: greyColor3,
+                      width: MediaQuery.of(context).size.width,
+                      height: size20px * 15.0,
+                      child: CachedNetworkImage(
+                        imageUrl: state
+                            .detailProductData!.detailProduct!.productimage!,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => const Center(
+                          child: CircularProgressIndicator.adaptive(),
                         ),
-                      ],
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
+                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: size20px),
@@ -333,12 +343,11 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                                               child: ElevatedButton(
                                                   style: ButtonStyle(
                                                     backgroundColor:
-                                                        WidgetStateProperty
-                                                            .all<Color>(
-                                                                primaryColor1),
-                                                    shape: WidgetStateProperty
-                                                        .all<
-                                                            RoundedRectangleBorder>(
+                                                        WidgetStateProperty.all<
+                                                                Color>(
+                                                            primaryColor1),
+                                                    shape: WidgetStateProperty.all<
+                                                        RoundedRectangleBorder>(
                                                       RoundedRectangleBorder(
                                                         borderRadius:
                                                             BorderRadius
@@ -368,9 +377,8 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                                                   backgroundColor:
                                                       WidgetStateProperty.all<
                                                           Color>(primaryColor1),
-                                                  shape:
-                                                      WidgetStateProperty.all<
-                                                          RoundedRectangleBorder>(
+                                                  shape: WidgetStateProperty.all<
+                                                      RoundedRectangleBorder>(
                                                     RoundedRectangleBorder(
                                                       borderRadius:
                                                           BorderRadius.circular(

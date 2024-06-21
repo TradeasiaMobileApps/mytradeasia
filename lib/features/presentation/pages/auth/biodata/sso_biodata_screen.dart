@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -13,6 +11,9 @@ import 'package:mytradeasia/features/presentation/state_management/salesforce_bl
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_login/salesforce_login_event.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../config/themes/theme.dart';
+import '../../../../../helper/injections_container.dart';
+import '../../../../domain/entities/user_entities/user_credential_entity.dart';
+import '../../../../domain/usecases/user_usecases/user_usecase_index.dart';
 import '../../../widgets/dialog_sheet_widget.dart';
 import 'package:country_picker/country_picker.dart';
 
@@ -29,17 +30,20 @@ class _SSOBiodataScreenState extends State<SSOBiodataScreen> {
   final TextEditingController _companyNameController = TextEditingController();
   final TextEditingController _countryController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  // final UserCredentialEntity _userCredential =
-  //     injections<UserCredentialEntity>();
-  final auth = FirebaseAuth.instance;
+  final UserUsecaseIndex _user = injections<UserUsecaseIndex>();
+  late UserCredentialEntity _userCredential;
   String countryName = '';
+
+  void getUserCredentials() async {
+    _userCredential = await _user.getUserCredentials();
+  }
 
   @override
   void initState() {
-    if (auth.currentUser!.displayName != null) {
-      _firstNameController.text =
-          auth.currentUser!.displayName!.split(" ").first;
-      _lastNameController.text = auth.currentUser!.displayName!.split(" ").last;
+    getUserCredentials();
+    if (_userCredential.displayName != null) {
+      _firstNameController.text = _userCredential.displayName!.split(" ").first;
+      _lastNameController.text = _userCredential.displayName!.split(" ").last;
     }
     var salesforceLoginBloc = BlocProvider.of<SalesforceLoginBloc>(context);
     salesforceLoginBloc.add(const LoginSalesforce());
@@ -89,7 +93,7 @@ class _SSOBiodataScreenState extends State<SSOBiodataScreen> {
                         UserEntity(
                           companyName: _companyNameController.text,
                           country: _countryController.text,
-                          email: auth.currentUser!.email,
+                          email: _userCredential.email,
                           firstName: _firstNameController.text,
                           lastName: _lastNameController.text,
                           role: role,

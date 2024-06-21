@@ -79,6 +79,10 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
   Widget build(BuildContext context) {
     var industryBloc = BlocProvider.of<IndustryBloc>(context);
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        toolbarHeight: 0,
+      ),
       body: RefreshIndicator(
         onRefresh: _refreshListProducts,
         color: primaryColor1,
