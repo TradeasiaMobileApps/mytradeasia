@@ -59,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    createSFId();
+    // createSFId();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       BlocProvider.of<HomeBloc>(context).add(const GetHomeDataEvent());
       BlocProvider.of<TopProductBloc>(context).add(const GetTopProduct());
@@ -77,15 +77,15 @@ class _HomeScreenState extends State<HomeScreen> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final tokenSF = prefs.getString("tokenSF") ?? "";
 
-    if (!await checkIdSFExists()) {
-      _createSalesForceAccount.call(
-          paramsOne: tokenSF,
-          paramsTwo: SalesforceCreateAccountForm(
-              name: "${_data['firstname']} ${_data['lastname']}",
-              phone: _data['phone'] ?? "",
-              role: _data['role'].toString().toLowerCase(),
-              company: _data['companyName']));
-    }
+    // if (!await checkIdSFExists()) {
+    //   _createSalesForceAccount.call(
+    //       paramsOne: tokenSF,
+    //       paramsTwo: SalesforceCreateAccountForm(
+    //           name: "${_data['firstname']} ${_data['lastname']}",
+    //           phone: _data['phone'] ?? "",
+    //           role: _data['role'].toString().toLowerCase(),
+    //           company: _data['companyName']));
+    // }
   }
 
   void increaseRecentSeenLimit(int num) {

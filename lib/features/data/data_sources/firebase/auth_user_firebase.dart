@@ -35,12 +35,11 @@ class AuthUserFirebase {
     String status = "error";
 
     try {
-      notificationServices.requestNotificationPermission();
-      String? deviceToken = await notificationServices.getDeviceToken();
-
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       String? role = prefs.getString("role")?.toLowerCase();
-
+      String? deviceToken = prefs.getString("device_token");
+      String? sfid = prefs.getString("sfId");
+      String? sfContactId = prefs.getString("sfContactId");
       final headers;
       final Response<dynamic> response;
       if (Platform.isAndroid) {
@@ -71,7 +70,103 @@ class AuthUserFirebase {
             "login_type": "by_form",
             "comet_chat_user_id":
                 "${userData.firstName ?? "user"}_${dateTime.millisecondsSinceEpoch}"
-                    .toLowerCase()
+                    .toLowerCase(),
+            "salesforce_id": sfid,
+            "salesforce_contact_id": sfContactId
+          },
+          options: Options(headers: headers));
+
+      await prefs.setString("token", response.data["data"]["user"]["token"]);
+
+      if (response.data['status']) {
+        status = 'success';
+      } else {
+        status = response.data["message"];
+      }
+    } on DioException catch (e) {
+      status = e.response!.statusCode.toString();
+    }
+
+    // if (status != "success") {
+    //   return status;
+    // } else {
+    //   try {
+    //     await _auth.createUserWithEmailAndPassword(
+    //         email: userData.email!, password: userData.password!);
+
+    //     //TODO:Uncomment this when used
+
+    //     // FirebaseAuth.instance.currentUser!
+    //     //     .linkWithCredential(phoneAuthCredential);
+
+    //     String docsId = FirebaseAuth.instance.currentUser!.uid.toString();
+    //     Map<String, dynamic> data = userData.toMap();
+    //     data["uid"] = docsId;
+    //     _firestore.collection('biodata').doc(docsId).set(data);
+    //     return 'success';
+    //   } on FirebaseAuthException catch (e) {
+    //     return e.code;
+    //   }
+    // }
+    return status;
+  }
+
+  Future<String> ssoRegisterUser(UserModel userData, String loginType) async {
+    // String docsId = FirebaseAuth.instance.currentUser!.uid.toString();
+    Map<String, dynamic> data = userData.toMap();
+    // data["uid"] = docsId;
+    // FirebaseFirestore.instance.collection('biodata').doc(docsId).set(data);
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString("email", FirebaseAuth.instance.currentUser!.email!);
+    await prefs.setString("userId", FirebaseAuth.instance.currentUser!.uid);
+    await prefs.setBool("isLoggedIn", true);
+
+    final dateTime = DateTime.now();
+
+    String status = "error";
+
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? role = prefs.getString("role")?.toLowerCase();
+      String? deviceToken = prefs.getString("device_token");
+      String? userId = prefs.getString("userId");
+      String? sfid = prefs.getString("sfId");
+      String? sfContactId = prefs.getString("sfContactId");
+
+      final headers;
+      final Response<dynamic> response;
+      if (Platform.isAndroid) {
+        headers = {
+          "datetime": DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()),
+          "role": role,
+          "device_type": "android",
+        };
+      } else {
+        headers = {
+          "datetime": DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()),
+          "role": role,
+          "device_type": "ios",
+        };
+      }
+      response = await dio.post("https://www.tradeasia.co/api/signup",
+          data: {
+            "social_id": userId,
+            "first_name": userData.firstName,
+            "last_name": userData.lastName,
+            "company_name": userData.companyName,
+            "country": userData.country,
+            "dialing_code": userData.countryCode,
+            // "mobile_number": userData.phone,
+            "email": userData.email,
+            "password": userData.password,
+            "timezone": dateTime.timeZoneName,
+            "device_token": deviceToken,
+            "login_type": loginType,
+            "comet_chat_user_id":
+                "${userData.firstName ?? "user"}_${dateTime.millisecondsSinceEpoch}"
+                    .toLowerCase(),
+            "salesforce_id": sfid,
+            "salesforce_contact_id": sfContactId
           },
           options: Options(headers: headers));
 
@@ -90,7 +185,7 @@ class AuthUserFirebase {
       //   "comet_chat_user_id":
       //       "${userData.firstName ?? "user"}_${dateTime.millisecondsSinceEpoch}"
       // }}");
-
+      await prefs.setString("token", response.data["data"]["user"]["token"]);
       if (response.data['status']) {
         status = 'success';
       } else {
@@ -99,44 +194,7 @@ class AuthUserFirebase {
     } on DioException catch (e) {
       status = e.response!.statusCode.toString();
     }
-
-    if (status != "success") {
-      return status;
-    } else {
-      try {
-        await _auth.createUserWithEmailAndPassword(
-            email: userData.email!, password: userData.password!);
-
-        //TODO:Uncomment this when used
-
-        // FirebaseAuth.instance.currentUser!
-        //     .linkWithCredential(phoneAuthCredential);
-
-        String docsId = FirebaseAuth.instance.currentUser!.uid.toString();
-        Map<String, dynamic> data = userData.toMap();
-        data["uid"] = docsId;
-        _firestore.collection('biodata').doc(docsId).set(data);
-        return 'success';
-      } on FirebaseAuthException catch (e) {
-        return e.code;
-      }
-    }
-  }
-
-  Future<String> ssoRegisterUser(UserModel userData) async {
-    try {
-      String docsId = FirebaseAuth.instance.currentUser!.uid.toString();
-      Map<String, dynamic> data = userData.toMap();
-      data["uid"] = docsId;
-      FirebaseFirestore.instance.collection('biodata').doc(docsId).set(data);
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString("email", FirebaseAuth.instance.currentUser!.email!);
-      await prefs.setString("userId", FirebaseAuth.instance.currentUser!.uid);
-      await prefs.setBool("isLoggedIn", true);
-      return 'success';
-    } on FirebaseAuthException catch (e) {
-      return e.code;
-    }
+    return status;
   }
 
   String getCurrentUId() => _auth.currentUser!.uid;
@@ -268,27 +326,24 @@ class AuthUserFirebase {
     }
   }
 
-  Future<dynamic> googleAuth() async {
-    try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+  Future<UserCredentialModel> googleAuth() async {
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
-      final GoogleSignInAuthentication? googleAuth =
-          await googleUser?.authentication;
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
 
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth?.accessToken,
-        idToken: googleAuth?.idToken,
-      );
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
 
-      UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithCredential(credential);
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString("email", userCredential.user!.email!);
-      await prefs.setBool("isLoggedIn", true);
-      return UserCredentialModel.fromUserCredential(userCredential);
-    } on FirebaseAuthException catch (e) {
-      return {'code': e.code, 'message': e.message};
-    }
+    UserCredential userCredential =
+        await FirebaseAuth.instance.signInWithCredential(credential);
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString("email", userCredential.user!.email!);
+    await prefs.setBool("isLoggedIn", true);
+    await prefs.setString("userId", userCredential.user!.uid);
+    return UserCredentialModel.fromUserCredential(userCredential);
   }
 
   Future<dynamic> linkedinAuth() async {

@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -6,6 +7,7 @@ import 'package:mytradeasia/features/data/data_sources/firebase/auth_user_fireba
 import 'package:mytradeasia/features/data/data_sources/remote/auth_service.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/recently_seen_product_service.dart';
 import 'package:mytradeasia/features/data/model/all_product_models/all_product_model.dart';
+import 'package:mytradeasia/features/data/model/user_credential_models/user_credential_model.dart';
 import 'package:mytradeasia/features/data/model/user_models/user_model.dart';
 import 'package:mytradeasia/features/data/model/user_sales_models/sales_login_response_model.dart';
 import 'package:mytradeasia/features/domain/entities/user_entities/user_credential_entity.dart';
@@ -38,7 +40,7 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<String> ssoRegisterUser(UserEntity s) async {
+  Future<String> ssoRegisterUser(UserEntity s, String loginType) async {
     UserModel userData = UserModel(
       companyName: s.companyName,
       country: s.country,
@@ -48,7 +50,8 @@ class UserRepositoryImpl implements UserRepository {
       lastName: s.lastName,
       role: s.role,
     );
-    final response = await _authUserFirebase.ssoRegisterUser(userData);
+    final response =
+        await _authUserFirebase.ssoRegisterUser(userData, loginType);
     return response;
   }
 
@@ -131,11 +134,9 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<dynamic> googleAuth() async {
+  Future<UserCredentialEntity> googleAuth() async {
     final response = await _authUserFirebase.googleAuth();
-    if (response is Map) {
-      return response["code"];
-    }
+
     return response;
   }
 
@@ -176,6 +177,24 @@ class UserRepositoryImpl implements UserRepository {
       }
     } on DioException catch (e) {
       return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<bool> checkIfUserExist(
+      String ssoId, String loginType, String email) async {
+    try {
+      final response =
+          await _authService.checkIfUserExist(ssoId, loginType, email);
+      if (response.statusCode == HttpStatus.ok) {
+        bool data = response.data!;
+        return data;
+      } else {
+        return false;
+      }
+    } on DioException catch (e) {
+      log(e.toString());
+      return false;
     }
   }
 }

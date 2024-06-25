@@ -19,10 +19,9 @@ class LoginWithEmail extends AuthEvent {
   final String deviceToken;
   final BuildContext context;
 
-  const LoginWithEmail(this.email, this.password,this.role,  this.deviceType, this.deviceToken,this.context );
+  const LoginWithEmail(this.email, this.password, this.role, this.deviceType,
+      this.deviceToken, this.context);
 }
-
-
 
 class RegisterWithEmail extends AuthEvent {
   final UserEntity userData;
@@ -38,26 +37,27 @@ class RegisterWithEmail extends AuthEvent {
   final Function stopLoadingFunc;
 
   const RegisterWithEmail(
-    this.userData,
-    // this.email,
-    // this.phoneNumber,
-    // this.role,
-    this.context,
-    // this.companyName,
-    // this.firstName,
-    // this.lastName,
-    // this.password,
-    // this.country);
-      this.stopLoadingFunc
-  );
+      this.userData,
+      // this.email,
+      // this.phoneNumber,
+      // this.role,
+      this.context,
+      // this.companyName,
+      // this.firstName,
+      // this.lastName,
+      // this.password,
+      // this.country);
+      this.stopLoadingFunc);
 }
 
 class SSORegisterWithEmail extends AuthEvent {
   final UserEntity userData;
+  final String loginType;
   final BuildContext context;
 
   const SSORegisterWithEmail(
     this.userData,
+    this.loginType,
     this.context,
   );
 }

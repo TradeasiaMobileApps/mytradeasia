@@ -11,12 +11,16 @@ abstract class SalesForceDataRepository {
 
   Future<DataState<SalesforceCPEntity>> getSalesforceCP(String token);
 
-  Future<DataState<SalesforceCreateAccountEntity>> createSalesforceAccount(
-      {required String? token,
-      required String? name,
-      required String? phone,
-      required String? role,
-      required String? company});
+  Future<DataState<SalesforceCreateAccountEntity>> createSalesforceAccount({
+    required String? token,
+    required String? firstName,
+    required String? lastName,
+    required String? phone,
+    required String? role,
+    required String? company,
+    required String? email,
+    required String? country,
+  });
 
   Future<DataState<SalesforceCreateOpportunityEntity>>
       createSalesforceOpportunity(SalesforceCreateOpportunityForm formData);

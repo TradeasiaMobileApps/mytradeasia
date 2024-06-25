@@ -1,16 +1,21 @@
 // ignore_for_file: use_build_context_synchronously
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mytradeasia/core/resources/data_state.dart';
 import 'package:mytradeasia/features/data/model/sales_force_data_models/sales_force_create_account_model.dart';
 import 'package:mytradeasia/features/domain/entities/user_entities/user_entity.dart';
+import 'package:mytradeasia/features/domain/usecases/sales_force_data_usecases/create_sales_force_account.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_data/salesforce_data_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_data/salesforce_data_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_login/salesforce_login_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_login/salesforce_login_event.dart';
+import 'package:mytradeasia/helper/injections_container.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../config/themes/theme.dart';
 import '../../../widgets/dialog_sheet_widget.dart';
@@ -28,6 +33,8 @@ class _SSOBiodataScreenState extends State<SSOBiodataScreen> {
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _companyNameController = TextEditingController();
   final TextEditingController _countryController = TextEditingController();
+  final CreateSalesForceAccount _createSalesForceAccount =
+      injections<CreateSalesForceAccount>();
   final _formKey = GlobalKey<FormState>();
   final auth = FirebaseAuth.instance;
   String countryName = '';
@@ -56,7 +63,6 @@ class _SSOBiodataScreenState extends State<SSOBiodataScreen> {
   @override
   Widget build(BuildContext context) {
     var authBloc = BlocProvider.of<AuthBloc>(context);
-    var salesforceBloc = BlocProvider.of<SalesforceDataBloc>(context);
 
     return Scaffold(
       bottomNavigationBar: Padding(
@@ -81,47 +87,60 @@ class _SSOBiodataScreenState extends State<SSOBiodataScreen> {
                         await SharedPreferences.getInstance();
                     final role = prefs.getString("role") ?? "";
                     final tokenSF = prefs.getString("tokenSF") ?? "";
+                    final login_type = prefs.getString("login_type") ?? "";
+                    final sfForm = SalesforceCreateAccountForm(
+                      firstName: _firstNameController.text,
+                      lastName: _lastNameController.text,
+                      phone: "",
+                      role: role,
+                      company: _companyNameController.text,
+                      email: auth.currentUser!.email,
+                      country: _countryController.text,
+                    );
 
-                    if (_formKey.currentState!.validate()) {
-                      authBloc.add(SSORegisterWithEmail(
-                        UserEntity(
-                          companyName: _companyNameController.text,
-                          country: _countryController.text,
-                          email: auth.currentUser!.email,
-                          firstName: _firstNameController.text,
-                          lastName: _lastNameController.text,
-                          role: role,
-                        ),
-                        context,
-                      ));
-
-                      salesforceBloc.add(CreateSFAccount(
-                          token: tokenSF,
-                          salesforceCreateAccountForm: SalesforceCreateAccountForm(
-                              name:
-                                  "${_firstNameController.text} ${_lastNameController.text}",
-                              phone: "",
+                    _createSalesForceAccount
+                        .call(paramsOne: tokenSF, paramsTwo: sfForm)
+                        .then((value) async {
+                      if (value is DataSuccess) {
+                        if (_formKey.currentState!.validate()) {
+                          authBloc.add(SSORegisterWithEmail(
+                            UserEntity(
+                              sfAccountId: value.data!.sfAccountId,
+                              sfContactId: value.data!.sfContactId,
+                              companyName: _companyNameController.text,
+                              country: _countryController.text,
+                              email: auth.currentUser!.email,
+                              firstName: _firstNameController.text,
+                              lastName: _lastNameController.text,
                               role: role,
-                              company: _companyNameController.text)));
+                            ),
+                            login_type,
+                            context,
+                          ));
 
-                      await showDialog(
-                        barrierDismissible: false,
-                        context: context,
-                        builder: (context) {
-                          return DialogWidget(
-                              urlIcon:
-                                  "assets/images/icon_sukses_reset_password.png",
-                              title: "Successful Registration",
-                              subtitle:
-                                  "Lorem ipsum dolor sit amet consectetur. Egestas porttitor risus enim cursus rutrum molestie tortor",
-                              textForButton: "Go to Home",
-                              navigatorFunction: () {
-                                /* with go_router */
-                                context.go("/home");
-                              });
-                        },
-                      );
-                    }
+                          await showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (context) {
+                              return DialogWidget(
+                                  urlIcon:
+                                      "assets/images/icon_sukses_reset_password.png",
+                                  title: "Successful Registration",
+                                  subtitle:
+                                      "Lorem ipsum dolor sit amet consectetur. Egestas porttitor risus enim cursus rutrum molestie tortor",
+                                  textForButton: "Go to Home",
+                                  navigatorFunction: () {
+                                    /* with go_router */
+                                    context.go("/home");
+                                  });
+                            },
+                          );
+                        }
+                      } else {
+                        // print(value.error.);
+                        log("salesforce account creation failed");
+                      }
+                    });
                   },
                   child: Text(
                     "Create Account",

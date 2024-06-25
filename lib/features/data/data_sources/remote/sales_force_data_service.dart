@@ -1,4 +1,3 @@
-
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
 import 'package:mytradeasia/core/constants/constants.dart';
@@ -58,9 +57,12 @@ class SalesforceDataService {
 
   Future<Response<SalesforceCreateAccountModel>> createSFAccount(
       {required String? token,
-      required String? name,
+      required String? firstName,
+      required String? lastName,
       required String? phone,
       required String? role,
+      required String? email,
+      required String? country,
       required String? company}) async {
     String toSFTypeId(String? role) {
       switch (role) {
@@ -73,8 +75,9 @@ class SalesforceDataService {
       }
     }
 
-    final response = await dio.post(
-        "https://tradeasia--newmind.sandbox.my.salesforce.com/services/data/v58.0/sobjects/Account",
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final responseAccount = await dio.post(
+        "https://tradeasia.my.salesforce.com/services/data/v58.0/sobjects/Account/",
         options: Options(
           headers: {
             "Authorization": "Bearer $token",
@@ -83,16 +86,40 @@ class SalesforceDataService {
         ),
         data: {
           "RecordTypeId": toSFTypeId(role), //customer
-          "Name": name,
+          "Name": company,
           "Phone": phone ?? "",
           "Business_Entity__c": company
         });
+    final sfAccountId = responseAccount.data['id'];
 
-    final data = SalesforceCreateAccountModel.fromJson(response.data);
+    final responseContact = await dio.post(
+        "https://tradeasia.my.salesforce.com/services/data/v58.0/sobjects/Contact",
+        options: Options(
+          headers: {
+            "Authorization": "Bearer $token",
+            "Content-Type": "application/json"
+          },
+        ),
+        data: {
+          "AccountId": sfAccountId,
+          "Firstname": firstName,
+          "Lastname": lastName,
+          "MobilePhone": phone ?? "",
+          "Email": email,
+          "Contact_Country__c": country
+        });
+
+    final sfContactId = responseContact.data['id'];
+
+    await prefs.setString("sfid", sfAccountId);
+    await prefs.setString("sfContactId", sfContactId);
+
+    final data = SalesforceCreateAccountModel(
+        sfAccountId: sfAccountId, sfContactId: sfContactId);
 
     return Response<SalesforceCreateAccountModel>(
-        statusCode: response.statusCode,
-        requestOptions: response.requestOptions,
+        statusCode: responseContact.statusCode,
+        requestOptions: responseContact.requestOptions,
         data: data);
   }
 

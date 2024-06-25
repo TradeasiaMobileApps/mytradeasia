@@ -12,15 +12,19 @@ class CreateSalesForceAccount
 
   CreateSalesForceAccount(this._salesForceDataRepository);
 
+  /// the parameter @paramsOne is for the token and @paramsTwo is for SalesforceCreateAccountForm
   @override
   Future<DataState<SalesforceCreateAccountEntity>> call(
       {required String paramsOne,
       required SalesforceCreateAccountForm paramsTwo}) {
     return _salesForceDataRepository.createSalesforceAccount(
         token: paramsOne,
-        name: paramsTwo.name,
+        firstName: paramsTwo.firstName,
+        lastName: paramsTwo.lastName,
+        email: paramsTwo.email,
         phone: paramsTwo.phone,
         role: paramsTwo.role,
-        company: paramsTwo.company);
+        company: paramsTwo.company,
+        country: paramsTwo.country);
   }
 }

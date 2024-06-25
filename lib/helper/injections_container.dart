@@ -96,6 +96,7 @@ import 'package:mytradeasia/features/domain/usecases/sales_force_login_usecases/
 import 'package:mytradeasia/features/domain/usecases/search_product_usecases/get_search_product.dart';
 import 'package:mytradeasia/features/domain/usecases/top_product_usecases/get_top_product.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/add_recently_seen.dart';
+import 'package:mytradeasia/features/domain/usecases/user_usecases/check_user_exist.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/delete_account.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/delete_recently_seen.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_current_userid.dart';
@@ -114,6 +115,7 @@ import 'package:mytradeasia/features/domain/usecases/user_usecases/update_email.
 import 'package:mytradeasia/features/domain/usecases/user_usecases/update_profile.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/user_usecase_index.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/verify_otp.dart';
+import 'package:mytradeasia/features/domain/usecases/user_usecases/google_auth.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/cart_bloc/cart_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/category_bloc/category_bloc.dart';
@@ -284,6 +286,8 @@ Future<void> initializeDependencies() async {
   injections.registerSingleton<GetUomUsecase>(GetUomUsecase(injections()));
   injections
       .registerSingleton<UserUsecaseIndex>(UserUsecaseIndex(injections()));
+  injections.registerSingleton<GoogleAuth>(GoogleAuth(injections()));
+  injections.registerSingleton<CheckUserExist>(CheckUserExist(injections()));
 
   //Bloc
   injections

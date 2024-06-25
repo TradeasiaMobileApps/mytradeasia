@@ -4,8 +4,10 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mytradeasia/core/resources/data_state.dart';
 import 'package:mytradeasia/features/data/model/sales_force_data_models/sales_force_create_account_model.dart';
 import 'package:mytradeasia/features/domain/entities/user_entities/user_entity.dart';
+import 'package:mytradeasia/features/domain/usecases/sales_force_data_usecases/create_sales_force_account.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_event.dart';
 import 'package:mytradeasia/features/presentation/widgets/country_picker.dart';
@@ -13,6 +15,7 @@ import 'package:mytradeasia/features/presentation/state_management/salesforce_bl
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_data/salesforce_data_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_login/salesforce_login_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_login/salesforce_login_event.dart';
+import 'package:mytradeasia/helper/injections_container.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../config/themes/theme.dart';
 import '../../../widgets/dialog_sheet_widget.dart';
@@ -33,6 +36,8 @@ class _BiodataScreenState extends State<BiodataScreen> {
   final TextEditingController _companyNameController = TextEditingController();
   final TextEditingController _countryController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final CreateSalesForceAccount _createSalesForceAccount =
+      injections<CreateSalesForceAccount>();
   final _formKey = GlobalKey<FormState>();
   // final auth = FirebaseAuth.instance;
   String countryName = '';
@@ -87,41 +92,51 @@ class _BiodataScreenState extends State<BiodataScreen> {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final role = prefs.getString("role") ?? "";
       final tokenSF = prefs.getString("tokenSF") ?? "";
-      if (_formKey.currentState!.validate()) {
-        salesforceBloc.add(CreateSFAccount(
-            token: tokenSF,
-            salesforceCreateAccountForm: SalesforceCreateAccountForm(
-                name:
-                    "${_firstNameController.text} ${_lastNameController.text}",
-                phone: widget.phone,
-                role: role,
-                company: _companyNameController.text)));
+      final sfForm = SalesforceCreateAccountForm(
+        firstName: _firstNameController.text,
+        lastName: _lastNameController.text,
+        email: widget.email,
+        country: _countryController.text,
+        phone: widget.phone,
+        role: role,
+        company: _companyNameController.text,
+      );
+      _createSalesForceAccount
+          .call(paramsOne: tokenSF, paramsTwo: sfForm)
+          .then((value) {
+        if (value is DataSuccess) {
+          if (_formKey.currentState!.validate()) {
+            authBloc.add(RegisterWithEmail(
+                UserEntity(
+                  sfAccountId: value.data!.sfAccountId,
+                  sfContactId: value.data!.sfContactId,
+                  companyName: _companyNameController.text,
+                  country: _countryController.text,
+                  email: widget.email,
+                  firstName: _firstNameController.text,
+                  lastName: _lastNameController.text,
+                  password: _passwordController.text,
+                  phone: widget.phone,
+                  role: role,
+                  countryCode: countryCode == '' ? "+62" : countryCode,
+                ),
+                context, () {
+              log("isSubmitting before : $_isSubmiting");
 
-        authBloc.add(RegisterWithEmail(
-            UserEntity(
-              companyName: _companyNameController.text,
-              country: _countryController.text,
-              email: widget.email,
-              firstName: _firstNameController.text,
-              lastName: _lastNameController.text,
-              password: _passwordController.text,
-              phone: widget.phone,
-              role: role,
-              countryCode: countryCode == '' ? "+62" : countryCode,
-            ),
-            context, () {
-          log("isSubmitting before : $_isSubmiting");
-
-          setState(() {
-            _isSubmiting = false;
-          });
-          log("isSubmitting after : $_isSubmiting");
-        }));
-      } else {
-        setState(() {
-          _isSubmiting = false;
-        });
-      }
+              setState(() {
+                _isSubmiting = false;
+              });
+              log("isSubmitting after : $_isSubmiting");
+            }));
+          } else {
+            setState(() {
+              _isSubmiting = false;
+            });
+          }
+        } else {
+          log("salesforce account creation failed");
+        }
+      });
     }
 
     return Scaffold(

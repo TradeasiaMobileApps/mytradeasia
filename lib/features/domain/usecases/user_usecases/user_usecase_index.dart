@@ -38,15 +38,17 @@ class UserUsecaseIndex {
     return RegisterUser(userRepository).call(param: user);
   }
 
-  Future<String> ssoRegisterUser({required UserEntity user}) {
-    return SSORegisterUser(userRepository).call(param: user);
+  Future<String> ssoRegisterUser(
+      {required UserEntity user, required String loginType}) {
+    return SSORegisterUser(userRepository)
+        .call(paramsOne: user, paramsTwo: loginType);
   }
 
   Future<SalesLoginResponse> loginSales({required Map<String, String> sales}) {
     return LoginSales(userRepository).call(param: sales);
   }
 
-  Future<dynamic> googleAuth() {
+  Future<UserCredentialEntity> googleAuth() {
     return GoogleAuth(userRepository).call();
   }
 

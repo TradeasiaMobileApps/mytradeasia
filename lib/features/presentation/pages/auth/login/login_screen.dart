@@ -8,11 +8,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:mytradeasia/features/domain/entities/user_entities/user_credential_entity.dart';
+import 'package:mytradeasia/features/domain/usecases/user_usecases/google_auth.dart';
 // import 'package:linkedin_login/linkedin_login.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_state.dart';
 import 'package:mytradeasia/helper/helper_functions.dart';
+import 'package:mytradeasia/helper/injections_container.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signin_with_linkedin/signin_with_linkedin.dart';
 
@@ -31,6 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final GoogleAuth _googleAuth = injections<GoogleAuth>();
 
   bool _passwordVisible = false;
   bool _connection = true;
@@ -40,22 +44,8 @@ class _LoginScreenState extends State<LoginScreen> {
   UserObject? user;
   bool logoutUser = false;
 
-  Future<UserCredential> signInWithGoogle() async {
-    // Trigger the authentication flow
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
-    // Obtain the auth details from the request
-    final GoogleSignInAuthentication? googleAuth =
-        await googleUser?.authentication;
-
-    // Create a new credential
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
-
-    // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+  Future<UserCredentialEntity> signInWithGoogle() async {
+    return await _googleAuth.call();
   }
 
   final _linkedInConfig = LinkedInConfig(
@@ -67,7 +57,6 @@ class _LoginScreenState extends State<LoginScreen> {
   LinkedInUser? linkedInUser;
 
   NotificationService notificationServices = NotificationService();
-
 
   @override
   void initState() {
@@ -252,32 +241,34 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                               onPressed: () async {
-                                final SharedPreferences prefs = await SharedPreferences.getInstance();
-                                String? role = prefs.getString("role")?.toLowerCase();
+                                final SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                String? role =
+                                    prefs.getString("role")?.toLowerCase();
 
-
-                                String deviceType = Platform.isAndroid ? 'android' : 'ios';
+                                String deviceType =
+                                    Platform.isAndroid ? 'android' : 'ios';
 
                                 // TODOD : ADD PARAMS FOR device token and type to loginwithemail
-
-
-
 
                                 if (_formKey.currentState!.validate()) {
                                   setState(() {
                                     _connection = !_connection;
                                   });
-                                  notificationServices.requestNotificationPermission();
-                                  String? deviceToken = await notificationServices.getDeviceToken();
+                                  notificationServices
+                                      .requestNotificationPermission();
+                                  String? deviceToken =
+                                      await notificationServices
+                                          .getDeviceToken();
 
                                   authBloc.add(LoginWithEmail(
-                                      _emailController.text,
-                                      _phoneNumberController.text,
-                                      role!,
-                                      deviceType,
+                                    _emailController.text,
+                                    _phoneNumberController.text,
+                                    role!,
+                                    deviceType,
                                     deviceToken,
-                                      context,
-                                      ));
+                                    context,
+                                  ));
                                   if (state is AuthLoggedInState) {
                                     _connection = !_connection;
                                   }
@@ -348,24 +339,32 @@ class _LoginScreenState extends State<LoginScreen> {
                               width: size20px + 4,
                             ),
                             onPressed: () async {
-                              UserCredential userCred =
-                                  await signInWithGoogle();
-
-                              bool userExists =
-                                  await checkIfUserExists(userCred.user!.uid);
-                              if (userExists) {
-                                final SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                await prefs.setString(
-                                    "email", userCred.user!.email!);
-                                await prefs.setString(
-                                    "userId", userCred.user!.uid);
-                                await prefs.setBool("isLoggedIn", true);
-                                showGoogleSSOSnackbar(context);
-                                context.go("/home");
-                              } else {
-                                context.pushReplacement(
-                                    "/auth/register/sso-biodata");
+                              try {
+                                UserCredentialEntity userCred =
+                                    await signInWithGoogle();
+                                //TODO:Fix this
+                                await checkIfUserExists(userCred.uid!)
+                                    .then((userExists) {
+                                  if (userExists) {
+                                    showGoogleSSOSnackbar(context);
+                                    context.go("/home");
+                                  } else {
+                                    context.pushReplacement(
+                                        "/auth/register/sso-biodata");
+                                  }
+                                });
+                              } catch (e) {
+                                log(e.toString());
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                  content: Text(
+                                    "Something went wrong",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  duration: Duration(milliseconds: 3000),
+                                  backgroundColor: Colors.redAccent,
+                                ));
                               }
                             },
                           ),

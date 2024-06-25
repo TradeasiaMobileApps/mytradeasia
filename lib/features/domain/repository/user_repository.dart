@@ -9,10 +9,10 @@ import 'package:mytradeasia/features/domain/entities/user_entities/user_entity.d
 
 abstract class UserRepository {
   Future<String> registerUser(UserEntity s);
-  Future<String> ssoRegisterUser(UserEntity s);
+  Future<String> ssoRegisterUser(UserEntity s, String loginType);
   Future<dynamic> loginUser(Map<String, String> s);
   Future<SalesLoginResponse> loginSales(Map<String, String> s);
-  Future<dynamic> googleAuth();
+  Future<UserCredentialEntity> googleAuth();
   void logoutUser();
   Future<DataState<UserEntity>> getUserProfile();
   Stream<Map<String, dynamic>> getUserSnapshot();
@@ -28,4 +28,5 @@ abstract class UserRepository {
   Future<String> updateEmail(String newEmail, String password);
   void sendResetPassword(String s);
   void deleteAccount();
+  Future<bool> checkIfUserExist(String ssoId, String loginType, String email);
 }

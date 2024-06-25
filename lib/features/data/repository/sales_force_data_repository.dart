@@ -59,15 +59,27 @@ class SalesforceDataRepositoryImpl implements SalesForceDataRepository {
   }
 
   @override
-  Future<DataState<SalesforceCreateAccountEntity>> createSalesforceAccount(
-      {required String? token,
-      required String? name,
-      required String? phone,
-      required String? role,
-      required String? company}) async {
+  Future<DataState<SalesforceCreateAccountEntity>> createSalesforceAccount({
+    required String? token,
+    required String? firstName,
+    required String? lastName,
+    required String? phone,
+    required String? role,
+    required String? company,
+    required String? email,
+    required String? country,
+  }) async {
     try {
       final response = await _salesforceDataService.createSFAccount(
-          token: token, name: name, role: role, company: company, phone: phone);
+        token: token,
+        firstName: firstName,
+        role: role,
+        company: company,
+        phone: phone,
+        lastName: lastName,
+        email: email,
+        country: country,
+      );
       if (response.statusCode == HttpStatus.created) {
         // String docsId = FirebaseAuth.instance.currentUser!.uid.toString();
         // await FirebaseFirestore.instance

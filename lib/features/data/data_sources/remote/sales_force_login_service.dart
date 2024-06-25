@@ -14,19 +14,20 @@ class SalesforceLoginService {
     String passwordSalesforce = "Salesforce.1";
 
     String urlSalesforce =
-        "https://tradeasia--newmind.sandbox.my.salesforce.com/services/oauth2/token?grant_type=password&client_id=$clientId&client_secret=$clientSecret&username=$userName&password=$passwordSalesforce";
+        "http://tradeasia.vn/api/token-sf?client_secret=48BC5C2BBC7EA1930E52930A173F6E5EEA2EFFFD17656D9714D5B290A43C42B0";
 
-    final response = await dio.post(
+    final response = await dio.get(
       urlSalesforce,
-      options: Options(
-        headers: {
-          "key": "Content-Type",
-          "value": "application/json",
-          "type": "text"
-        },
-      ),
+      // options: Options(
+      //   headers: {
+      //     "key": "Content-Type",
+      //     "value": "application/json",
+      //     "type": "text"
+      //   },
+      // ),
     );
     final data = response.data;
+    print(data);
 
     // final dataMapped = data.map((e) => SalesforceLoginModel.fromJson(e));
 

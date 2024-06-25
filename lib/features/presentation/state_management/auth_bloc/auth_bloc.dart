@@ -170,7 +170,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<SSORegisterWithEmail>((event, emit) async {
       BuildContext context = event.context;
 
-      final response = await _userUseCase.ssoRegisterUser(user: event.userData);
+      final response = await _userUseCase.ssoRegisterUser(
+          user: event.userData, loginType: event.loginType);
       if (response == "success") {
         log("register success");
       } else {
