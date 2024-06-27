@@ -11,6 +11,7 @@ import 'package:mytradeasia/features/domain/usecases/otp_usecases/send_otp.dart'
 import 'package:mytradeasia/features/domain/usecases/user_usecases/check_user_exist.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/google_auth.dart';
 import 'package:mytradeasia/features/presentation/widgets/country_picker.dart';
+import 'package:mytradeasia/features/presentation/widgets/dialog_sheet_widget.dart';
 import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -532,11 +533,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
       paramsThree: '',
     )
         .then((userExists) {
+      final message = prefs.getString("sso_check_userexist_message");
       if (userExists) {
+        prefs.setBool("isLoggedIn", true);
         showGoogleSSOSnackbar(context);
         context.go("/home");
-      } else {
+      } else if (message !=
+          "The role you have selected is not associated with this social account!") {
         context.pushReplacement("/auth/register/sso-biodata");
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return DialogWidget(
+                urlIcon: "assets/images/logo_email_change.png",
+                title:
+                    "The role you have selected is not associated with this social account!",
+                subtitle:
+                    "Lorem ipsum dolor sit amet consectetur. Egestas porttitor risus enim cursus rutrum molestie tortor",
+                textForButton: "Close",
+                navigatorFunction: () {
+                  /* With go_route */
+                  context.pop();
+                });
+          },
+        );
       }
     });
   }

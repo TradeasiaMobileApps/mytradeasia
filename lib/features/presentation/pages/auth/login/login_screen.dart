@@ -14,10 +14,12 @@ import 'package:mytradeasia/features/domain/usecases/user_usecases/google_auth.d
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_state.dart';
+import 'package:mytradeasia/features/presentation/widgets/dialog_sheet_widget.dart';
 import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signin_with_linkedin/signin_with_linkedin.dart';
+import 'package:mytradeasia/features/domain/usecases/user_usecases/check_user_exist.dart';
 
 import '../../../../../config/themes/theme.dart';
 import '../../../../../utils/notification_service.dart';
@@ -35,6 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _phoneNumberController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final GoogleAuth _googleAuth = injections<GoogleAuth>();
+  final CheckUserExist _checkUserExist = injections<CheckUserExist>();
 
   bool _passwordVisible = false;
   bool _connection = true;
@@ -342,17 +345,55 @@ class _LoginScreenState extends State<LoginScreen> {
                               try {
                                 UserCredentialEntity userCred =
                                     await signInWithGoogle();
-                                //TODO:Fix this
-                                await checkIfUserExists(userCred.uid!)
+                                final SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                _checkUserExist
+                                    .call(
+                                        paramsOne: userCred.uid!,
+                                        paramsTwo: 'google',
+                                        paramsThree: userCred.email!)
                                     .then((userExists) {
+                                  final message = prefs
+                                      .getString("sso_check_userexist_message");
                                   if (userExists) {
+                                    prefs.setBool("isLoggedIn", true);
                                     showGoogleSSOSnackbar(context);
                                     context.go("/home");
-                                  } else {
+                                    return;
+                                  } else if (message !=
+                                      "The role you have selected is not associated with this social account!") {
                                     context.pushReplacement(
                                         "/auth/register/sso-biodata");
+                                  } else {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return DialogWidget(
+                                            urlIcon:
+                                                "assets/images/logo_email_change.png",
+                                            title:
+                                                "The role you have selected is not associated with this social account!",
+                                            subtitle:
+                                                "Lorem ipsum dolor sit amet consectetur. Egestas porttitor risus enim cursus rutrum molestie tortor",
+                                            textForButton: "Close",
+                                            navigatorFunction: () {
+                                              /* With go_route */
+                                              context.pop();
+                                            });
+                                      },
+                                    );
                                   }
                                 });
+                                // await checkIfUserExists(userCred.uid!)
+                                //     .then((userExists) {
+                                //   if (userExists) {
+                                //     showGoogleSSOSnackbar(context);
+                                //     context.go("/home");
+                                //   } else {
+                                //     context.pushReplacement(
+                                //         "/auth/register/sso-biodata");
+                                //   }
+                                // });
                               } catch (e) {
                                 log(e.toString());
                                 ScaffoldMessenger.of(context)

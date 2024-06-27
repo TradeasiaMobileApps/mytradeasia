@@ -47,6 +47,8 @@ class AuthService {
 
       await prefs.setString("device_token", deviceToken);
 
+      String role = prefs.getString("role") ?? "";
+
       const String endPoint = "checkSocialLogin";
       final body = {
         "social_id": ssoId,
@@ -54,13 +56,26 @@ class AuthService {
         "timezone": currentTimeZone,
         "device_token": deviceToken
       };
-      final response = await dio.post(newTradeasiaApi + endPoint, data: body);
+
+      final response = await dio.post(newTradeasiaApi + endPoint,
+          data: body, options: Options(headers: {"role": role.toLowerCase()}));
       bool isFound = response.data['status'];
 
-      return Response<bool>(
-          statusCode: response.statusCode,
-          requestOptions: response.requestOptions,
-          data: isFound);
+      if (isFound) {
+        final token = response.data["data"]["user"]["token"];
+        await prefs.setString("token", token);
+        return Response<bool>(
+            statusCode: response.statusCode,
+            requestOptions: response.requestOptions,
+            data: isFound);
+      } else {
+        await prefs.setString(
+            "sso_check_userexist_message", response.data['message']);
+        return Response<bool>(
+            statusCode: response.statusCode,
+            requestOptions: response.requestOptions,
+            data: isFound);
+      }
     } else {
       //using verifyFPOTP to check if user email exist or not if not using a sso
       const String endPoint = "verifyFPOTP";

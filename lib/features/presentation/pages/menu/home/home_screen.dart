@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/config/routes/parameters.dart';
+import 'package:mytradeasia/core/resources/data_state.dart';
 import 'package:mytradeasia/features/data/model/sales_force_data_models/sales_force_create_account_model.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_entity.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_to_rfq_entity.dart';
+import 'package:mytradeasia/features/domain/entities/user_entities/user_entity.dart';
 import 'package:mytradeasia/features/domain/usecases/sales_force_data_usecases/create_sales_force_account.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/add_recently_seen.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_data.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_snapshot.dart';
+import 'package:mytradeasia/features/domain/usecases/user_usecases/user_usecase_index.dart';
 import 'package:mytradeasia/features/presentation/pages/menu/history/tracking_document/tracking_document_screen.dart';
 import 'package:mytradeasia/features/presentation/state_management/cart_bloc/cart_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/cart_bloc/cart_event.dart';
@@ -44,9 +47,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final GetUserSnapshot _getUserSnapshot = injections<GetUserSnapshot>();
   final AddRecentlySeen _addRecentlySeen = injections<AddRecentlySeen>();
-  final GetUserData _geUserData = injections<GetUserData>();
+
   final CreateSalesForceAccount _createSalesForceAccount =
       injections<CreateSalesForceAccount>();
+  final UserUsecaseIndex _user = injections<UserUsecaseIndex>();
 
   // final GetRecentlySeen _getRecentlySeen = injections<GetRecentlySeen>();
   final String url = "https://chemtradea.chemtradeasia.com/";
@@ -69,23 +73,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
       BlocProvider.of<CartBloc>(context).add(const GetCartItems());
     });
-  }
-
-  createSFId() async {
-    _data = await _geUserData();
-
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final tokenSF = prefs.getString("tokenSF") ?? "";
-
-    // if (!await checkIdSFExists()) {
-    //   _createSalesForceAccount.call(
-    //       paramsOne: tokenSF,
-    //       paramsTwo: SalesforceCreateAccountForm(
-    //           name: "${_data['firstname']} ${_data['lastname']}",
-    //           phone: _data['phone'] ?? "",
-    //           role: _data['role'].toString().toLowerCase(),
-    //           company: _data['companyName']));
-    // }
   }
 
   void increaseRecentSeenLimit(int num) {
@@ -115,23 +102,27 @@ class _HomeScreenState extends State<HomeScreen> {
             },
             color: primaryColor1,
             child: SingleChildScrollView(
-              child: StreamBuilder(
-                  stream: _getUserSnapshot.call(),
-                  builder: (context, AsyncSnapshot streamSnapshot) {
-                    if (streamSnapshot.connectionState ==
-                        ConnectionState.waiting) {
+              child: FutureBuilder(
+                  future: _user.getUserProfile(),
+                  builder:
+                      (context, AsyncSnapshot<DataState<UserEntity>> snapshot) {
+                    final UserEntity? profileData = snapshot.data is DataSuccess
+                        ? snapshot.data!.data
+                        : const UserEntity();
+
+                    if (snapshot.connectionState == ConnectionState.waiting) {
                       return const CircularProgressIndicator.adaptive(
                         backgroundColor: primaryColor1,
                       );
                     }
 
-                    if (streamSnapshot.hasError) {
+                    if (snapshot.hasError) {
                       return const CircularProgressIndicator.adaptive(
                         backgroundColor: primaryColor1,
                       );
                     }
 
-                    if (streamSnapshot.hasData) {
+                    if (snapshot.hasData) {
                       // var docsData =
                       //     streamSnapshot.data as Map<String, dynamic>;
 
@@ -178,7 +169,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     height: 30,
                                                     width: size20px * 10,
                                                     child: Text(
-                                                      "${streamSnapshot.data['firstName'] == "" ? "new" : streamSnapshot.data['firstName']} ${streamSnapshot.data['lastName'] == "" ? "user" : streamSnapshot.data['lastName']}",
+                                                      "${profileData?.firstName == "" || profileData?.firstName == null ? "new" : profileData!.firstName} ${profileData?.lastName == "" || profileData?.lastName == null ? "user" : profileData!.lastName}",
                                                       style: text16.copyWith(
                                                           color: whiteColor,
                                                           fontWeight:
@@ -214,10 +205,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   ),
                                                   const SizedBox(
                                                       width: size20px / 2),
-                                                  streamSnapshot.data['role'] ==
+                                                  profileData!.role ==
                                                               "Agent" ||
-                                                          streamSnapshot.data[
-                                                                  'role'] ==
+                                                          profileData.role ==
                                                               "Customer"
                                                       ? Container(
                                                           height: 40.0,
@@ -317,8 +307,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     /* 4 Menu Section */
-                                    streamSnapshot.data != null
-                                        ? streamSnapshot.data['role'] == "Sales"
+                                    snapshot.data != null
+                                        ? profileData.role == "Sales"
                                             ? BlocBuilder<SalesforceLoginBloc,
                                                     SalesforceLoginState>(
                                                 builder: (context, state) {
@@ -546,8 +536,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 },
                                                 //product cards
 
-                                                child: streamSnapshot
-                                                            .data['role'] !=
+                                                child: profileData.role !=
                                                         "Sales"
                                                     ? ProductCard(
                                                         product: ProductEntity(

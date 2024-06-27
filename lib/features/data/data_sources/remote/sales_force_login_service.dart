@@ -27,7 +27,6 @@ class SalesforceLoginService {
       // ),
     );
     final data = response.data;
-    print(data);
 
     // final dataMapped = data.map((e) => SalesforceLoginModel.fromJson(e));
 

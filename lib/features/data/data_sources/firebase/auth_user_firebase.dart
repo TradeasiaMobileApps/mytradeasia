@@ -341,7 +341,7 @@ class AuthUserFirebase {
         await FirebaseAuth.instance.signInWithCredential(credential);
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString("email", userCredential.user!.email!);
-    await prefs.setBool("isLoggedIn", true);
+
     await prefs.setString("userId", userCredential.user!.uid);
     return UserCredentialModel.fromUserCredential(userCredential);
   }
