@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/config/routes/parameters.dart';
 import 'package:mytradeasia/features/presentation/pages/auth/biodata/sso_biodata_screen.dart';
+import 'package:mytradeasia/features/presentation/pages/auth/login/sales_login_screen.dart';
 import 'package:mytradeasia/features/presentation/pages/auth/register/register_otp_screen.dart';
 import 'package:mytradeasia/features/presentation/pages/menu/home/all_products/products/products_by_industry_screen.dart';
 import 'package:mytradeasia/features/presentation/pages/menu/mytradeasia/submenu/change_password/password_change_otp.dart';
@@ -363,6 +364,11 @@ class Routes {
                         builder: (context, state) =>
                             const ResetPasswordScreen())
                   ]),
+              GoRoute(
+                  path: "sales_login",
+                  builder: (context, state) {
+                    return const SalesLoginScreen();
+                  }),
               GoRoute(
                   path: "register",
                   builder: (context, state) => const RegisterScreen(),

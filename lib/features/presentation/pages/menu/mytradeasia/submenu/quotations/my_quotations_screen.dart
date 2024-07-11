@@ -1,16 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
+import 'package:mytradeasia/features/presentation/state_management/quotations_bloc/quotations_bloc.dart';
+import 'package:mytradeasia/features/presentation/state_management/quotations_bloc/quotations_event.dart';
 import 'package:mytradeasia/features/presentation/widgets/quotations_widget/rfq_list_widget.dart';
 
 import '../../../../../../../utils/static_data.dart';
 
-class QuotationsScreen extends StatelessWidget {
+class QuotationsScreen extends StatefulWidget {
   const QuotationsScreen({super.key});
+
+  @override
+  State<QuotationsScreen> createState() => _QuotationsScreenState();
+}
+
+class _QuotationsScreenState extends State<QuotationsScreen> {
+  late QuotationBloc _quotationBloc;
+
+  @override
+  void initState() {
+    _quotationBloc = BlocProvider.of<QuotationBloc>(context);
+    _getListQuotations();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _quotationBloc.add(const DisposeQuotation());
+    super.dispose();
+  }
+
+  Future<void> _getListQuotations() async {
+    _quotationBloc.add(const DisposeQuotation());
+    _quotationBloc.add(const GetRFQs());
+  }
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 5,
+      length: 4,
       initialIndex: 0,
       child: Scaffold(
         backgroundColor: whiteColor,
@@ -35,12 +63,6 @@ class QuotationsScreen extends StatelessWidget {
             isScrollable: true,
             indicatorColor: primaryColor1,
             tabs: [
-              Tab(
-                child: Text(
-                  "All",
-                  style: heading2,
-                ),
-              ),
               Tab(
                 child: Text(
                   "Submitted",
@@ -71,9 +93,6 @@ class QuotationsScreen extends StatelessWidget {
         body: TabBarView(
           physics: const BouncingScrollPhysics(),
           children: [
-            // All Quotation
-            RfqListWidget(rfqEntities: rfqEntities, status: "All"),
-
             // Submitted Quotations
             RfqListWidget(rfqEntities: rfqEntities, status: "Submitted"),
 

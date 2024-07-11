@@ -3,13 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/config/routes/parameters.dart';
 import 'package:mytradeasia/core/resources/data_state.dart';
-import 'package:mytradeasia/features/data/model/sales_force_data_models/sales_force_create_account_model.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_entity.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_to_rfq_entity.dart';
 import 'package:mytradeasia/features/domain/entities/user_entities/user_entity.dart';
 import 'package:mytradeasia/features/domain/usecases/sales_force_data_usecases/create_sales_force_account.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/add_recently_seen.dart';
-import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_data.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_snapshot.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/user_usecase_index.dart';
 import 'package:mytradeasia/features/presentation/pages/menu/history/tracking_document/tracking_document_screen.dart';
@@ -18,24 +16,18 @@ import 'package:mytradeasia/features/presentation/state_management/cart_bloc/car
 import 'package:mytradeasia/features/presentation/state_management/home_bloc/home_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/home_bloc/home_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/home_bloc/home_state.dart';
-import 'package:mytradeasia/features/presentation/state_management/recently_seen_bloc/recently_seen_bloc.dart';
-import 'package:mytradeasia/features/presentation/state_management/recently_seen_bloc/recently_seen_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_login/salesforce_login_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_login/salesforce_login_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/salesforce_bloc/salesforce_login/salesforce_login_state.dart';
 import 'package:mytradeasia/features/presentation/state_management/top_products_bloc/top_products_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/top_products_bloc/top_products_event.dart';
-import 'package:mytradeasia/features/presentation/state_management/top_products_bloc/top_products_state.dart';
 import 'package:mytradeasia/features/presentation/widgets/cart_button.dart';
 import 'package:mytradeasia/features/presentation/widgets/product_card.dart';
-import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
 import 'package:mytradeasia/utils/sales_force_screen.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../../../state_management/recently_seen_bloc/recently_seen_state.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -308,7 +300,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   children: [
                                     /* 4 Menu Section */
                                     snapshot.data != null
-                                        ? profileData.role == "Sales"
+                                        ? profileData.role == "sales_associate"
                                             ? BlocBuilder<SalesforceLoginBloc,
                                                     SalesforceLoginState>(
                                                 builder: (context, state) {

@@ -38,13 +38,25 @@ class SalesQuotationsScreen extends StatelessWidget {
             tabs: [
               Tab(
                 child: Text(
-                  "All",
+                  "Pending",
                   style: heading2,
                 ),
               ),
               Tab(
                 child: Text(
-                  "New",
+                  "Quoted",
+                  style: heading2,
+                ),
+              ),
+              Tab(
+                child: Text(
+                  "Approved",
+                  style: heading2,
+                ),
+              ),
+              Tab(
+                child: Text(
+                  "Rejected",
                   style: heading2,
                 ),
               ),

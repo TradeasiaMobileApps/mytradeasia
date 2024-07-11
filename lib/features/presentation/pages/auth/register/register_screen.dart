@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 // import 'package:linkedin_login/linkedin_login.dart';
-import 'package:mytradeasia/core/resources/data_state.dart';
 import 'package:mytradeasia/features/domain/entities/user_entities/user_credential_entity.dart';
 import 'package:mytradeasia/features/domain/usecases/otp_usecases/send_otp.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/check_user_exist.dart';
@@ -18,7 +17,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signin_with_linkedin/signin_with_linkedin.dart';
 import '../../../../../config/routes/parameters.dart';
 import '../../../../../config/themes/theme.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});

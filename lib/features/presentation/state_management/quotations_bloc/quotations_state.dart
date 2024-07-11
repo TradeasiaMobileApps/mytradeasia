@@ -1,9 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:mytradeasia/features/domain/entities/rfq_entities/rfq_entity.dart';
+import 'package:mytradeasia/features/domain/entities/rfq_entities/rfq_list_entity.dart';
 
 abstract class QuotationState extends Equatable {
-  final List<RfqEntity>? rfq;
+  final RfqListEntity? rfq;
   final DioException? error;
 
   const QuotationState({this.rfq, this.error});
@@ -12,7 +13,7 @@ abstract class QuotationState extends Equatable {
 }
 
 class InitialQuotations extends QuotationState {
-  const InitialQuotations(List<RfqEntity> rfq) : super(rfq: rfq);
+  const InitialQuotations(RfqListEntity? rfq) : super(rfq: rfq);
 }
 
 class LoadingQuotations extends QuotationState {
@@ -20,7 +21,7 @@ class LoadingQuotations extends QuotationState {
 }
 
 class QuotationDone extends QuotationState {
-  const QuotationDone(List<RfqEntity> rfq) : super(rfq: rfq);
+  const QuotationDone(RfqListEntity rfq) : super(rfq: rfq);
 }
 
 class QuotationError extends QuotationState {

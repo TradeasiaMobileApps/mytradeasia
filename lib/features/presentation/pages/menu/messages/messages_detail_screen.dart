@@ -8,9 +8,7 @@ import 'package:mytradeasia/features/domain/entities/detail_product_entities/det
 import 'package:mytradeasia/features/domain/usecases/detail_product_usecases/get_detail_product.dart';
 import 'package:mytradeasia/features/presentation/state_management/chat_handler/message_collecting_handler.dart';
 import 'package:mytradeasia/features/presentation/widgets/chat_widgets/chat_list.dart';
-import 'package:mytradeasia/features/presentation/widgets/sender_bubble_chat_widget.dart';
 import 'package:mytradeasia/features/presentation/widgets/text_editing_widget.dart';
-import 'package:mytradeasia/features/presentation/widgets/user_bubble_chat_widget.dart';
 import 'package:mytradeasia/helper/injections_container.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:sendbird_chat_sdk/sendbird_chat_sdk.dart';

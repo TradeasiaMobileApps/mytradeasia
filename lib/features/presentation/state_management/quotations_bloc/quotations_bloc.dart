@@ -8,15 +8,15 @@ import 'quotations_state.dart';
 class QuotationBloc extends Bloc<QuotationEvent, QuotationState> {
   final GetRfqList _getRfqList;
 
-  QuotationBloc(this._getRfqList) : super(const InitialQuotations([])) {
+  QuotationBloc(this._getRfqList) : super(const InitialQuotations(null)) {
     on<GetRFQs>(onGetQuotation);
     on<DisposeQuotation>(onDisposeQuotation);
   }
 
   void onGetQuotation(GetRFQs event, Emitter<QuotationState> emit) async {
-    final dataState = await _getRfqList();
+    final dataState = await _getRfqList.call();
 
-    if (dataState is DataSuccess && dataState.data!.isNotEmpty) {
+    if (dataState is DataSuccess && dataState.data != null) {
       emit(QuotationDone(dataState.data!));
     }
 
@@ -27,6 +27,6 @@ class QuotationBloc extends Bloc<QuotationEvent, QuotationState> {
 
   void onDisposeQuotation(
       DisposeQuotation event, Emitter<QuotationState> emit) {
-    emit(const InitialQuotations([]));
+    emit(const InitialQuotations(null));
   }
 }

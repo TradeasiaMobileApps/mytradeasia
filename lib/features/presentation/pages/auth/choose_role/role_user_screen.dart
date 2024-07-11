@@ -173,7 +173,7 @@ class _RoleUserScreenState extends State<RoleUserScreen> {
                       } else if (selectedRole.role == "Sales") {
                         await prefs.setString("role", selectedRole.role);
                         /* With go_route */
-                        context.go("/auth/register");
+                        context.go("/auth/sales_login");
                       }
                     }
                   : null,

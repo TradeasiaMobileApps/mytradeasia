@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/features/domain/entities/rfq_entities/rfq_entity.dart';
-import 'package:mytradeasia/features/domain/entities/rfq_entities/rfq_list_entity.dart';
 import 'package:mytradeasia/features/presentation/state_management/quotations_bloc/quotations_event.dart';
 import 'package:mytradeasia/features/presentation/widgets/quotations_widget/quotation_widget.dart';
 
@@ -11,32 +10,32 @@ import '../../../../config/themes/theme.dart';
 import '../../state_management/quotations_bloc/quotations_bloc.dart';
 import '../../state_management/quotations_bloc/quotations_state.dart';
 
-class RfqListWidget extends StatefulWidget {
-  const RfqListWidget(
+class SalesRfqListWidget extends StatefulWidget {
+  const SalesRfqListWidget(
       {super.key, required this.rfqEntities, required this.status});
 
-  final RfqListEntity rfqEntities;
+  final List<RfqEntity> rfqEntities;
   final String status;
 
   @override
-  State<RfqListWidget> createState() => _RfqListWidgetState();
+  State<SalesRfqListWidget> createState() => _SalesRfqListWidgetState();
 }
 
-class _RfqListWidgetState extends State<RfqListWidget> {
+class _SalesRfqListWidgetState extends State<SalesRfqListWidget> {
   late QuotationBloc _quotationBloc;
 
   @override
   void initState() {
     _quotationBloc = BlocProvider.of<QuotationBloc>(context);
-    // _getListQuotations();
+    _getListQuotations();
     super.initState();
   }
 
-  // @override
-  // void dispose() {
-  //   _quotationBloc.add(const DisposeQuotation());
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    _quotationBloc.add(const DisposeQuotation());
+    super.dispose();
+  }
 
   Future<void> _getListQuotations() async {
     _quotationBloc.add(const DisposeQuotation());
@@ -72,16 +71,16 @@ class _RfqListWidgetState extends State<RfqListWidget> {
                   switch (widget.status) {
                     case "Submitted":
                       var rfq = state.rfq?.submitted;
-                      return rfqTabWidget(rfq, "submitted");
+                      return rfqTabWidget(rfq);
                     case "Quoted":
                       var rfq = state.rfq?.quoted;
-                      return rfqTabWidget(rfq, "quoted");
+                      return rfqTabWidget(rfq);
                     case "Rejected":
                       var rfq = state.rfq?.rejected;
-                      return rfqTabWidget(rfq, "rejected");
+                      return rfqTabWidget(rfq);
                     case "Approved":
                       var rfq = state.rfq?.approved;
-                      return rfqTabWidget(rfq, "approved");
+                      return rfqTabWidget(rfq);
                     default:
                   }
                   // return Expanded(
@@ -109,7 +108,7 @@ class _RfqListWidgetState extends State<RfqListWidget> {
                   //                       "/mytradeasia/quotations/detail_quotation",
                   //                       extra: param);
                   //                 });
-                  //           case "Submitted":
+                  //           case "Pending":
                   //             return QuotationsWidget(
                   //                 rfqEntity: rfq,
                   //                 status: rfq.quotationStatus!,
@@ -119,8 +118,7 @@ class _RfqListWidgetState extends State<RfqListWidget> {
                   //                   /* With go_router */
                   //                   QuotationDetailParameter param =
                   //                       QuotationDetailParameter(
-                  //                           status: 'submitted',
-                  //                           rfqEntity: rfq);
+                  //                           status: 'pending', rfqEntity: rfq);
 
                   //                   context.push(
                   //                       "/mytradeasia/quotations/detail_quotation",
@@ -179,7 +177,7 @@ class _RfqListWidgetState extends State<RfqListWidget> {
     );
   }
 
-  Widget rfqTabWidget(List<RfqEntity>? rfq, String status) {
+  Widget rfqTabWidget(List<RfqEntity>? rfq) {
     return Expanded(
       child: ListView.builder(
         itemCount: rfq?.length ?? 0,
@@ -192,7 +190,7 @@ class _RfqListWidgetState extends State<RfqListWidget> {
               navigationPage: () {
                 /* With go_router */
                 QuotationDetailParameter param = QuotationDetailParameter(
-                    status: status, rfqEntity: rfq[index]);
+                    status: 'submitted', rfqEntity: rfq[index]);
 
                 context.push("/mytradeasia/quotations/detail_quotation",
                     extra: param);

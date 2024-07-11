@@ -19,6 +19,7 @@ class AuthService {
     try {
       final response = await dio.get(newTradeasiaApi + endPoint,
           options: Options(headers: {"Authorization": "Bearer $token"}));
+
       final data = response.data["data"];
       final userData = UserModel.fromJson(data["user"]);
 

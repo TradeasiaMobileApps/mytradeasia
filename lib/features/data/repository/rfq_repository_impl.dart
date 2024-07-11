@@ -5,6 +5,7 @@ import 'package:mytradeasia/core/resources/data_state.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/rfq_service.dart';
 import 'package:mytradeasia/features/data/model/rfq_models/rfq_model.dart';
 import 'package:mytradeasia/features/domain/entities/rfq_entities/rfq_entity.dart';
+import 'package:mytradeasia/features/domain/entities/rfq_entities/rfq_list_entity.dart';
 import 'package:mytradeasia/features/domain/repository/rfq_repository.dart';
 
 class RfqRepositoryImpl implements RfqRepository {
@@ -48,7 +49,7 @@ class RfqRepositoryImpl implements RfqRepository {
   }
 
   @override
-  Future<DataState<List<RfqModel>>> getRfqList() async {
+  Future<DataState<RfqListEntity>> getRfqList() async {
     try {
       final response = await _rfqService.getRfqList();
 

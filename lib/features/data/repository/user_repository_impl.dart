@@ -7,7 +7,6 @@ import 'package:mytradeasia/features/data/data_sources/firebase/auth_user_fireba
 import 'package:mytradeasia/features/data/data_sources/remote/auth_service.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/recently_seen_product_service.dart';
 import 'package:mytradeasia/features/data/model/all_product_models/all_product_model.dart';
-import 'package:mytradeasia/features/data/model/user_credential_models/user_credential_model.dart';
 import 'package:mytradeasia/features/data/model/user_models/user_model.dart';
 import 'package:mytradeasia/features/data/model/user_sales_models/sales_login_response_model.dart';
 import 'package:mytradeasia/features/domain/entities/user_entities/user_credential_entity.dart';

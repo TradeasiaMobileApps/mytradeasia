@@ -6,11 +6,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:mytradeasia/features/domain/entities/user_entities/user_credential_entity.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/google_auth.dart';
-// import 'package:linkedin_login/linkedin_login.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_event.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_state.dart';
@@ -34,7 +32,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _phoneNumberController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final GoogleAuth _googleAuth = injections<GoogleAuth>();
   final CheckUserExist _checkUserExist = injections<CheckUserExist>();
@@ -85,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void dispose() {
     _emailController.dispose();
-    _phoneNumberController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
@@ -165,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         TextFormField(
                           obscureText: !_passwordVisible,
                           keyboardType: TextInputType.visiblePassword,
-                          controller: _phoneNumberController,
+                          controller: _passwordController,
                           validator: (valuePassword) {
                             if (valuePassword!.isEmpty) {
                               return "Please input the password";
@@ -229,14 +227,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     width: MediaQuery.of(context).size.width,
                     height: 55.0,
                     child: _emailController.text.isNotEmpty &&
-                            _phoneNumberController.text.isNotEmpty
+                            _passwordController.text.isNotEmpty
                         ? BlocBuilder<AuthBloc, AuthState>(
                             builder: (_, state) => ElevatedButton(
                               style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        primaryColor1),
-                                shape: MaterialStateProperty.all<
+                                backgroundColor: WidgetStateProperty.all<Color>(
+                                    primaryColor1),
+                                shape: WidgetStateProperty.all<
                                     RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(7.0),
@@ -252,7 +249,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 String deviceType =
                                     Platform.isAndroid ? 'android' : 'ios';
 
-                                // TODOD : ADD PARAMS FOR device token and type to loginwithemail
+                                //TODO :ADD PARAMS FOR device token and type to loginwithemail
 
                                 if (_formKey.currentState!.validate()) {
                                   setState(() {
@@ -266,7 +263,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                                   authBloc.add(LoginWithEmail(
                                     _emailController.text,
-                                    _phoneNumberController.text,
+                                    _passwordController.text,
                                     role!,
                                     deviceType,
                                     deviceToken,
@@ -286,8 +283,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         : ElevatedButton(
                             style: ButtonStyle(
                               backgroundColor:
-                                  MaterialStateProperty.all<Color>(greyColor),
-                              shape: MaterialStateProperty.all<
+                                  WidgetStateProperty.all<Color>(greyColor),
+                              shape: WidgetStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(7.0),

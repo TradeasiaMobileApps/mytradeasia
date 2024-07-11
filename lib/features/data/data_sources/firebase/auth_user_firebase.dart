@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
@@ -14,7 +13,6 @@ import 'package:mytradeasia/features/data/model/all_product_models/all_product_m
 import 'package:mytradeasia/features/data/model/user_credential_models/user_credential_model.dart';
 import 'package:mytradeasia/features/data/model/user_models/user_model.dart';
 import 'package:mytradeasia/features/data/model/user_sales_models/sales_login_response_model.dart';
-import 'package:mytradeasia/helper/helper_functions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../utils/notification_service.dart';
@@ -282,9 +280,8 @@ class AuthUserFirebase {
       UserCredential _userCredential = await _auth.signInWithEmailAndPassword(
           email: auth["email"]!, password: auth["password"]!);
 
-      print("FB CRED : $_userCredential");
-
       await prefs.setString("email", auth["email"]!);
+      await prefs.setString("token", response.data['data']['user']['token']);
       await prefs.setBool("isLoggedIn", true);
 
       return SalesLoginResponse.fromJson(response.data);
