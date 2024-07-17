@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:mytradeasia/core/resources/data_state.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/rfq_service.dart';
-import 'package:mytradeasia/features/data/model/rfq_models/rfq_model.dart';
-import 'package:mytradeasia/features/domain/entities/rfq_entities/rfq_entity.dart';
+import 'package:mytradeasia/features/data/model/rfq_models/request_model.dart';
+import 'package:mytradeasia/features/domain/entities/rfq_entities/request_entity.dart';
 import 'package:mytradeasia/features/domain/entities/rfq_entities/rfq_list_entity.dart';
 import 'package:mytradeasia/features/domain/repository/rfq_repository.dart';
 
@@ -14,24 +14,24 @@ class RfqRepositoryImpl implements RfqRepository {
   RfqRepositoryImpl(this._rfqService);
 
   @override
-  Future<DataState> submitRfq(RfqEntity s) async {
+  Future<DataState> submitRfq(RequestEntity s) async {
     try {
-      final response = await _rfqService.submitRfqService(RfqModel(
-          rfqId: null,
-          custId: s.custId,
-          firstname: s.firstname,
-          lastname: s.lastname,
-          company: s.company,
-          country: s.country,
+      final response = await _rfqService.submitRfqService(
+        RequestModel(
+          productId: s.productId,
+          uomId: s.uomId,
+          qty: s.qty,
           incoterm: s.incoterm,
-          phone: s.phone,
-          products: RfqProductModel(
-            productName: s.products!.productName,
-            quantity: s.products!.quantity,
-            unit: s.products!.unit,
-          ),
-          message: s.message,
-          portOfDestination: s.portOfDestination));
+          pod: s.pod,
+          firstName: s.firstName,
+          lastName: s.lastName,
+          companyName: s.companyName,
+          country: s.country,
+          dialingCode: s.dialingCode,
+          mobileNumber: s.mobileNumber,
+          email: s.email,
+        ),
+      );
 
       if (response!.statusCode == HttpStatus.ok) {
         return DataSuccess(response.data!);

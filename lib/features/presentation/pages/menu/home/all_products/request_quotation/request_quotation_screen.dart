@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_to_rfq_entity.dart';
+import 'package:mytradeasia/features/domain/entities/rfq_entities/request_entity.dart';
 import 'package:mytradeasia/features/domain/entities/rfq_entities/rfq_entity.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_data.dart';
 import 'package:mytradeasia/features/presentation/pages/menu/home/all_products/request_quotation/widgets/messages_widget.dart';
@@ -567,24 +568,32 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                       if (_formKey.currentState!.validate()) {
                         for (var e in widget.products) {
                           BlocProvider.of<RfqBloc>(context).add(SubmitRfqEvent(
-                            RfqEntity(
-                              rfqId: null,
-                              custId: _data['uid'],
-                              firstname: _firstNameController.text,
-                              lastname: _lastNameController.text,
-                              company: _companyNameController.text,
+                            RequestEntity(
+                              firstName: _firstNameController.text,
+                              lastName: _lastNameController.text,
+                              companyName: _companyNameController.text,
                               country: _countryController.text,
-                              phone: _phoneNumberController.text,
-                              products: RfqProduct(
-                                productName: e.productName,
-                                quantity: e.quantity!.toInt(),
-                                unit: e.unit,
-                              ),
-                              message: _messagesController.text,
-                              portOfDestination:
-                                  _portOfDetinationController.text,
-                              incoterm: _selectedValueIncoterm ?? "",
+                              mobileNumber: _phoneNumberController.text,
+                              productId: int.parse(e.productId),
                             ),
+                            // RfqEntity(
+                            //   rfqId: null,
+                            //   custId: _data['uid'],
+                            //   firstname: _firstNameController.text,
+                            //   lastname: _lastNameController.text,
+                            //   company: _companyNameController.text,
+                            //   country: _countryController.text,
+                            //   phone: _phoneNumberController.text,
+                            //   products: RfqProduct(
+                            //     productName: e.productName,
+                            //     quantity: e.quantity!.toInt(),
+                            //     unit: e.unit,
+                            //   ),
+                            //   message: _messagesController.text,
+                            //   portOfDestination:
+                            //       _portOfDetinationController.text,
+                            //   incoterm: _selectedValueIncoterm ?? "",
+                            // ),
                           ));
                         }
                         if (state is RfqSuccess) {

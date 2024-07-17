@@ -3,9 +3,8 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:mytradeasia/core/constants/constants.dart';
-import 'package:mytradeasia/features/data/data_sources/firebase/auth_user_firebase.dart';
+import 'package:mytradeasia/features/data/model/rfq_models/request_model.dart';
 import 'package:mytradeasia/features/data/model/rfq_models/rfq_list_model.dart';
-import 'package:mytradeasia/features/data/model/rfq_models/rfq_model.dart';
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,10 +12,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 class RfqService {
   final dio = Dio();
 
-  Future<Response<dynamic>>? submitRfqService(RfqModel rfqModel) async {
-    final rfqData = json.encode(rfqModel.toJson());
+  Future<Response<dynamic>>? submitRfqService(RequestModel reqModel) async {
+    final rfqData = json.encode(reqModel.toJson());
 
-    const String url = "http://10.0.2.2:3000/mytradeasia/rfq/createRfq";
+    const String url = "${newTradeasiaApi}singleProductRFQ";
     final response = await dio.post(
       url,
       data: rfqData,
