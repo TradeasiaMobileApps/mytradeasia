@@ -83,28 +83,19 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.white,
+    ));
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => injections<AuthBloc>(),
-        ),
+        BlocProvider(create: (context) => injections<AuthBloc>()),
         BlocProvider(create: (_) => injections<CartBloc>()),
-        BlocProvider(
-          create: (_) => injections<ListProductBloc>(),
-        ),
-        BlocProvider(
-          create: (_) => injections<IndustryBloc>(),
-        ),
-        BlocProvider(
-          create: (_) => injections<SearchProductBloc>(),
-        ),
+        BlocProvider(create: (_) => injections<ListProductBloc>()),
+        BlocProvider(create: (_) => injections<IndustryBloc>()),
+        BlocProvider(create: (_) => injections<SearchProductBloc>()),
         BlocProvider(create: (_) => injections<TopProductBloc>()),
-        BlocProvider(
-          create: (_) => injections<FaqBloc>(),
-        ),
-        BlocProvider(
-          create: (_) => injections<DhlShipmentBloc>(),
-        ),
+        BlocProvider(create: (_) => injections<FaqBloc>()),
+        BlocProvider(create: (_) => injections<DhlShipmentBloc>()),
         BlocProvider(create: (_) => injections<DetailProductBloc>()),
         BlocProvider(create: (_) => injections<SalesforceLoginBloc>()),
         BlocProvider(create: (_) => injections<SalesforceDataBloc>()),
@@ -141,16 +132,15 @@ class _MyAppState extends State<MyApp> {
             routerConfig: Routes().router,
             builder: (context, child) {
               checkConnection();
-              return AnnotatedRegion<SystemUiOverlayStyle>(
-                  value: SystemUiOverlayStyle(
-                    statusBarColor: Colors.transparent,
-                  ),
-                  child: Stack(
-                    children: [
-                      child!,
-                      _connection ? const SizedBox() : const LoadingOverlay(),
-                    ],
-                  ));
+              SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+                statusBarColor: Colors.transparent,
+              ));
+              return Stack(
+                children: [
+                  child!,
+                  _connection ? const SizedBox() : const LoadingOverlay(),
+                ],
+              );
             },
           );
         },

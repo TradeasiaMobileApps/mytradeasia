@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -16,7 +15,6 @@ import 'package:mytradeasia/features/presentation/widgets/dialog_sheet_widget.da
 import 'package:mytradeasia/helper/injections_container.dart';
 
 import '../../../../../../domain/entities/user_entities/user_credential_entity.dart';
-import '../../../../../../domain/usecases/user_usecases/user_usecase_index.dart';
 import '../../../../../widgets/country_picker.dart';
 import '../../../../../state_management/rfq_bloc/rfq_bloc.dart';
 import '../../../../../state_management/rfq_bloc/rfq_event.dart';
@@ -49,15 +47,11 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
       TextEditingController(text: "Hi, I'm interested in this product.");
   final GetUserData _geUserData = injections<GetUserData>();
   final _formKey = GlobalKey<FormState>();
-
   final ScrollController _scrollController = ScrollController();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   String? _selectedValueIncoterm;
-  // final UserUsecaseIndex _user = injections<UserUsecaseIndex>();
   late UserCredentialEntity _userCredential;
-
-  // final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   Map<String, dynamic> _data = {};
 
   @override
