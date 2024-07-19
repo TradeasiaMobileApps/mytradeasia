@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -27,7 +29,6 @@ import 'package:mytradeasia/helper/injections_container.dart';
 import 'package:mytradeasia/utils/sales_force_screen.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
 import 'package:shimmer/shimmer.dart';
-
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -117,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     if (snapshot.hasData) {
                       // var docsData =
                       //     streamSnapshot.data as Map<String, dynamic>;
-
+                      log(profileData!.role!);
                       return Column(
                         children: [
                           Column(
@@ -198,9 +199,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   const SizedBox(
                                                       width: size20px / 2),
                                                   profileData!.role ==
-                                                              "Agent" ||
+                                                              "agent" ||
                                                           profileData.role ==
-                                                              "Customer"
+                                                              "customer"
                                                       ? Container(
                                                           height: 40.0,
                                                           width: 40.0,

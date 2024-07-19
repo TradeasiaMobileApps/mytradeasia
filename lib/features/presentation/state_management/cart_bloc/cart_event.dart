@@ -1,11 +1,12 @@
 import 'package:mytradeasia/features/data/model/cart_models/cart_models.dart';
+import 'package:mytradeasia/features/domain/entities/cart_entities/add_cart_entities.dart';
 
 abstract class CartEvent {
   const CartEvent();
 }
 
 class AddToCart extends CartEvent {
-  final CartModel product;
+  final AddCartEntities product;
 
   const AddToCart(this.product);
 }

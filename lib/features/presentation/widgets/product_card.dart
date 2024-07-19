@@ -16,7 +16,6 @@ class ProductCard extends StatelessWidget {
   final ProductEntity product;
   final bool isNotRecentSeenCard;
   final Function()? onPressed;
-  final String url = "https://chemtradea.chemtradeasia.com/";
 
   @override
   Widget build(BuildContext context) {

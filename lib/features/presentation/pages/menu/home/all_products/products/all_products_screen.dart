@@ -420,6 +420,10 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                                           child: authState.role != "Sales"
                                               ? ProductCard(
                                                   product: ProductEntity(
+                                                      productId: state
+                                                          .products!
+                                                          .productPayload[index]
+                                                          .id,
                                                       productname: state
                                                           .products!
                                                           .productPayload[index]
@@ -477,6 +481,10 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                                                 )
                                               : ProductCard(
                                                   product: ProductEntity(
+                                                      productId: state
+                                                          .products!
+                                                          .productPayload[index]
+                                                          .id,
                                                       productname: state
                                                           .products!
                                                           .productPayload[index]
@@ -558,6 +566,8 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                                             },
                                             child: ProductCard(
                                               product: ProductEntity(
+                                                productId: state.products!
+                                                    .productPayload[index].id,
                                                 productname: searchState
                                                     .searchProducts![index]
                                                     .productname!,

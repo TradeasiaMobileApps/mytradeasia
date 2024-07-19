@@ -7,6 +7,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
 import 'package:mytradeasia/features/data/model/cart_models/cart_models.dart';
 import 'package:mytradeasia/features/data/model/user_sales_models/user_sales_model.dart';
+import 'package:mytradeasia/features/domain/entities/cart_entities/add_cart_entities.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_entity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../features/domain/entities/user_entities/user_credential_entity.dart';
@@ -27,17 +28,21 @@ int getIntegerFromDialingCode(String dialingCode) {
   return int.parse(numericPart); // Convert the numeric part to an integer
 }
 
-CartModel castProductEntityToCartModel(
-    {required ProductEntity product,
-    required double quantity,
-    required String unit}) {
-  return CartModel(
-      productName: product.productname,
-      productImage: product.productimage,
-      hsCode: product.hsCode,
-      casNumber: product.casNumber,
-      quantity: quantity,
-      unit: unit);
+AddCartEntities castProductEntityToCartModel({
+  required ProductEntity product,
+  required double quantity,
+  required int unitOfMetricsId,
+  required String incoterm,
+  required String portOfDischarge,
+  String? note,
+}) {
+  return AddCartEntities(
+      productId: int.parse(product.productId!),
+      uomId: unitOfMetricsId,
+      qty: quantity.ceil(),
+      incoterm: incoterm,
+      pod: portOfDischarge,
+      note: note);
 }
 
 LatLng listDoubleToLatLng(List<double> list) {
@@ -182,6 +187,13 @@ void showLinkedinSSOSnackbar(BuildContext context) {
   ));
 }
 
-UserCredentialEntity toUserCredentialEntityFromSalesModel(UserSalesModel response) {
-  return UserCredentialEntity(displayName: "${response.firstName} ${response.lastName}", email: response.email,emailVerified: true, phoneNumber: null,photoUrl: null,uid: response.id.toString());
+UserCredentialEntity toUserCredentialEntityFromSalesModel(
+    UserSalesModel response) {
+  return UserCredentialEntity(
+      displayName: "${response.firstName} ${response.lastName}",
+      email: response.email,
+      emailVerified: true,
+      phoneNumber: null,
+      photoUrl: null,
+      uid: response.id.toString());
 }

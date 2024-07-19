@@ -3,6 +3,7 @@ import 'package:mytradeasia/features/data/data_sources/firebase/auth_user_fireba
 import 'package:mytradeasia/features/data/data_sources/firebase/cart_firebase.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/all_industry_service.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/auth_service.dart';
+import 'package:mytradeasia/features/data/data_sources/remote/cart_service.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/category_service.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/country_service.dart';
 import 'package:mytradeasia/features/data/data_sources/remote/detail_product_service.dart';
@@ -169,6 +170,7 @@ Future<void> initializeDependencies() async {
   injections.registerSingleton<RecentlySeenProductService>(
       RecentlySeenProductService());
   injections.registerSingleton<AuthService>(AuthService());
+  injections.registerSingleton<CartService>(CartService());
 
   //Repositories Dependencies
   injections.registerSingleton<DetailProductRepository>(
@@ -193,8 +195,8 @@ Future<void> initializeDependencies() async {
   injections.registerSingleton<UserRepository>(
       UserRepositoryImpl(injections(), injections(), injections()));
   injections.registerSingleton<RfqRepository>(RfqRepositoryImpl(injections()));
-  injections
-      .registerSingleton<CartRepository>(CartRepositoryImpl(injections()));
+  injections.registerSingleton<CartRepository>(
+      CartRepositoryImpl(injections(), injections()));
   injections.registerSingleton<SearatesRepository>(
       SearatesRepositoryImpl(injections()));
   injections
