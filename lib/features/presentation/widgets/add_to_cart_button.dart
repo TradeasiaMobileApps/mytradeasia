@@ -55,338 +55,347 @@ class _AddToCartButtonState extends State<AddToCartButton> {
       context: context,
       builder: (context) {
         return Padding(
-          padding: const EdgeInsets.only(
-              left: size20px, right: size20px, top: size20px),
-          child: SizedBox(
-            height: MediaQuery.sizeOf(context).height * 0.8,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Image.asset(
-                    "assets/images/icon_spacing.png",
-                    width: 25.0,
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.only(
+                left: size20px, right: size20px, top: size20px),
+            child: SizedBox(
+              height: MediaQuery.sizeOf(context).height * 0.8,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Image.asset(
+                      "assets/images/icon_spacing.png",
+                      width: 25.0,
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: size20px),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          SizedBox(
-                            height: size20px * 5,
-                            width: size20px * 5,
-                            child: ClipRRect(
-                              borderRadius: const BorderRadius.all(
-                                  Radius.circular(size20px / 4)),
-                              child: CachedNetworkImage(
-                                imageUrl: product.productimage!,
-                                fit: BoxFit.fill,
-                                placeholder: (context, url) => const Center(
-                                  child: CircularProgressIndicator.adaptive(),
+                  Padding(
+                    padding: const EdgeInsets.only(top: size20px),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            SizedBox(
+                              height: size20px * 5,
+                              width: size20px * 5,
+                              child: ClipRRect(
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(size20px / 4)),
+                                child: CachedNetworkImage(
+                                  imageUrl: product.productimage!,
+                                  fit: BoxFit.fill,
+                                  placeholder: (context, url) => const Center(
+                                    child: CircularProgressIndicator.adaptive(),
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(Icons.error),
                                 ),
-                                errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
                               ),
                             ),
-                          ),
-                          const SizedBox(width: size20px),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            const SizedBox(width: size20px),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.5,
+                                  height: size20px * 2.5,
+                                  child: Text(
+                                    product.productname ?? "",
+                                    style: heading2,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                const SizedBox(height: size20px / 2),
+                                Row(
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          "CAS Number",
+                                          style: body1Medium,
+                                        ),
+                                        const SizedBox(height: 5.0),
+                                        Text(
+                                          product.casNumber ?? "",
+                                          style: body1Regular.copyWith(
+                                              color: greyColor2),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      width: 30.0,
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          "HS Code",
+                                          style: body1Medium,
+                                        ),
+                                        const SizedBox(height: 5.0),
+                                        Text(
+                                          product.hsCode ?? "",
+                                          style: body1Regular.copyWith(
+                                              color: greyColor2),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: size20px * 2, bottom: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.5,
-                                height: size20px * 2.5,
-                                child: Text(
-                                  product.productname ?? "",
-                                  style: heading2,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
+                              Expanded(
+                                flex: 10,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "Quantity",
+                                      style: text14,
+                                    ),
+                                    const SizedBox(height: size24px / 3),
+                                    SizedBox(
+                                      width: size20px * 8.0,
+                                      height: size20px + 30,
+                                      child: TextEditingWidget(
+                                        controller: _quantityController,
+                                        hintText: "Quantity",
+                                        readOnly: false,
+                                        inputType: TextInputType.number,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              const SizedBox(height: size20px / 2),
-                              Row(
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        "CAS Number",
-                                        style: body1Medium,
+                              Expanded(flex: 1, child: Container()),
+                              Expanded(
+                                flex: 10,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "Unit",
+                                      style: text14,
+                                    ),
+                                    const SizedBox(height: 8.0),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                          border: Border.all(color: greyColor3),
+                                          borderRadius:
+                                              BorderRadius.circular(7.0)),
+                                      width: size20px * 8.0,
+                                      height: size20px + 28,
+                                      // TexteditingController here
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                          left: size20px - 14,
+                                        ),
+                                        child: BlocBuilder<DropdownUomBloc,
+                                            DropdownUomState>(
+                                          builder: (context, state) {
+                                            List<DropdownMenuItem> uom = [];
+                                            if (state is DropdownUomSuccess) {
+                                              for (var i = 0;
+                                                  i < state.dropdownUom!.length;
+                                                  i++) {
+                                                uom.add(DropdownMenuItem(
+                                                  value: state.dropdownUom![i],
+                                                  child: AutoSizeText(
+                                                    state.dropdownUom![i]
+                                                        .uomName,
+                                                    // style: TextStyle(fontSize: 7),
+                                                    minFontSize: 10,
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ));
+                                              }
+                                            }
+                                            return DropdownButtonFormField(
+                                              icon: Image.asset(
+                                                  "assets/images/icon_bottom.png"),
+                                              hint: Text(
+                                                "Unit",
+                                                style: body1Regular.copyWith(
+                                                    color: greyColor),
+                                              ),
+                                              decoration: const InputDecoration(
+                                                border: InputBorder.none,
+                                              ),
+                                              style: body1Regular,
+                                              items: uom,
+                                              value: _selectedValueUnit,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  _selectedValueUnit = value;
+                                                });
+                                              },
+                                            );
+                                          },
+                                        ),
                                       ),
-                                      const SizedBox(height: 5.0),
-                                      Text(
-                                        product.casNumber ?? "",
-                                        style: body1Regular.copyWith(
-                                            color: greyColor2),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    width: 30.0,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        "HS Code",
-                                        style: body1Medium,
-                                      ),
-                                      const SizedBox(height: 5.0),
-                                      Text(
-                                        product.hsCode ?? "",
-                                        style: body1Regular.copyWith(
-                                            color: greyColor2),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            top: size20px * 2, bottom: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              flex: 10,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    "Quantity",
-                                    style: text14,
-                                  ),
-                                  const SizedBox(height: size24px / 3),
-                                  SizedBox(
-                                    width: size20px * 8.0,
-                                    height: size20px + 30,
-                                    child: TextEditingWidget(
-                                      controller: _quantityController,
-                                      hintText: "Quantity",
-                                      readOnly: false,
-                                      inputType: TextInputType.number,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Expanded(flex: 1, child: Container()),
-                            Expanded(
-                              flex: 10,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    "Unit",
-                                    style: text14,
-                                  ),
-                                  const SizedBox(height: 8.0),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                        border: Border.all(color: greyColor3),
-                                        borderRadius:
-                                            BorderRadius.circular(7.0)),
-                                    width: size20px * 8.0,
-                                    height: size20px + 28,
-                                    // TexteditingController here
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                        left: size20px,
-                                      ),
-                                      child: BlocBuilder<DropdownUomBloc,
-                                          DropdownUomState>(
-                                        builder: (context, state) {
-                                          List<DropdownMenuItem> uom = [];
-                                          if (state is DropdownUomSuccess) {
-                                            for (var i = 0;
-                                                i < state.dropdownUom!.length;
-                                                i++) {
-                                              uom.add(DropdownMenuItem(
-                                                value: state.dropdownUom![i],
-                                                child: AutoSizeText(
-                                                  state.dropdownUom![i].uomName,
-                                                  // style: TextStyle(fontSize: 7),
-                                                  minFontSize: 10,
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                              ));
-                                            }
-                                          }
-                                          return DropdownButtonFormField(
-                                            icon: Image.asset(
-                                                "assets/images/icon_bottom.png"),
-                                            hint: Text(
-                                              "Unit",
-                                              style: body1Regular.copyWith(
-                                                  color: greyColor),
-                                            ),
-                                            decoration: const InputDecoration(
-                                              border: InputBorder.none,
-                                            ),
-                                            style: body1Regular,
-                                            items: uom,
-                                            value: _selectedValueUnit,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _selectedValueUnit = value;
-                                              });
-                                            },
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            top: size20px, bottom: size20px),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              flex: 10,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    "Incoterm",
-                                    style: text14,
-                                  ),
-                                  const SizedBox(height: 8.0),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                        border: Border.all(color: greyColor3),
-                                        borderRadius:
-                                            BorderRadius.circular(7.0)),
-                                    width: size20px * 8.0,
-                                    height: size20px + 28,
-                                    // TexteditingController here
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                        left: size20px,
-                                      ),
-                                      child: BlocBuilder<DropdownIncotermBloc,
-                                          DropdownIncotermState>(
-                                        builder: (context, state) {
-                                          List<DropdownMenuItem> incoterm = [];
-                                          if (state
-                                              is DropdownIncotermSuccess) {
-                                            for (var i = 0;
-                                                i <
-                                                    state.dropdownIncoterm!
-                                                        .length;
-                                                i++) {
-                                              incoterm.add(DropdownMenuItem(
-                                                value:
-                                                    state.dropdownIncoterm![i],
-                                                child: AutoSizeText(
-                                                  state.dropdownIncoterm![i]
-                                                      .incotermName,
-                                                  // style: TextStyle(fontSize: 7),
-                                                  minFontSize: 10,
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                              ));
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: size20px, bottom: size20px),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                flex: 10,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "Incoterm",
+                                      style: text14,
+                                    ),
+                                    const SizedBox(height: 8.0),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                          border: Border.all(color: greyColor3),
+                                          borderRadius:
+                                              BorderRadius.circular(7.0)),
+                                      width: size20px * 8.0,
+                                      height: size20px + 28,
+                                      // TexteditingController here
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                          left: size20px - 14,
+                                        ),
+                                        child: BlocBuilder<DropdownIncotermBloc,
+                                            DropdownIncotermState>(
+                                          builder: (context, state) {
+                                            List<DropdownMenuItem> incoterm =
+                                                [];
+                                            if (state
+                                                is DropdownIncotermSuccess) {
+                                              for (var i = 0;
+                                                  i <
+                                                      state.dropdownIncoterm!
+                                                          .length;
+                                                  i++) {
+                                                incoterm.add(DropdownMenuItem(
+                                                  value: state
+                                                      .dropdownIncoterm![i],
+                                                  child: AutoSizeText(
+                                                    state.dropdownIncoterm![i]
+                                                        .incotermName,
+                                                    // style: TextStyle(fontSize: 7),
+                                                    minFontSize: 10,
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ));
+                                              }
                                             }
-                                          }
-                                          return DropdownButtonFormField(
-                                            icon: Image.asset(
-                                                "assets/images/icon_bottom.png"),
-                                            hint: Text(
-                                              "Incoterm",
-                                              style: body1Regular.copyWith(
-                                                  color: greyColor),
-                                            ),
-                                            decoration: const InputDecoration(
-                                              border: InputBorder.none,
-                                            ),
-                                            style: body1Regular,
-                                            items: incoterm,
-                                            value: _incotermValue,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _incotermValue = value;
-                                              });
-                                            },
-                                          );
-                                        },
+                                            return DropdownButtonFormField(
+                                              icon: Image.asset(
+                                                  "assets/images/icon_bottom.png"),
+                                              hint: Text(
+                                                "Incoterm",
+                                                style: body1Regular.copyWith(
+                                                    color: greyColor),
+                                              ),
+                                              decoration: const InputDecoration(
+                                                border: InputBorder.none,
+                                              ),
+                                              style: body1Regular,
+                                              items: incoterm,
+                                              value: _incotermValue,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  _incotermValue = value;
+                                                });
+                                              },
+                                            );
+                                          },
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Expanded(flex: 1, child: Container()),
-                            Expanded(
-                              flex: 10,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    "POD",
-                                    style: text14,
-                                  ),
-                                  const SizedBox(height: size24px / 3),
-                                  SizedBox(
-                                    width: size20px * 8.0,
-                                    height: size20px + 30,
-                                    child: TextEditingWidget(
-                                      controller: _portOfDischargeController,
-                                      hintText: "Port Of Discharge",
-                                      readOnly: false,
-                                      inputType: TextInputType.text,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      CartMessagesWidget(
-                          messagesController: _messagesController),
-                      // MessagesWidget(messagesController: _messagesController),
-                      SizedBox(
-                        height: size20px * 2.75,
-                        width: MediaQuery.of(context).size.width,
-                        child: ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  primaryColor1),
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(7.0),
+                                  ],
                                 ),
                               ),
-                            ),
-                            onPressed: () {
-                              addToCart(product: product);
-                            },
-                            child: Text("Add to Cart",
-                                style: text16.copyWith(color: whiteColor))),
-                      )
-                    ],
+                              Expanded(flex: 1, child: Container()),
+                              Expanded(
+                                flex: 10,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "POD",
+                                      style: text14,
+                                    ),
+                                    const SizedBox(height: size24px / 3),
+                                    SizedBox(
+                                      width: size20px * 8.0,
+                                      height: size20px + 30,
+                                      child: TextEditingWidget(
+                                        controller: _portOfDischargeController,
+                                        hintText: "Port Of Discharge",
+                                        readOnly: false,
+                                        inputType: TextInputType.text,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        CartMessagesWidget(
+                            messagesController: _messagesController),
+                        // MessagesWidget(messagesController: _messagesController),
+                        SizedBox(
+                          height: size20px * 2.75,
+                          width: MediaQuery.of(context).size.width,
+                          child: ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        primaryColor1),
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(7.0),
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {
+                                addToCart(product: product);
+                              },
+                              child: Text("Add to Cart",
+                                  style: text16.copyWith(color: whiteColor))),
+                        )
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
