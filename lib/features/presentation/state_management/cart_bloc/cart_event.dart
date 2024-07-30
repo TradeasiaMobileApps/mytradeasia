@@ -1,5 +1,5 @@
-import 'package:mytradeasia/features/data/model/cart_models/cart_models.dart';
 import 'package:mytradeasia/features/domain/entities/cart_entities/add_cart_entities.dart';
+import 'package:mytradeasia/features/domain/entities/cart_entities/cart_entities.dart';
 
 abstract class CartEvent {
   const CartEvent();
@@ -12,18 +12,17 @@ class AddToCart extends CartEvent {
 }
 
 class RemoveFromCart extends CartEvent {
-  final List<CartModel> cart;
+  // final int cartId;
 
-  const RemoveFromCart(this.cart);
+  const RemoveFromCart();
 }
 
 class UpdateCartItem extends CartEvent {
-  final List<CartModel> cart;
-  final CartModel product;
-  final double quantity;
-  final String unit;
+  final CartEntity product;
 
-  const UpdateCartItem(this.cart, this.product, this.quantity, this.unit);
+  const UpdateCartItem(
+    this.product,
+  );
 }
 
 class GetCartItems extends CartEvent {

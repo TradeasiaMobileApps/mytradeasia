@@ -4,7 +4,7 @@ class ProductToRfq {
   final String productImage;
   final String hsCode;
   final String casNumber;
-  double? quantity;
+  int? quantity;
   String? unit;
 
   ProductToRfq(

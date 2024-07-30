@@ -138,7 +138,7 @@ class _RfqProductsState extends State<RfqProducts> {
                                                 widget.products[index].unit ==
                                                     null
                                             ? "Not yet added"
-                                            : "${parseDoubleToIntegerIfNecessary(widget.products[index].quantity!)} ${widget.products[index].unit}",
+                                            : "${widget.products[index].quantity!} ${widget.products[index].unit}",
                                         style: body2Medium.copyWith(
                                             color: greyColor2)),
                                   ],
@@ -179,8 +179,7 @@ class _RfqProductsState extends State<RfqProducts> {
       {required List<ProductToRfq> products,
       required ProductToRfq product}) async {
     if (product.quantity != null) {
-      widget.quantityController.text =
-          parseDoubleToIntegerIfNecessary(product.quantity!).toString();
+      widget.quantityController.text = product.quantity!.toString();
     }
     _selectedValueUnit = product.unit;
 
@@ -452,7 +451,7 @@ class _RfqProductsState extends State<RfqProducts> {
                                   } else {
                                     Navigator.pop(context);
                                     setState(() {
-                                      product.quantity = double.parse(
+                                      product.quantity = int.parse(
                                           widget.quantityController.text);
                                       product.unit = _selectedValueUnit;
                                     });

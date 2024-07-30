@@ -1,36 +1,37 @@
 import 'package:equatable/equatable.dart';
 
-class CartEntity extends Equatable {
-  final int? productId;
+class CartEntity {
+  final int id;
+  final int cartId;
+  final int userid;
+  final int productId;
+  final int uomId;
   final String? productName;
   final String? productImage;
   final String? hsCode;
   final String? casNumber;
-  final String? seoUrl;
-  final String? unit;
-  final double? quantity;
+  final String? incoterm;
+  final String? unitName;
+  final int? quantity;
+  final String? pod;
+  final String? note;
+  bool? isChecked;
 
-  const CartEntity(
-      {this.productId,
-      this.productName,
-      this.productImage,
-      this.hsCode,
-      this.casNumber,
-      this.seoUrl,
-      this.unit,
-      this.quantity});
-
-  @override
-  List<Object?> get props {
-    return [
-      productId,
-      productName,
-      productImage,
-      hsCode,
-      casNumber,
-      seoUrl,
-      unit,
-      quantity
-    ];
-  }
+  CartEntity({
+    required this.id,
+    required this.cartId,
+    required this.userid,
+    required this.productId,
+    required this.uomId,
+    this.productName,
+    this.productImage,
+    this.hsCode,
+    this.casNumber,
+    this.incoterm,
+    this.unitName,
+    this.quantity,
+    this.pod,
+    this.note,
+    this.isChecked = false,
+  });
 }

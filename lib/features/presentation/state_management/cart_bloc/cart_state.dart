@@ -1,10 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
-import 'package:mytradeasia/features/data/model/cart_models/cart_models.dart';
+import 'package:mytradeasia/features/domain/entities/cart_entities/cart_entities.dart';
 
 class CartState extends Equatable {
-  final List<CartModel>? cartItems;
-  final FirebaseException? error;
+  final List<CartEntity>? cartItems;
+  final DioException? error;
 
   const CartState({this.cartItems, this.error});
 
@@ -18,7 +18,7 @@ class CartLoadingState extends CartState {
 
 class CartDoneState extends CartState {
   const CartDoneState({
-    List<CartModel>? cartItems,
+    List<CartEntity>? cartItems,
     String? addCartStatus,
     String? deleteItemStatus,
     String? updateItemStatus,
@@ -26,5 +26,5 @@ class CartDoneState extends CartState {
 }
 
 class CartErrorState extends CartState {
-  const CartErrorState(FirebaseException error) : super(error: error);
+  const CartErrorState(DioException error) : super(error: error);
 }

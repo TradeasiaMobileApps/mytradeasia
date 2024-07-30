@@ -1,8 +1,8 @@
 import 'dart:developer';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mytradeasia/core/resources/data_state.dart';
 import 'package:mytradeasia/features/domain/usecases/cart_usecases/add_cart.dart';
 import 'package:mytradeasia/features/domain/usecases/cart_usecases/delete_cart_item.dart';
 import 'package:mytradeasia/features/domain/usecases/cart_usecases/get_cart.dart';
@@ -25,43 +25,66 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   }
 
   void onGetCartItems(GetCartItems event, Emitter<CartState> emit) async {
-    try {
-      final data = await _getCart();
-      log("DATA CART : $data");
-      emit(CartDoneState(cartItems: data));
-    } on FirebaseException catch (e) {
-      emit(CartErrorState(e));
+    final dataState = await _getCart();
+
+    if (dataState is DataSuccess) {
+      emit(CartDoneState(cartItems: dataState.data));
+    }
+
+    if (dataState is DataFailed) {
+      print(dataState.error!.message);
+      emit(CartErrorState(dataState.error!));
     }
   }
 
   void onAddCartItem(AddToCart event, Emitter<CartState> emit) async {
-    try {
-      final data = await _addCart(param: event.product);
+    final data = await _addCart(param: event.product);
+
+    if (data != "error") {
       emit(CartDoneState(addCartStatus: data, cartItems: state.cartItems));
-    } on FirebaseException catch (e) {
-      emit(CartErrorState(e));
+    } else {
+      emit(
+        CartErrorState(
+          DioException(
+              requestOptions: RequestOptions(),
+              message: "Error on adding to cart"),
+        ),
+      );
     }
   }
 
   void onRemoveFromCart(RemoveFromCart event, Emitter<CartState> emit) async {
-    try {
-      final data = await _deleteCartItem(param: event.cart);
-      emit(CartDoneState(deleteItemStatus: data, cartItems: state.cartItems));
-    } on FirebaseException catch (e) {
-      emit(CartErrorState(e));
+    for (var e in state.cartItems!) {
+      if (e.isChecked!) {
+        final data = await _deleteCartItem(param: e.id);
+        if (data != "error") {
+          emit(CartDoneState(
+              deleteItemStatus: data, cartItems: state.cartItems));
+        } else {
+          emit(
+            CartErrorState(
+              DioException(
+                  requestOptions: RequestOptions(),
+                  message: "Error on Deleting to cart"),
+            ),
+          );
+        }
+      }
     }
   }
 
   void onUpdateCartItem(UpdateCartItem event, Emitter<CartState> emit) async {
-    try {
-      final data = await _updateCart(
-          paramsOne: event.cart,
-          paramsTwo: event.product,
-          paramsThree: event.quantity,
-          paramsFour: event.unit);
+    final data = await _updateCart.call(param: event.product);
+    if (data != "error") {
       emit(CartDoneState(updateItemStatus: data, cartItems: state.cartItems));
-    } on FirebaseException catch (e) {
-      emit(CartErrorState(e));
+    } else {
+      emit(
+        CartErrorState(
+          DioException(
+              requestOptions: RequestOptions(),
+              message: "Error on Updating to cart"),
+        ),
+      );
     }
   }
 }
