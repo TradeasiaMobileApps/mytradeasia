@@ -826,7 +826,8 @@ class ActiveButton extends StatelessWidget {
             products: selectedItem,
           );
 
-          context.push("/home/request_quotation", extra: param);
+          context.push("/mytradeasia/cart/multiple_request_quotation",
+              extra: param);
         }),
         child: Text(
           titleButton,

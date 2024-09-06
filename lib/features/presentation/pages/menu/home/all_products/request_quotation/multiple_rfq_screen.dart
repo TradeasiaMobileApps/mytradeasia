@@ -4,14 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mytradeasia/config/themes/theme.dart';
-import 'package:mytradeasia/core/resources/data_state.dart';
 import 'package:mytradeasia/features/domain/entities/product_entities/product_to_rfq_entity.dart';
 import 'package:mytradeasia/features/domain/entities/rfq_entities/request_entity.dart';
-import 'package:mytradeasia/features/domain/entities/rfq_entities/rfq_entity.dart';
-import 'package:mytradeasia/features/domain/entities/user_entities/user_entity.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_data.dart';
-import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_profile.dart';
-import 'package:mytradeasia/features/presentation/pages/menu/home/all_products/request_quotation/widgets/messages_widget.dart';
+import 'package:mytradeasia/features/presentation/pages/menu/home/all_products/request_quotation/widgets/multiple_rfq_products_widget.dart';
+
 import 'package:mytradeasia/features/presentation/pages/menu/home/all_products/request_quotation/widgets/rfq_products_widget.dart';
 import 'package:mytradeasia/features/presentation/state_management/dropdown_incoterm_bloc/dropdown_incoterm_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/dropdown_incoterm_bloc/dropdown_incoterm_event.dart';
@@ -25,19 +22,19 @@ import '../../../../../state_management/rfq_bloc/rfq_event.dart';
 import '../../../../../state_management/rfq_bloc/rfq_state.dart';
 import '../../../../../widgets/text_editing_widget.dart';
 
-class RequestQuotationScreen extends StatefulWidget {
+class MultipleRfqScreen extends StatefulWidget {
   final List<ProductToRfq> products;
 
-  const RequestQuotationScreen({
+  const MultipleRfqScreen({
     super.key,
     this.products = const [],
   });
 
   @override
-  State<RequestQuotationScreen> createState() => _RequestQuotationScreenState();
+  State<MultipleRfqScreen> createState() => _MultipleRfqScreenState();
 }
 
-class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
+class _MultipleRfqScreenState extends State<MultipleRfqScreen> {
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
@@ -50,17 +47,15 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
   final TextEditingController _messagesController =
       TextEditingController(text: "Hi, I'm interested in this product.");
   final GetUserData _geUserData = injections<GetUserData>();
-  final GetUserProfile _getUserProfile = injections<GetUserProfile>();
   final _formKey = GlobalKey<FormState>();
 
   final ScrollController _scrollController = ScrollController();
 
-  String? _selectedValueIncoterm, _userEmail;
+  String? _selectedValueIncoterm;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   Map<String, dynamic> _data = {};
-  late DataState<UserEntity> _userData;
 
   @override
   void initState() {
@@ -71,14 +66,12 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
 
   getUserData() async {
     _data = await _geUserData();
-    _userData = await _getUserProfile.call();
 
     _firstNameController.text = _data['firstName'] ?? '';
     _lastNameController.text = _data['lastName'] ?? '';
     _phoneNumberController.text = _data['phone'] ?? '';
     _countryController.text = _data['country'] ?? '';
     _companyNameController.text = _data['companyName'] ?? '';
-    _userEmail = _data['email'] ?? '';
   }
 
   getIncotermData() {
@@ -377,135 +370,11 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                                         ],
                                       ),
                                       //products
-                                      RfqProducts(
+
+                                      MultipleRfqProducts(
                                         quantityController: _quantityController,
                                         products: widget.products,
                                       ),
-
-                                      //Incoterm
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const Padding(
-                                            padding: EdgeInsets.only(
-                                                top: size20px - 5.0,
-                                                bottom: size20px - 12.0),
-                                            child: Text(
-                                              "Incoterm",
-                                              style: text14,
-                                            ),
-                                          ),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color: greyColor3),
-                                                borderRadius:
-                                                    BorderRadius.circular(7.0)),
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            height: size20px + 28,
-                                            // TexteditingController here
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: size20px,
-                                                  right: size20px),
-                                              child: BlocBuilder<
-                                                  DropdownIncotermBloc,
-                                                  DropdownIncotermState>(
-                                                builder: (context, state) {
-                                                  List<DropdownMenuItem>
-                                                      incoterm = [];
-                                                  if (state
-                                                      is DropdownIncotermSuccess) {
-                                                    for (var i = 0;
-                                                        i <
-                                                            state
-                                                                .dropdownIncoterm!
-                                                                .length;
-                                                        i++) {
-                                                      incoterm.add(DropdownMenuItem(
-                                                          value: state
-                                                              .dropdownIncoterm![
-                                                                  i]
-                                                              .incotermName,
-                                                          child: Text(state
-                                                              .dropdownIncoterm![
-                                                                  i]
-                                                              .incotermName)));
-                                                    }
-                                                  }
-
-                                                  return DropdownButtonFormField(
-                                                    validator: (value) {
-                                                      if (value == null ||
-                                                          value.isEmpty) {
-                                                        return "Incoterm is empty";
-                                                      }
-                                                      return null;
-                                                    },
-                                                    icon: Image.asset(
-                                                        "assets/images/icon_bottom.png"),
-                                                    hint: Text(
-                                                      "Incoterm",
-                                                      style:
-                                                          body1Regular.copyWith(
-                                                              color: greyColor),
-                                                    ),
-                                                    decoration:
-                                                        const InputDecoration(
-                                                      border: InputBorder.none,
-                                                    ),
-                                                    style: body1Regular,
-                                                    items: incoterm,
-                                                    value:
-                                                        _selectedValueIncoterm,
-                                                    onChanged: (value) {
-                                                      _selectedValueIncoterm =
-                                                          value;
-                                                    },
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-
-                                      //Port Of Destination
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const Padding(
-                                            padding: EdgeInsets.only(
-                                                top: size20px - 5.0,
-                                                bottom: size20px - 12.0),
-                                            child: Text(
-                                              "Port Of Destination",
-                                              style: text14,
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: 50.0,
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            child: TextEditingWidget(
-                                              readOnly: false,
-                                              controller:
-                                                  _portOfDetinationController,
-                                              hintText: "Port Of Destination",
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-
-                                      // Messages
-                                      MessagesWidget(
-                                          messagesController:
-                                              _messagesController),
                                     ],
                                   ),
                                 ),
@@ -582,26 +451,7 @@ class _RequestQuotationScreenState extends State<RequestQuotationScreen> {
                               country: _countryController.text,
                               mobileNumber: _phoneNumberController.text,
                               productId: int.parse(e.productId),
-                              incoterm: _selectedValueIncoterm,
                             ),
-                            // RfqEntity(
-                            //   rfqId: null,
-                            //   custId: _data['uid'],
-                            //   firstname: _firstNameController.text,
-                            //   lastname: _lastNameController.text,
-                            //   company: _companyNameController.text,
-                            //   country: _countryController.text,
-                            //   phone: _phoneNumberController.text,
-                            //   products: RfqProduct(
-                            //     productName: e.productName,
-                            //     quantity: e.quantity!.toInt(),
-                            //     unit: e.unit,
-                            //   ),
-                            //   message: _messagesController.text,
-                            //   portOfDestination:
-                            //       _portOfDetinationController.text,
-                            //   incoterm: _selectedValueIncoterm ?? "",
-                            // ),
                           ));
                         }
                         if (state is RfqSuccess) {

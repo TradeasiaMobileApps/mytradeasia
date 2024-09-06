@@ -21,7 +21,7 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       shadowColor: blackColor,
-      elevation: 3.0,
+      elevation: 6.0,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -103,6 +103,7 @@ import 'package:mytradeasia/features/domain/usecases/user_usecases/get_current_u
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_recently_seen.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_credentials.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_data.dart';
+import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_profile.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/get_user_snapshot.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/login.dart';
 import 'package:mytradeasia/features/domain/usecases/user_usecases/login_sales.dart';
@@ -288,6 +289,7 @@ Future<void> initializeDependencies() async {
       .registerSingleton<UserUsecaseIndex>(UserUsecaseIndex(injections()));
   injections.registerSingleton<GoogleAuth>(GoogleAuth(injections()));
   injections.registerSingleton<CheckUserExist>(CheckUserExist(injections()));
+  injections.registerSingleton<GetUserProfile>(GetUserProfile(injections()));
 
   //Bloc
   injections

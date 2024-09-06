@@ -7,6 +7,7 @@ import 'package:mytradeasia/features/presentation/pages/auth/biodata/sso_biodata
 import 'package:mytradeasia/features/presentation/pages/auth/login/sales_login_screen.dart';
 import 'package:mytradeasia/features/presentation/pages/auth/register/register_otp_screen.dart';
 import 'package:mytradeasia/features/presentation/pages/menu/home/all_products/products/products_by_industry_screen.dart';
+import 'package:mytradeasia/features/presentation/pages/menu/home/all_products/request_quotation/multiple_rfq_screen.dart';
 import 'package:mytradeasia/features/presentation/pages/menu/mytradeasia/submenu/change_password/password_change_otp.dart';
 import '../../features/presentation/pages/auth/biodata/biodata_screen.dart';
 import '../../features/presentation/pages/auth/choose_role/role_user_screen.dart';
@@ -289,10 +290,22 @@ class Routes {
                                   const NotificationMenu())
                         ]),
                     GoRoute(
-                      parentNavigatorKey: _rootNavigatorKey,
-                      path: "cart",
-                      builder: (context, state) => const CartScreen(),
-                    ),
+                        parentNavigatorKey: _rootNavigatorKey,
+                        path: "cart",
+                        builder: (context, state) => const CartScreen(),
+                        routes: [
+                          GoRoute(
+                            parentNavigatorKey: _rootNavigatorKey,
+                            path: "multiple_request_quotation",
+                            builder: (context, state) {
+                              RequestQuotationParameter param =
+                                  state.extra as RequestQuotationParameter;
+                              return MultipleRfqScreen(
+                                products: param.products,
+                              );
+                            },
+                          ),
+                        ]),
                     GoRoute(
                         parentNavigatorKey: _rootNavigatorKey,
                         path: "quotations",
