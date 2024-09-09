@@ -816,7 +816,11 @@ class ActiveButton extends StatelessWidget {
                 hsCode: item.hsCode!,
                 casNumber: item.casNumber!,
                 quantity: item.quantity,
+                uomId: item.uomId,
                 unit: item.unitName,
+                incoterm: item.incoterm,
+                pod: item.pod,
+                note: item.note,
               );
               selectedItem.add(data);
             }

@@ -372,7 +372,6 @@ class _MultipleRfqScreenState extends State<MultipleRfqScreen> {
                                       //products
 
                                       MultipleRfqProducts(
-                                        quantityController: _quantityController,
                                         products: widget.products,
                                       ),
                                     ],
