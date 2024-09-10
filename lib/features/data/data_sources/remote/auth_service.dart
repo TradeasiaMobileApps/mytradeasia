@@ -2,11 +2,11 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:mytradeasia/core/constants/constants.dart';
 import 'package:mytradeasia/features/data/model/user_models/user_model.dart';
 import 'package:mytradeasia/utils/notification_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 
 class AuthService {
   final dio = Dio();
@@ -40,7 +40,7 @@ class AuthService {
 
   Future<Response<bool>> checkIfUserExist(
       String ssoId, String loginType, String email) async {
-    final currentTimeZone = await FlutterNativeTimezone.getLocalTimezone();
+    final currentTimeZone = await FlutterTimezone.getLocalTimezone();
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     if (loginType != "by_form") {
       notificationServices.requestNotificationPermission();
