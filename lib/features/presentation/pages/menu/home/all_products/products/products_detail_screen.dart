@@ -20,7 +20,7 @@ import 'package:mytradeasia/features/presentation/state_management/product_bloc/
 import 'package:mytradeasia/features/presentation/state_management/product_bloc/detail_product_bloc/detail_product_state.dart';
 import 'package:mytradeasia/features/presentation/widgets/cart_button.dart';
 import 'package:mytradeasia/features/presentation/widgets/product_card.dart';
-import 'package:sendbird_chat_sdk/sendbird_chat_sdk.dart';
+// import 'package:sendbird_chat_sdk/sendbird_chat_sdk.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../../../../state_management/auth_bloc/auth_bloc.dart';
@@ -737,61 +737,62 @@ class _ProductsDetailScreenState extends State<ProductsDetailScreen> {
                                                   0.0),
                                         ),
                                         onPressed: () async {
-                                          if (state is AuthLoggedInState) {
-                                            try {
-                                              Map<String, dynamic> channelUrl =
-                                                  {};
-                                              await GroupChannel.createChannel(
-                                                      GroupChannelCreateParams()
-                                                        ..name = prodState
-                                                            .detailProductData!
-                                                            .detailProduct!
-                                                            .productname
-                                                        ..userIds = [
-                                                          state.sendbirdUser!
-                                                              .userId,
-                                                          'sales'
-                                                        ])
-                                                  .then((value) {
-                                                channelUrl = {
-                                                  "userId":
-                                                      value.creator!.userId,
-                                                  "customerName":
-                                                      value.creator!.nickname,
-                                                  "chatId": value.chat.chatId
-                                                      .toString(),
-                                                  "channelUrl": value.channelUrl
-                                                };
-                                                value.createMetaData({
-                                                  'productId': widget.productId
-                                                      .toString(),
-                                                  'status': 'product',
-                                                });
-                                              }).whenComplete(() {
-                                                // print(channelUrl)
-                                                // () => context.go("/messages"),
-                                                context.goNamed("message",
-                                                    extra:
-                                                        MessageDetailParameter(
-                                                      otherUserId: "sales",
-                                                      currentUserId:
-                                                          channelUrl["userId"],
-                                                      customerName: channelUrl[
-                                                          "customerName"],
-                                                      chatId:
-                                                          channelUrl["chatId"],
-                                                      channelUrl: channelUrl[
-                                                          "channelUrl"],
-                                                      productId: widget
-                                                          .productId
-                                                          .toString(),
-                                                    ));
-                                              });
-                                            } catch (e) {
-                                              // Handle error.
-                                              log(e.toString());
-                                            }
-                                          }
+                                          ///TODO: DONT DELETE THIS
+                                          // if (state is AuthLoggedInState) {
+                                          //   try {
+                                          //     Map<String, dynamic> channelUrl =
+                                          //         {};
+                                          //     await GroupChannel.createChannel(
+                                          //             GroupChannelCreateParams()
+                                          //               ..name = prodState
+                                          //                   .detailProductData!
+                                          //                   .detailProduct!
+                                          //                   .productname
+                                          //               ..userIds = [
+                                          //                 state.sendbirdUser!
+                                          //                     .userId,
+                                          //                 'sales'
+                                          //               ])
+                                          //         .then((value) {
+                                          //       channelUrl = {
+                                          //         "userId":
+                                          //             value.creator!.userId,
+                                          //         "customerName":
+                                          //             value.creator!.nickname,
+                                          //         "chatId": value.chat.chatId
+                                          //             .toString(),
+                                          //         "channelUrl": value.channelUrl
+                                          //       };
+                                          //       value.createMetaData({
+                                          //         'productId': widget.productId
+                                          //             .toString(),
+                                          //         'status': 'product',
+                                          //       });
+                                          //     }).whenComplete(() {
+                                          //       // print(channelUrl)
+                                          //       // () => context.go("/messages"),
+                                          //       context.goNamed("message",
+                                          //           extra:
+                                          //               MessageDetailParameter(
+                                          //             otherUserId: "sales",
+                                          //             currentUserId:
+                                          //                 channelUrl["userId"],
+                                          //             customerName: channelUrl[
+                                          //                 "customerName"],
+                                          //             chatId:
+                                          //                 channelUrl["chatId"],
+                                          //             channelUrl: channelUrl[
+                                          //                 "channelUrl"],
+                                          //             productId: widget
+                                          //                 .productId
+                                          //                 .toString(),
+                                          //           ));
+                                          //     });
+                                          //   } catch (e) {
+                                          //     // Handle error.
+                                          //     log(e.toString());
+                                          //   }
+                                          // }
                                         },
                                         child: Image.asset(
                                           "assets/images/icon_message_not_active.png",

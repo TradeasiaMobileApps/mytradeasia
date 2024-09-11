@@ -156,14 +156,17 @@ class Routes {
                         builder: (context, state) {
                           MessageDetailParameter param =
                               state.extra as MessageDetailParameter;
+
+                          ///TODO: Commented for a while because of sendbirdchat sdk problem
                           return MessagesDetailScreen(
-                            otherUserId: param.otherUserId,
-                            currentUserId: param.currentUserId,
-                            chatId: param.chatId,
-                            channelUrl: param.channelUrl,
-                            productId: param.productId,
-                            customerName: param.customerName,
-                          );
+
+                              // otherUserId: param.otherUserId,
+                              // currentUserId: param.currentUserId,
+                              // chatId: param.chatId,
+                              // channelUrl: param.channelUrl,
+                              // productId: param.productId,
+                              // customerName: param.customerName,
+                              );
                         })
                   ]),
               GoRoute(

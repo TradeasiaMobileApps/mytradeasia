@@ -8,7 +8,7 @@ import 'package:mytradeasia/features/domain/entities/user_entities/user_credenti
 import 'package:mytradeasia/features/domain/usecases/user_usecases/user_usecase_index.dart';
 import 'package:mytradeasia/features/presentation/widgets/dialog_sheet_widget.dart';
 import 'package:mytradeasia/helper/helper_functions.dart';
-import 'package:sendbird_chat_sdk/sendbird_chat_sdk.dart';
+// import 'package:sendbird_chat_sdk/sendbird_chat_sdk.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'auth_event.dart';
@@ -18,12 +18,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final UserUsecaseIndex _userUseCase;
 
   AuthBloc(this._userUseCase) : super(const AuthInitState()) {
+    ///TODO: the commented code are for a while because of problem from sendbird package
     on<LoginWithEmail>((event, emit) async {
       BuildContext context = event.context;
 
       if (event.role != 'sales') {
-        // final response = await _postLoginUser
-        //     .call(param: {"email": event.email, "password": event.password});
         final response = await _userUseCase.loginUser(loginCredential: {
           "email": event.email,
           "password": event.password
@@ -33,16 +32,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         if (response["code"] is UserCredentialEntity) {
           try {
             var userData = await _userUseCase.getUserData();
-            final User user;
+            // final User user;
             UserCredentialEntity userCredential = response["code"];
-            if (userData["role"] != "Sales") {
-              user = await SendbirdChat.connect(userCredential.uid!,
-                  nickname: userData["firstName"]);
-            } else {
-              user = await SendbirdChat.connect("sales");
-            }
+            // if (userData["role"] != "Sales") {
+            //   user = await SendbirdChat.connect(userCredential.uid!,
+            //       nickname: userData["firstName"]);
+            // } else {
+            //   user = await SendbirdChat.connect("sales");
+            // }
             await prefs.setString("userId", userCredential.uid!);
-            emit(AuthLoggedInState(userCredential, user, userData["role"]));
+            // emit(AuthLoggedInState(userCredential, user, userData["role"]));
+            emit(AuthLoggedInState(userCredential, userData["role"]));
             context.go("/home");
           } catch (e) {
             log("failed to login with error: $e");
@@ -98,17 +98,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         });
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         if (response.status!) {
-          final User user;
-          user = await SendbirdChat.connect("sales");
+          // final User user;
+          // user = await SendbirdChat.connect("sales");
 
           UserCredentialEntity userCred =
               await _userUseCase.getUserCredentials();
 
           await prefs.setString("userId", userCred.uid!);
+          // emit(AuthLoggedInState(
+          //     toUserCredentialEntityFromSalesModel(
+          //         response.salesUserData!.user!),
+          //     user,
+          //     "sales"));
           emit(AuthLoggedInState(
               toUserCredentialEntityFromSalesModel(
                   response.salesUserData!.user!),
-              user,
               "sales"));
           context.go("/home");
         } else {
@@ -198,14 +202,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       String? userId = prefs.getString("userId");
       String? role = prefs.getString("role");
-      final User user;
-      if (role != "Sales") {
-        user = await SendbirdChat.connect(userId!);
-      } else {
-        user = await SendbirdChat.connect("sales");
-      }
-      emit(AuthLoggedInState(
-          await _userUseCase.getUserCredentials(), user, role));
+      // final User user;
+      // if (role != "Sales") {
+      //   user = await SendbirdChat.connect(userId!);
+      // } else {
+      //   user = await SendbirdChat.connect("sales");
+      // }
+      // emit(AuthLoggedInState(
+      //     await _userUseCase.getUserCredentials(), user, role));
+      emit(AuthLoggedInState(await _userUseCase.getUserCredentials(), role));
     });
 
     on<LogOut>((event, emit) async {

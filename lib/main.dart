@@ -13,10 +13,9 @@ import 'package:mytradeasia/features/presentation/state_management/home_bloc/hom
 import 'package:mytradeasia/features/presentation/state_management/quotations_bloc/quotations_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/recently_seen_bloc/recently_seen_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/rfq_bloc/rfq_bloc.dart';
-// import 'package:mytradeasia/features/presentation/state_management/message_bloc/channel_list/channel_list_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/searates_bloc/searates_bl/searates_bl_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/searates_bloc/searates_route/searates_route_bloc.dart';
-import 'package:sendbird_chat_sdk/sendbird_chat_sdk.dart';
+// import 'package:sendbird_chat_sdk/sendbird_chat_sdk.dart';
 import 'package:mytradeasia/config/routes/routes.dart';
 import 'package:mytradeasia/features/presentation/state_management/auth_bloc/auth_bloc.dart';
 import 'package:mytradeasia/features/presentation/state_management/cart_bloc/cart_bloc.dart';
@@ -41,7 +40,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  SendbirdChat.init(appId: 'DCD5F067-8067-49BF-954E-CEB3631B555F');
+  // Commented for a while problems on the dependent package
+  // SendbirdChat.init(appId: 'DCD5F067-8067-49BF-954E-CEB3631B555F');
 
   await initializeDependencies();
 
@@ -109,7 +109,7 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(create: (_) => injections<SalesforceLoginBloc>()),
         BlocProvider(create: (_) => injections<SalesforceDataBloc>()),
         BlocProvider(create: (_) => injections<SalesforceDetailBloc>()),
-        BlocProvider(create: (_) => ChannelListBloc()),
+        // BlocProvider(create: (_) => ChannelListBloc()),
         BlocProvider(create: (_) => injections<SearatesRouteBloc>()),
         BlocProvider(create: (_) => injections<SearatesBLBloc>()),
         BlocProvider(create: (_) => injections<RecentlySeenBloc>()),
