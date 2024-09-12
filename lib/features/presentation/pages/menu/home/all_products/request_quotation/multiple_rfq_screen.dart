@@ -429,35 +429,35 @@ class _MultipleRfqScreenState extends State<MultipleRfqScreen> {
                   onPressed: () async {
                     /* With go_router */
 
-                    if (widget.products.isEmpty) {
-                      const snackbar = SnackBar(
-                        duration: Duration(seconds: 2),
-                        content: Text(
-                          "The products still empty",
-                          textAlign: TextAlign.center,
-                        ),
-                        backgroundColor: redColor1,
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(snackbar);
-                    } else {
-                      if (_formKey.currentState!.validate()) {
-                        for (var e in widget.products) {
-                          BlocProvider.of<RfqBloc>(context).add(SubmitRfqEvent(
-                            RequestEntity(
-                              firstName: _firstNameController.text,
-                              lastName: _lastNameController.text,
-                              companyName: _companyNameController.text,
-                              country: _countryController.text,
-                              mobileNumber: _phoneNumberController.text,
-                              productId: int.parse(e.productId),
-                            ),
-                          ));
-                        }
-                        if (state is RfqSuccess) {
-                          context.pushNamed("submitted_rfq");
-                        }
-                      }
-                    }
+                    // if (widget.products.isEmpty) {
+                    //   const snackbar = SnackBar(
+                    //     duration: Duration(seconds: 2),
+                    //     content: Text(
+                    //       "The products still empty",
+                    //       textAlign: TextAlign.center,
+                    //     ),
+                    //     backgroundColor: redColor1,
+                    //   );
+                    //   ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                    // } else {
+                    //   if (_formKey.currentState!.validate()) {
+                    //     for (var e in widget.products) {
+                    //       BlocProvider.of<RfqBloc>(context).add(SubmitRfqEvent(
+                    //         RequestEntity(
+                    //           firstName: _firstNameController.text,
+                    //           lastName: _lastNameController.text,
+                    //           companyName: _companyNameController.text,
+                    //           country: _countryController.text,
+                    //           mobileNumber: _phoneNumberController.text,
+                    //           productId: int.parse(e.productId),
+                    //         ),
+                    //       ));
+                    //     }
+                    //     if (state is RfqSuccess) {
+                    //       context.pushNamed("submitted_rfq");
+                    //     }
+                    //   }
+                    // }
                   },
                   child: Text(
                     "Send",

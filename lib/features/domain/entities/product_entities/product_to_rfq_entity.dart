@@ -10,17 +10,20 @@ class ProductToRfq {
   String? incoterm;
   String? pod;
   String? note;
+  int? cartItemId;
 
-  ProductToRfq(
-      {required this.productId,
-      required this.productName,
-      required this.productImage,
-      required this.hsCode,
-      required this.casNumber,
-      this.quantity,
-      this.uomId,
-      this.unit,
-      this.incoterm,
-      this.pod,
-      this.note});
+  ProductToRfq({
+    required this.productId,
+    required this.productName,
+    required this.productImage,
+    required this.hsCode,
+    required this.casNumber,
+    this.quantity,
+    this.uomId,
+    this.unit,
+    this.incoterm,
+    this.pod,
+    this.note,
+    this.cartItemId,
+  });
 }
